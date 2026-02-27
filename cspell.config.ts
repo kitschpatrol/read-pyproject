@@ -8,6 +8,7 @@ export default cspellConfig({
 		'docformatter',
 		'doctests',
 		'dunder',
+		'envfile',
 		'filterwarnings',
 		'htmlcov',
 		'isort',

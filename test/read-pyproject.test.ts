@@ -17,6 +17,7 @@ import {
 	createFlake8Schema,
 	createIsortSchema,
 	createMypySchema,
+	createPoeSchema,
 	createPoetrySchema,
 	createPyrightSchema,
 	createPytestSchema,
@@ -251,6 +252,34 @@ describe('PEP 735 dependency-groups', () => {
 // ---------------------------------------------------------------------------
 
 describe('tool schemas', () => {
+	it('parses poe config', () => {
+		const schema = createPoeSchema('passthrough')
+		const result = schema.parse({
+			'default-task-type': 'cmd',
+			env: { NODE_ENV: 'test' },
+			executor: { type: 'poetry' },
+			'poetry-command': 'poe',
+			'shell-interpreter': 'bash',
+			tasks: {
+				format: { cmd: 'black app', help: 'Run black on the code base' },
+				lint: 'ruff check .',
+				test: ['lint', 'unit-test'],
+			},
+			verbosity: 1,
+		})
+		expect(result.defaultTaskType).toBe('cmd')
+		expect(result.env).toEqual({ NODE_ENV: 'test' })
+		expect(result.executor).toEqual({ type: 'poetry' })
+		expect(result.poetryCommand).toBe('poe')
+		expect(result.shellInterpreter).toBe('bash')
+		expect(result.verbosity).toBe(1)
+		expect(result.tasks).toEqual({
+			format: { cmd: 'black app', help: 'Run black on the code base' },
+			lint: 'ruff check .',
+			test: ['lint', 'unit-test'],
+		})
+	})
+
 	it('parses poetry config', () => {
 		const schema = createPoetrySchema('passthrough')
 		const result = schema.parse({
