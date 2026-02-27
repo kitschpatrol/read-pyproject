@@ -15,6 +15,7 @@ import {
 	createCodespellSchema,
 	createCommitizenSchema,
 	createCoverageSchema,
+	createDistutilsSchema,
 	createDocformatterSchema,
 	createFlake8Schema,
 	createIsortSchema,
@@ -642,6 +643,22 @@ describe('tool schemas', () => {
 		expect(result.excludeDirs).toEqual(['tests', 'examples'])
 		expect(result.skips).toEqual(['B101', 'B601'])
 		expect(result.tests).toEqual(['B201'])
+	})
+
+	it('parses distutils config', () => {
+		const schema = createDistutilsSchema('passthrough')
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			bdist_wheel: {
+				universal: true,
+				// eslint-disable-next-line ts/naming-convention
+				python_tag: 'py3',
+			},
+			sdist: { owner: 'root', group: 'root' },
+		})
+		expect(result.bdistWheel?.universal).toBe(true)
+		expect(result.bdistWheel?.pythonTag).toBe('py3')
+		expect(result.sdist).toEqual({ owner: 'root', group: 'root' })
 	})
 
 	it('parses check-wheel-contents config', () => {
