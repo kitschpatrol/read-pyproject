@@ -14,6 +14,7 @@ export function createUvSchema(strict: boolean) {
 			.array(z.object({ name: z.string().optional(), url: z.string().optional() }).loose())
 			.optional(),
 		'index-url': z.string().optional(),
+		'no-build-isolation-package': z.array(z.string()).optional(),
 		'override-dependencies': z.array(z.string()).optional(),
 		sources: z.record(z.string(), z.unknown()).optional(),
 	})
@@ -25,6 +26,7 @@ export function createUvSchema(strict: boolean) {
 			'extra-index-url': extraIndexUrl,
 			'find-links': findLinks,
 			'index-url': indexUrl,
+			'no-build-isolation-package': noBuildIsolationPackage,
 			'override-dependencies': overrideDependencies,
 			...rest
 		}) => ({
@@ -34,6 +36,7 @@ export function createUvSchema(strict: boolean) {
 			extraIndexUrl,
 			findLinks,
 			indexUrl,
+			noBuildIsolationPackage,
 			overrideDependencies,
 		}),
 	)

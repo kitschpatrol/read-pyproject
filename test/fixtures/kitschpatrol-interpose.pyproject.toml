@@ -1,0 +1,102 @@
+[project]
+name = "interpose"
+version = "0.16.2"
+description = "Soemthing something."
+readme = "README.md"
+authors = [{ name = "Eric Mika" }]
+license = { text = "Apache-2.0" }
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "click>=8.3.1",
+  "darkdetect>=0.8.0",
+  "depthai-nodes==0.3.7",
+  "depthai==3.3.0",
+  "glom>=25.12.0",
+  "loguru>=0.7.3",
+  "nava>=0.8",
+  "nicegui>=2.24.2,<3",
+  "numpy>=2,<2.3.0",
+  "opencv-python>=4.12.0.88",
+  "onnxruntime>=1.23.2",
+  "pandas>=2.3.3",
+  "plotly-stubs>=0.1.2",
+  "plotly>=6.5.2",
+  "pydantic>=2.12.5",
+  "pygame>=2.6.1",
+  "pyobjc-core>=12.1",
+  "pyobjc-framework-quartz>=12.1",
+  "pyobjc-framework-vision>=12.1",
+  "pywebview>=6.1",
+  "rtmlib>=0.0.13",
+  "scipy>=1.17.0",
+  "tqdm>=4.67.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/kitschpatrol"
+Changelog = "https://github.com/kitschpatrol"
+Issues = "https://github.com/kitschpatrol"
+CI = "https://github.com/kitschpatrol"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# Disable fix for unused imports (`F401`).
+unfixable = ["F401"]
+select = [
+  # pycodestyle
+  "E",
+  # Pyflakes
+  "F",
+  # pyupgrade
+  "UP",
+  # flake8-bugbear
+  "B",
+  # flake8-simplify
+  "SIM",
+  # isort
+  "I",
+]
+# TODO revisit contextlib.suppress
+ignore = ["SIM105"]
+
+[tool.bumpversion]
+allow_dirty = false
+commit = true
+message = "Release: {new_version}"
+pre_commit_hooks = ["uv sync", "git add uv.lock"]
+post_commit_hooks = ["git push", "git push --tags"]
+tag = true
+tag_message = "Release: {new_version}"
+
+[project.scripts]
+interpose = "interpose.cli:cli"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["interpose", "interpose.skeleton"]
+
+[tool.poe.tasks]
+clean = { shell = "git rm -f uv.lock ; git clean -fdX" }
+test = "uv run pytest"
+lint = "uv run ruff check ."
+fix = "uv run ruff check . --fix"
+format = "uv run ruff format ."
+release = "python -c \"import subprocess; part=input('Bump level? (patch/minor/major): '); subprocess.run(['uv', 'run', 'bump-my-version', 'bump', part]) if part in ['patch','minor','major'] else print('Invalid')\""
+
+[tool.uv]
+no-build-isolation-package = ["mmpose"]
+
+[dependency-groups]
+dev = [
+  "bump-my-version>=1.2.6",
+  "pillow>=12.0.0",
+  "poethepoet>=0.37.0",
+  "pytest>=8.4.2",
+  "ruff>=0.14.13",
+  "scipy-stubs>=1.17.0.1",
+]
