@@ -12,6 +12,7 @@ import {
 	createFlake8Schema,
 	createHatchSchema,
 	createIsortSchema,
+	createJupyterReleaserSchema,
 	createMypySchema,
 	createPdmSchema,
 	createPoeSchema,
@@ -57,6 +58,7 @@ export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 		flake8: createFlake8Schema(unknownKeys).optional(),
 		hatch: createHatchSchema(unknownKeys).optional(),
 		isort: createIsortSchema(unknownKeys).optional(),
+		'jupyter-releaser': createJupyterReleaserSchema(unknownKeys).optional(),
 		mypy: createMypySchema(unknownKeys).optional(),
 		pdm: createPdmSchema(unknownKeys).optional(),
 		poe: createPoeSchema(unknownKeys).optional(),
@@ -81,10 +83,13 @@ export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 			: unknownKeys === 'strip'
 				? toolBase
 				: toolBase.loose()
-	).transform(({ setuptools_scm: setuptoolsScm, ...rest }) => ({
-		...rest,
-		setuptoolsScm,
-	}))
+	).transform(
+		({ 'jupyter-releaser': jupyterReleaser, setuptools_scm: setuptoolsScm, ...rest }) => ({
+			...rest,
+			jupyterReleaser,
+			setuptoolsScm,
+		}),
+	)
 
 	const shape = {
 		'build-system': createBuildSystemSchema(unknownKeys).optional(),

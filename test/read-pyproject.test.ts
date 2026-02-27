@@ -16,6 +16,7 @@ import {
 	createDocformatterSchema,
 	createFlake8Schema,
 	createIsortSchema,
+	createJupyterReleaserSchema,
 	createMypySchema,
 	createPoeSchema,
 	createPylintSchema,
@@ -626,6 +627,26 @@ describe('tool schemas', () => {
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
 		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
+	})
+
+	it('parses jupyter-releaser config', () => {
+		const schema = createJupyterReleaserSchema('passthrough')
+		const result = schema.parse({
+			hooks: {
+				'before-build-npm': ["python -m pip install 'jupyterlab>=4.0.0,<5'", 'jlpm', 'jlpm build:prod'],
+				'before-build-python': ['jlpm clean:all'],
+			},
+			options: {
+				// eslint-disable-next-line ts/naming-convention
+				version_cmd: 'hatch version',
+			},
+		})
+		expect(result.hooks?.beforeBuildNpm).toEqual([
+			"python -m pip install 'jupyterlab>=4.0.0,<5'",
+			'jlpm',
+			'jlpm build:prod',
+		])
+		expect(result.hooks?.beforeBuildPython).toEqual(['jlpm clean:all'])
 	})
 
 	it('parses pylint config', () => {
