@@ -29,6 +29,7 @@ import {
 	createPytestSchema,
 	createRuffSchema,
 	createSetuptoolsScmSchema,
+	createTbumpSchema,
 	createTowncrierSchema,
 	createUvSchema,
 	createYapfSchema,
@@ -660,6 +661,27 @@ describe('tool schemas', () => {
 		expect(result.skip).toBe('*-musllinux*')
 		expect(result.testCommand).toBe('pytest {project}/tests')
 		expect(result.testRequires).toBe('pytest')
+	})
+
+	it('parses tbump config', () => {
+		const schema = createTbumpSchema('passthrough')
+		const result = schema.parse({
+			file: [{ src: 'package.json', search: '"version": "{current_version}"' }],
+			git: {
+				// eslint-disable-next-line ts/naming-convention
+				message_template: 'Bump to {new_version}',
+				// eslint-disable-next-line ts/naming-convention
+				tag_template: 'v{new_version}',
+			},
+			// eslint-disable-next-line ts/naming-convention
+			github_url: 'https://github.com/example/repo/',
+			version: { current: '1.0.0', regex: '(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)' },
+		})
+		expect(result.githubUrl).toBe('https://github.com/example/repo/')
+		expect(result.version?.current).toBe('1.0.0')
+		expect(result.git?.messageTemplate).toBe('Bump to {new_version}')
+		expect(result.git?.tagTemplate).toBe('v{new_version}')
+		expect(result.file).toEqual([{ src: 'package.json', search: '"version": "{current_version}"' }])
 	})
 
 	it('parses distutils config', () => {

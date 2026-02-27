@@ -29,6 +29,7 @@ export default cspellConfig({
 		'setuptools',
 		'showcontent',
 		'smol',
+		'tbump',
 		'testpaths',
 		'towncrier',
 		'typeshed',

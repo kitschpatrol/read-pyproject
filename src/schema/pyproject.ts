@@ -27,6 +27,7 @@ import {
 	createRuffSchema,
 	createSetuptoolsSchema,
 	createSetuptoolsScmSchema,
+	createTbumpSchema,
 	createTowncrierSchema,
 	createUvSchema,
 	createYapfSchema,
@@ -78,6 +79,7 @@ export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 		setuptools: createSetuptoolsSchema(unknownKeys).optional(),
 		// eslint-disable-next-line ts/naming-convention
 		setuptools_scm: createSetuptoolsScmSchema(unknownKeys).optional(),
+		tbump: createTbumpSchema(unknownKeys).optional(),
 		towncrier: createTowncrierSchema(unknownKeys).optional(),
 		uv: createUvSchema(unknownKeys).optional(),
 		yapf: createYapfSchema(unknownKeys).optional(),
