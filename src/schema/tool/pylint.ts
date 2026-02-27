@@ -27,8 +27,9 @@ export function createPylintSchema(unknownKeys: UnknownKeys) {
 		'max-statements': z.number().optional(),
 		'py-version': z.union([z.string(), z.array(z.number())]).optional(),
 	})
-	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+	// Always loose — pylint uses many dynamic sub-sections (messages_control,
+	// "MESSAGES CONTROL", format, main, basic, classes, reports, etc.)
+	const object = unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'fail-on': failOn,

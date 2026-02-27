@@ -14,6 +14,7 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		add_imports: stringOrArray.optional(),
+		atomic: looseBoolean.optional(),
 		// eslint-disable-next-line ts/naming-convention
 		color_output: looseBoolean.optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -24,6 +25,8 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 		ensure_newline_before_comments: looseBoolean.optional(),
 		// eslint-disable-next-line ts/naming-convention
 		extend_skip: stringOrArray.optional(),
+		// eslint-disable-next-line ts/naming-convention
+		force_alphabetical_sort_within_sections: looseBoolean.optional(),
 		// eslint-disable-next-line ts/naming-convention
 		force_grid_wrap: z.number().optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -65,12 +68,14 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 		// eslint-disable-next-line ts/naming-convention
 		skip_glob: stringOrArray.optional(),
 		// eslint-disable-next-line ts/naming-convention
+		split_on_trailing_comma: looseBoolean.optional(),
+		// eslint-disable-next-line ts/naming-convention
 		src_paths: z.array(z.string()).optional(),
 		// eslint-disable-next-line ts/naming-convention
 		use_parentheses: looseBoolean.optional(),
 	})
-	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+	// Always loose — isort supports dynamic known_* sections (known_django, known_myapp, etc.)
+	const object = unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			add_imports: addImports,
@@ -79,6 +84,7 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 			default_section: defaultSection,
 			ensure_newline_before_comments: ensureNewlineBeforeComments,
 			extend_skip: extendSkip,
+			force_alphabetical_sort_within_sections: forceAlphabeticalSortWithinSections,
 			force_grid_wrap: forceGridWrap,
 			force_single_line: forceSingleLine,
 			force_sort_within_sections: forceSortWithinSections,
@@ -97,6 +103,7 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 			py_version: pyVersion,
 			skip_gitignore: skipGitignore,
 			skip_glob: skipGlob,
+			split_on_trailing_comma: splitOnTrailingComma,
 			src_paths: srcPaths,
 			use_parentheses: useParentheses,
 			...rest
@@ -108,6 +115,7 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 			defaultSection,
 			ensureNewlineBeforeComments,
 			extendSkip,
+			forceAlphabeticalSortWithinSections,
 			forcedSeparate,
 			forceGridWrap,
 			forceSingleLine,
@@ -126,6 +134,7 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 			pyVersion,
 			skipGitignore,
 			skipGlob,
+			splitOnTrailingComma,
 			srcPaths,
 			useParentheses,
 		}),

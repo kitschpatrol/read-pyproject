@@ -10,7 +10,17 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
+		allow_redefinition: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		allow_subclassing_any: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		allow_untyped_globals: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
 		check_untyped_defs: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		color_output: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		disable_error_code: z.union([z.string(), z.array(z.string())]).optional(),
 		// eslint-disable-next-line ts/naming-convention
 		disallow_any_decorated: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -29,7 +39,11 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 		disallow_untyped_defs: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		enable_error_code: z.union([z.string(), z.array(z.string())]).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		error_summary: z.boolean().optional(),
 		exclude: z.union([z.string(), z.array(z.string())]).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		exclude_gitignore: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		explicit_package_bases: z.boolean().optional(),
 		files: z.union([z.string(), z.array(z.string())]).optional(),
@@ -40,6 +54,10 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 		// eslint-disable-next-line ts/naming-convention
 		ignore_missing_imports: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
+		implicit_reexport: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		local_partial_types: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
 		mypy_path: z.union([z.string(), z.array(z.string())]).optional(),
 		// eslint-disable-next-line ts/naming-convention
 		namespace_packages: z.boolean().optional(),
@@ -47,15 +65,25 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 		no_implicit_optional: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		no_implicit_reexport: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		no_site_packages: z.boolean().optional(),
 		overrides: z.array(overrideSchema).optional(),
+		packages: z.union([z.string(), z.array(z.string())]).optional(),
 		plugins: z.array(z.string()).optional(),
+		pretty: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		python_version: z.union([z.string(), z.number()]).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		show_column_numbers: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		show_error_codes: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		show_error_context: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		show_traceback: z.boolean().optional(),
 		strict: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		strict_concatenate: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		strict_equality: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -77,7 +105,12 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
+			allow_redefinition: allowRedefinition,
+			allow_subclassing_any: allowSubclassingAny,
+			allow_untyped_globals: allowUntypedGlobals,
 			check_untyped_defs: checkUntypedDefs,
+			color_output: colorOutput,
+			disable_error_code: disableErrorCode,
 			disallow_any_decorated: disallowAnyDecorated,
 			disallow_any_generics: disallowAnyGenerics,
 			disallow_any_unimported: disallowAnyUnimported,
@@ -87,17 +120,25 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 			disallow_untyped_decorators: disallowUntypedDecorators,
 			disallow_untyped_defs: disallowUntypedDefs,
 			enable_error_code: enableErrorCode,
+			error_summary: errorSummary,
+			exclude_gitignore: excludeGitignore,
 			explicit_package_bases: explicitPackageBases,
 			follow_imports: followImports,
 			ignore_errors: ignoreErrors,
 			ignore_missing_imports: ignoreMissingImports,
+			implicit_reexport: implicitReexport,
+			local_partial_types: localPartialTypes,
 			mypy_path: mypyPath,
 			namespace_packages: namespacePackages,
 			no_implicit_optional: noImplicitOptional,
 			no_implicit_reexport: noImplicitReexport,
+			no_site_packages: noSitePackages,
 			python_version: pythonVersion,
+			show_column_numbers: showColumnNumbers,
 			show_error_codes: showErrorCodes,
 			show_error_context: showErrorContext,
+			show_traceback: showTraceback,
+			strict_concatenate: strictConcatenate,
 			strict_equality: strictEquality,
 			strict_optional: strictOptional,
 			warn_no_return: warnNoReturn,
@@ -109,7 +150,12 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 			...rest
 		}) => ({
 			...rest,
+			allowRedefinition,
+			allowSubclassingAny,
+			allowUntypedGlobals,
 			checkUntypedDefs,
+			colorOutput,
+			disableErrorCode,
 			disallowAnyDecorated,
 			disallowAnyGenerics,
 			disallowAnyUnimported,
@@ -119,17 +165,25 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 			disallowUntypedDecorators,
 			disallowUntypedDefs,
 			enableErrorCode,
+			errorSummary,
+			excludeGitignore,
 			explicitPackageBases,
 			followImports,
 			ignoreErrors,
 			ignoreMissingImports,
+			implicitReexport,
+			localPartialTypes,
 			mypyPath,
 			namespacePackages,
 			noImplicitOptional,
 			noImplicitReexport,
+			noSitePackages,
 			pythonVersion,
+			showColumnNumbers,
 			showErrorCodes,
 			showErrorContext,
+			showTraceback,
+			strictConcatenate,
 			strictEquality,
 			strictOptional,
 			warnNoReturn,

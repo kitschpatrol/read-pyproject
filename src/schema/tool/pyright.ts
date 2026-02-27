@@ -85,5 +85,5 @@ export function createPyrightSchema(unknownKeys: UnknownKeys) {
 	})
 
 	// Always loose — pyright adds new diagnostic rules frequently
-	return unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+	return unknownKeys === 'strip' ? base : base.loose()
 }

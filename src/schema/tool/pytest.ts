@@ -77,8 +77,8 @@ export function createPytestSchema(unknownKeys: UnknownKeys) {
 		// eslint-disable-next-line ts/naming-convention
 		ini_options: iniOptionsSchema.optional(),
 	})
-	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+	// Always loose — some configs place ini options directly under [tool.pytest]
+	const object = unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(({ ini_options: iniOptions, ...rest }) => ({
 		...rest,
 		iniOptions,

@@ -49,21 +49,35 @@ export function createRuffSchema(unknownKeys: UnknownKeys) {
 			}),
 		)
 
+	// Ruff has many per-linter sub-sections (flake8-*, mccabe, pyupgrade, etc.)
+	// that can appear at the top level in legacy config format.
+	const linterSubSection = z.object({}).loose().optional()
+
 	const base = z.object({
+		builtins: z.array(z.string()).optional(),
 		exclude: z.array(z.string()).optional(),
 		'extend-exclude': z.array(z.string()).optional(),
+		'extend-fixable': z.array(z.string()).optional(),
 		'extend-select': z.array(z.string()).optional(),
 		fix: z.boolean().optional(),
 		fixable: z.array(z.string()).optional(),
+		'flake8-quotes': linterSubSection,
+		'flake8-tidy-imports': linterSubSection,
 		format: formatSchema.optional(),
 		ignore: z.array(z.string()).optional(),
+		'ignore-init-module-imports': z.boolean().optional(),
+		include: z.array(z.string()).optional(),
 		'indent-width': z.number().optional(),
 		isort: z.object({}).loose().optional(),
 		'line-length': z.number().optional(),
 		lint: lintSchema.optional(),
+		mccabe: linterSubSection,
+		'output-format': z.string().optional(),
 		'per-file-ignores': z.record(z.string(), z.array(z.string())).optional(),
 		preview: z.boolean().optional(),
+		pyupgrade: linterSubSection,
 		select: z.array(z.string()).optional(),
+		'show-fixes': z.boolean().optional(),
 		src: z.array(z.string()).optional(),
 		'target-version': z.string().optional(),
 		unfixable: z.array(z.string()).optional(),
@@ -73,19 +87,31 @@ export function createRuffSchema(unknownKeys: UnknownKeys) {
 	return object.transform(
 		({
 			'extend-exclude': extendExclude,
+			'extend-fixable': extendFixable,
 			'extend-select': extendSelect,
+			'flake8-quotes': flake8Quotes,
+			'flake8-tidy-imports': flake8TidyImports,
+			'ignore-init-module-imports': ignoreInitModuleImports,
 			'indent-width': indentWidth,
 			'line-length': lineLength,
+			'output-format': outputFormat,
 			'per-file-ignores': perFileIgnores,
+			'show-fixes': showFixes,
 			'target-version': targetVersion,
 			...rest
 		}) => ({
 			...rest,
 			extendExclude,
+			extendFixable,
 			extendSelect,
+			flake8Quotes,
+			flake8TidyImports,
+			ignoreInitModuleImports,
 			indentWidth,
 			lineLength,
+			outputFormat,
 			perFileIgnores,
+			showFixes,
 			targetVersion,
 		}),
 	)

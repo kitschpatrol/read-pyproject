@@ -1,5 +1,3 @@
-/* eslint-disable capitalized-comments */
-
 import { describe, expect, it } from 'vitest'
 import {
 	createAutopep8Schema,

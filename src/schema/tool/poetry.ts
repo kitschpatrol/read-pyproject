@@ -8,6 +8,7 @@ import type { UnknownKeys } from '../../types'
 export function createPoetrySchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		authors: z.array(z.string()).optional(),
+		build: z.union([z.object({}).loose(), z.string()]).optional(),
 		classifiers: z.array(z.string()).optional(),
 		dependencies: z.record(z.string(), z.unknown()).optional(),
 		description: z.string().optional(),
@@ -22,10 +23,14 @@ export function createPoetrySchema(unknownKeys: UnknownKeys) {
 		license: z.string().optional(),
 		maintainers: z.array(z.string()).optional(),
 		name: z.string().optional(),
+		'package-mode': z.boolean().optional(),
 		packages: z.array(z.object({ include: z.string() }).loose()).optional(),
 		plugins: z.record(z.string(), z.unknown()).optional(),
 		readme: z.union([z.string(), z.array(z.string())]).optional(),
 		repository: z.string().optional(),
+		'requires-plugins': z
+			.union([z.array(z.string()), z.record(z.string(), z.unknown())])
+			.optional(),
 		scripts: z.record(z.string(), z.string()).optional(),
 		source: z.array(z.object({ name: z.string(), url: z.string() }).loose()).optional(),
 		urls: z.record(z.string(), z.string()).optional(),
@@ -33,8 +38,17 @@ export function createPoetrySchema(unknownKeys: UnknownKeys) {
 	})
 	const object =
 		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
-	return object.transform(({ 'dev-dependencies': devDependencies, ...rest }) => ({
-		...rest,
-		devDependencies,
-	}))
+	return object.transform(
+		({
+			'dev-dependencies': devDependencies,
+			'package-mode': packageMode,
+			'requires-plugins': requiresPlugins,
+			...rest
+		}) => ({
+			...rest,
+			devDependencies,
+			packageMode,
+			requiresPlugins,
+		}),
+	)
 }

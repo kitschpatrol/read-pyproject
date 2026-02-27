@@ -346,119 +346,61 @@ describe('real-world fixtures', () => {
 			const errorBlacklist = new Set([
 				// unknown tool: crewai
 				'agenticfsu-quantbot.pyproject.toml',
-				// tool.pytest: doctest_optionflags; root-level: isort
+				// root-level: isort (not under tool)
 				'alenai97-peft-mllm.pyproject.toml',
-				// tool.pylint: "MESSAGES CONTROL"; tool.ruff: extended-select, show-fixes, target; unknown tool: oxt
+				// unknown tool: oxt
 				'amourspirit-libreoffice-python-path-ext.pyproject.toml',
-				// tool.isort: split_on_trailing_comma
-				'anyions-aws-tag-tools.pyproject.toml',
-				// tool.mypy: allow_redefinition, pretty, show_traceback; tool.ruff: extend-fixable, mccabe; unknown tools: doc8, nbqa, poetry_bumpversion, poetry-sort
+				// unknown tools: doc8, nbqa, poetry_bumpversion, poetry-sort
 				'appliedai-gmbh-armscan-env.pyproject.toml',
-				// tool.isort: known_typing
-				'artefactory-streamlit-prophet.pyproject.toml',
-				// tool.ruff: flake8-tidy-imports
-				'aw1cks-cloud-latest.pyproject.toml',
 				// unknown tool: kedro
 				'bartoszzolkiewski-asi.pyproject.toml',
 				// unknown tool: codeflash
 				'bbelderbos-code-quality.pyproject.toml',
-				// tool.mypy: pretty, show_column_numbers
-				'bhrevol-dlsite-utils.pyproject.toml',
-				// tool.black: python-version
-				'biosustain-maudtools.pyproject.toml',
 				// unknown tool: maturin; root-level: options
 				'bk7084-framework.pyproject.toml',
-				// tool.ruff: output-format
-				'bopeng-ai-marketplace-monitor.pyproject.toml',
 				// unknown tool: comfy
 				'brekel-comfyui-brekel.pyproject.toml',
 				// unknown tool: check-manifest
 				'brisvag-waretomo.pyproject.toml',
-				// tool.bandit: assert_used
-				'bsc-wdc-dds.pyproject.toml',
-				// tool.mypy: allow_redefinition, allow_untyped_globals, local_partial_types, disable_error_code
-				'centreborelli-dem-evaluation.pyproject.toml',
-				// tool.pyright: pyrightIgnoreModules
-				'clarity-digital-twin-clarity-ai-jupyter.pyproject.toml',
-				// tool.black: target_version
-				'cloudchacho-hedwig-python.pyproject.toml',
-				// tool.mypy: packages
-				'cloudtruth-config-catalyst.pyproject.toml',
-				// tool.mypy: allow_redefinition, allow_untyped_globals, local_partial_types, disable_error_code
-				'cnes-demcompare.pyproject.toml',
-				// tool.ruff: flake8-quotes
-				'code-yeongyu-moragi.pyproject.toml',
-				// tool.poetry: build; unknown tool: flakeheaven
+				// unknown tool: flakeheaven
 				'craigtrim-lingpatlab.pyproject.toml',
-				// tool.pylint: messages_control
-				'darasiemi-mental-health-mlops-project.pyproject.toml',
-				// tool.ruff: ignore-init-module-imports
-				'digiklausur-e2xauthoring.pyproject.toml',
 				// unknown tool: uv_build
 				'douile-friends-queue.pyproject.toml',
-				// tool.pylint: messages_control, format; root-level: tools
+				// root-level: tools (typo for tool)
 				'e-eight-pennylearn.pyproject.toml',
-				// tool.pylint: "messages control", main, classes; tool.ruff: show-fixes; unknown tool: chango
+				// unknown tool: chango
 				'eatsky1006-python-telegram-bot.pyproject.toml',
-				// tool.isort: known_clients, known_engine, known_messages, known_services, known_schemas, known_subscribers, known_routers, known_utilities, known_config
-				'epoikos-project-simulation.pyproject.toml',
-				// tool.isort: force_alphabetical_sort_within_sections
-				'esemanraro-masterhedge.pyproject.toml',
 				// unknown tool: dagster
 				'fearnworks-graphcap-prototype.pyproject.toml',
-				// tool.poetry: build
-				'fedora-infra-koji-fedoramessaging-messages.pyproject.toml',
-				// tool.poetry: build
-				'fedora-infra-rpmautospec-core.pyproject.toml',
 				// root-level: poetry (not under tool)
 				'firefly-cpp-arm-preprocessing.pyproject.toml',
-				// tool.isort: atomic; unknown tool: pixi
+				// unknown tool: pixi
 				'fppdf-fppdf.pyproject.toml',
-				// tool.mypy: no_site_packages
-				'gagan3012-polydedupe.pyproject.toml',
 				// unknown tool: bumpver
 				'gardenerik-django-policies.pyproject.toml',
-				// tool.pylint: "MESSAGES CONTROL"
-				'hackersandslackers-flask-session-tutorial.pyproject.toml',
-				// tool.ruff: pyupgrade
-				'heysaeid-fastapi-fast-template.pyproject.toml',
-				// tool.mypy: allow_untyped_globals, error_summary, pretty, disable_error_code; tool.pylint: main, messages_control, reports; unknown tool: pydocstyle
+				// unknown tool: pydocstyle
 				'hypothesis-data-tasks.pyproject.toml',
-				// tool.black: skip-numeric-underscore-normalization, target_version; unknown tool: dephell
+				// unknown tool: dephell
 				'ig248-tensorpandas.pyproject.toml',
 				// unknown tool: scikit-build
 				'iitpvisionlab-adrt.pyproject.toml',
 				// root-level: poetry (not under tool)
 				'inqbus-braille-radio.pyproject.toml',
-				// tool.pytest: doctest_optionflags; root-level: isort
+				// root-level: isort (not under tool)
 				'ist-daslab-peft-rosa.pyproject.toml',
-				// tool.poetry: package-mode
-				'jhordyess-calendar-generator.pyproject.toml',
-				// tool.poetry: package-mode
-				'joaquin-gael-text-predictor.pyproject.toml',
-				// tool.poetry: requires-plugins; unknown tool: poetry-dynamic-versioning
+				// unknown tool: poetry-dynamic-versioning
 				'kaisbn-openly.pyproject.toml',
 				// unknown tool: dagster
 				'kayrnt-dlt-iceberg-slack-backup.pyproject.toml',
 				// unknown tool: pixi
 				'khanlab-cfmm2tar.pyproject.toml',
-				// tool.mypy: exclude_gitignore; tool.pytest: testpaths
-				'lbhm-fedaugment.pyproject.toml',
-				// tool.pylint: messages_control, format
-				'lm-150a-docflash.pyproject.toml',
 				// project: python, homepage, repository, documentation; root-level: dependencies
 				'lorenanicole-eventbrite-scraper.pyproject.toml',
 				// unknown tool: pydantic-mypy
 				'lucas-six-python-cookbook.pyproject.toml',
-				// tool.bandit: any_other_function_with_shell_equals_true; tool.isort: known_typing; tool.mypy: pretty, show_traceback, color_output, allow_redefinition, implicit_reexport, show_column_numbers; unknown tools: pydocstyle, interrogate, radon; root-level: coverage
+				// unknown tools: pydocstyle, interrogate, radon; root-level: coverage
 				'maanibeigy-dash-boilerplate.pyproject.toml',
-				// tool.poetry: package-mode
-				'moj-analytical-services-moj-dlt-workshop.pyproject.toml',
-				// tool.pytest: pythonpath, addopts; tool.ruff: output-format
-				'monk-time-advent-of-code.pyproject.toml',
-				// tool.mypy: allow_subclassing_any; tool.poetry: package-mode; tool.ruff: show-fixes
-				'neo4j-field-ps-genai-agents.pyproject.toml',
-				// tool.pytest: doctest_optionflags; root-level: isort
+				// root-level: isort (not under tool)
 				'njunlp-moe-lpr.pyproject.toml',
 				// unknown tool: uv-dynamic-versioning
 				'omniagentpay-omniagentpay.pyproject.toml',
@@ -466,38 +408,24 @@ describe('real-world fixtures', () => {
 				'omsf-openpharmmdflow.pyproject.toml',
 				// unknown tool: dagster
 				'open-model-initiative-graphcap.pyproject.toml',
-				// project: python, homepage, repository, documentation; tool.isort: known_django; unknown tools: curlylint, djlint, codereviewdoctor
+				// project: python, homepage, repository, documentation; unknown tools: curlylint, djlint, codereviewdoctor
 				'pack144-packman.pyproject.toml',
-				// tool.isort: known_pelican, known_firstparty
-				'pelican-plugins-nojekyll.pyproject.toml',
-				// tool.mypy: allow_redefinition, disable_error_code; tool.poetry: build
-				'pwwang-pipen-diagram.pyproject.toml',
 				// project: repository, homepage; unknown tools: semantic_release, pyrefly; root-level: semantic_release
 				'pythonhubdev-scaffoldr.pyproject.toml',
-				// tool.pylint: main, basic, classes
-				'quick-invoice-api-invoice-utils.pyproject.toml',
 				// project: packages
 				'runekaagaard-mcp-redmine.pyproject.toml',
-				// tool.ruff: builtins; unknown tool: build_sphinx
+				// unknown tool: build_sphinx
 				'salt-extensions-saltext-github.pyproject.toml',
-				// tool.pytest: doctest_optionflags; root-level: isort
+				// root-level: isort (not under tool)
 				'saltychtao-moe-lpr.pyproject.toml',
-				// tool.poetry: package-mode
-				'snipy7374-code-jam-24-universes.pyproject.toml',
-				// tool.pytest: doctest_optionflags; root-level: isort
+				// root-level: isort (not under tool)
 				'thunlp-loraflow.pyproject.toml',
 				// tool.pytest: ini_option (typo); root-level: mypy
 				'timgrob-crypto-warren.pyproject.toml',
-				// tool.ruff: include
-				'tu-wien-datalab-grader-labextension.pyproject.toml',
-				// tool.mypy: strict_concatenate
-				'ualbertafsae-f1tenth.pyproject.toml',
 				// project: url, license_files
 				'uhlive-python-sdk.pyproject.toml',
-				// tool.pytest: doctest_optionflags; root-level: isort
+				// root-level: isort (not under tool)
 				'vityavitalich-llm-compression.pyproject.toml',
-				// tool.black: target_version
-				'vladvasiliu-kibana-prometheus-exporter-py.pyproject.toml',
 				// unknown tool: coverage_rich
 				'waylonwalker-coverage-rich.pyproject.toml',
 				// unknown tool: comfy

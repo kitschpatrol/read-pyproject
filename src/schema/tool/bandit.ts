@@ -14,8 +14,8 @@ export function createBanditSchema(unknownKeys: UnknownKeys) {
 		targets: z.array(z.string()).optional(),
 		tests: z.array(z.string()).optional(),
 	})
-	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+	// Always loose — bandit uses dynamic per-check sub-sections (assert_used, etc.)
+	const object = unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(({ exclude_dirs: excludeDirectories, ...rest }) => ({
 		...rest,
 		excludeDirectories,

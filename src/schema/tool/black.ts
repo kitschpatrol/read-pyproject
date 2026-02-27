@@ -6,6 +6,8 @@ import type { UnknownKeys } from '../../types'
  * @see [Black configuration reference](https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file)
  */
 export function createBlackSchema(unknownKeys: UnknownKeys) {
+	const booleanOrString = z.union([z.boolean(), z.string()])
+
 	const base = z.object({
 		color: z.boolean().optional(),
 		exclude: z.string().optional(),
@@ -16,15 +18,19 @@ export function createBlackSchema(unknownKeys: UnknownKeys) {
 		// eslint-disable-next-line ts/naming-convention
 		line_length: z.number().optional(),
 		preview: z.boolean().optional(),
+		'python-version': z.union([z.string(), z.array(z.string())]).optional(),
 		quiet: z.boolean().optional(),
 		'required-version': z.string().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		required_version: z.string().optional(),
 		'skip-magic-trailing-comma': z.boolean().optional(),
-		'skip-string-normalization': z.union([z.boolean(), z.string()]).optional(),
+		'skip-numeric-underscore-normalization': booleanOrString.optional(),
+		'skip-string-normalization': booleanOrString.optional(),
 		// eslint-disable-next-line ts/naming-convention
-		skip_string_normalization: z.union([z.boolean(), z.string()]).optional(),
+		skip_string_normalization: booleanOrString.optional(),
 		'target-version': z.array(z.string()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		target_version: z.array(z.string()).optional(),
 		workers: z.number().optional(),
 	})
 	const object =
@@ -35,22 +41,27 @@ export function createBlackSchema(unknownKeys: UnknownKeys) {
 			'force-exclude': forceExclude,
 			'line-length': lineLength,
 			line_length: lineLengthSnake,
+			'python-version': pythonVersion,
 			'required-version': requiredVersion,
 			required_version: requiredVersionSnake,
 			'skip-magic-trailing-comma': skipMagicTrailingComma,
+			'skip-numeric-underscore-normalization': skipNumericUnderscoreNormalization,
 			'skip-string-normalization': skipStringNormalization,
 			skip_string_normalization: skipStringNormalizationSnake,
 			'target-version': targetVersion,
+			target_version: targetVersionSnake,
 			...rest
 		}) => ({
 			...rest,
 			extendExclude,
 			forceExclude,
 			lineLength: lineLength ?? lineLengthSnake,
+			pythonVersion,
 			requiredVersion: requiredVersion ?? requiredVersionSnake,
 			skipMagicTrailingComma,
+			skipNumericUnderscoreNormalization,
 			skipStringNormalization: skipStringNormalization ?? skipStringNormalizationSnake,
-			targetVersion,
+			targetVersion: targetVersion ?? targetVersionSnake,
 		}),
 	)
 }
