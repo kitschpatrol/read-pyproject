@@ -3,6 +3,7 @@ import { createBuildSystemSchema } from './build-system'
 import { createProjectSchema } from './project'
 import {
 	createBlackSchema,
+	createCoverageSchema,
 	createHatchSchema,
 	createIsortSchema,
 	createMypySchema,
@@ -36,6 +37,7 @@ const dependencyGroupsSchema = z.record(
 export function createPyprojectSchema(strict: boolean) {
 	const toolShape = {
 		black: createBlackSchema(strict).optional(),
+		coverage: createCoverageSchema(strict).optional(),
 		hatch: createHatchSchema(strict).optional(),
 		isort: createIsortSchema(strict).optional(),
 		mypy: createMypySchema(strict).optional(),

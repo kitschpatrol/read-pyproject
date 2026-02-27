@@ -9,6 +9,7 @@ import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
 	createBlackSchema,
+	createCoverageSchema,
 	createIsortSchema,
 	createMypySchema,
 	createPoetrySchema,
@@ -342,6 +343,51 @@ describe('tool schemas', () => {
 		expect(result.forceSingleLine).toBe(true)
 		expect(result.knownFirstParty).toEqual(['mypackage'])
 		expect(result.srcPaths).toEqual(['src', 'tests'])
+	})
+
+	it('parses coverage config', () => {
+		const schema = createCoverageSchema(false)
+		const result = schema.parse({
+			html: { directory: 'htmlcov' },
+			paths: {
+				source: ['src', '*/site-packages'],
+				tests: ['tests', '*/tests'],
+			},
+			report: {
+				// eslint-disable-next-line ts/naming-convention
+				exclude_lines: ['pragma: no cover', 'if TYPE_CHECKING:'],
+				// eslint-disable-next-line ts/naming-convention
+				fail_under: 90,
+				precision: 2,
+				// eslint-disable-next-line ts/naming-convention
+				show_missing: true,
+				// eslint-disable-next-line ts/naming-convention
+				skip_covered: true,
+			},
+			run: {
+				branch: true,
+				omit: ['*/tests/*'],
+				parallel: true,
+				source: ['mypackage'],
+				// eslint-disable-next-line ts/naming-convention
+				source_pkgs: ['mypackage'],
+			},
+		})
+		expect(result.run?.branch).toBe(true)
+		expect(result.run?.parallel).toBe(true)
+		expect(result.run?.source).toEqual(['mypackage'])
+		expect(result.run?.sourcePkgs).toEqual(['mypackage'])
+		expect(result.run?.omit).toEqual(['*/tests/*'])
+		expect(result.report?.failUnder).toBe(90)
+		expect(result.report?.showMissing).toBe(true)
+		expect(result.report?.skipCovered).toBe(true)
+		expect(result.report?.excludeLines).toEqual(['pragma: no cover', 'if TYPE_CHECKING:'])
+		expect(result.report?.precision).toBe(2)
+		expect(result.paths).toEqual({
+			source: ['src', '*/site-packages'],
+			tests: ['tests', '*/tests'],
+		})
+		expect(result.html?.directory).toBe('htmlcov')
 	})
 })
 

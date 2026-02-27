@@ -1,4 +1,5 @@
 export { createBlackSchema } from './black'
+export { createCoverageSchema } from './coverage'
 export { createHatchSchema } from './hatch'
 export { createIsortSchema } from './isort'
 export { createMypySchema } from './mypy'
