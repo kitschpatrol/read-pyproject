@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pdm] table.
  * @see [PDM configuration reference](https://pdm-project.org/en/latest/reference/configuration/)
  */
-export function createPdmSchema(unknownKeys: UnknownKeys) {
+export function createPdmSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		build: z.object({}).loose().optional(),
 		'dev-dependencies': z.record(z.string(), z.array(z.string())).optional(),
@@ -15,7 +15,7 @@ export function createPdmSchema(unknownKeys: UnknownKeys) {
 			.optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(({ 'dev-dependencies': devDependencies, ...rest }) => ({
 		...rest,
 		devDependencies,

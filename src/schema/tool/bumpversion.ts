@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.bumpversion] table.
  * @see [Bump My Version configuration reference](https://callowayproject.github.io/bump-my-version/reference/configuration/)
  */
-export function createBumpversionSchema(unknownKeys: UnknownKeys) {
+export function createBumpversionSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const fileSchema = z
 		.object({
 			// eslint-disable-next-line ts/naming-convention
@@ -61,7 +61,7 @@ export function createBumpversionSchema(unknownKeys: UnknownKeys) {
 	})
 
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			allow_dirty: allowDirty,

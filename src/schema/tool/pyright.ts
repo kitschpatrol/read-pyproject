@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /** Diagnostic severity level used by pyright report* options. */
 const diagnosticSeverity = z.union([
@@ -11,7 +11,7 @@ const diagnosticSeverity = z.union([
  * Create a Zod schema for the [tool.pyright] table.
  * @see [Pyright configuration reference](https://microsoft.github.io/pyright/#/configuration)
  */
-export function createPyrightSchema(unknownKeys: UnknownKeys) {
+export function createPyrightSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		// Core configuration
 		defineConstant: z.record(z.string(), z.union([z.boolean(), z.string()])).optional(),
@@ -85,5 +85,5 @@ export function createPyrightSchema(unknownKeys: UnknownKeys) {
 	})
 
 	// Always loose — pyright adds new diagnostic rules frequently
-	return unknownKeys === 'strip' ? base : base.loose()
+	return unknownKeyPolicy === 'strip' ? base : base.loose()
 }

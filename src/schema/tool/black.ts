@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.black] table.
  * @see [Black configuration reference](https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file)
  */
-export function createBlackSchema(unknownKeys: UnknownKeys) {
+export function createBlackSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const booleanOrString = z.union([z.boolean(), z.string()])
 
 	const base = z.object({
@@ -34,7 +34,7 @@ export function createBlackSchema(unknownKeys: UnknownKeys) {
 		workers: z.number().optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'extend-exclude': extendExclude,

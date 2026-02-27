@@ -233,7 +233,7 @@ describe('PEP 735 dependency-groups', () => {
 // Error cases
 // ---------------------------------------------------------------------------
 
-describe('unknownKeys modes', () => {
+describe('unknownKeyPolicy modes', () => {
 	it('error mode rejects unknown keys in project', () => {
 		const schema = createProjectSchema('error')
 		expect(() => schema.parse({ name: 'test', 'unknown-key': 'value' })).toThrow()
@@ -338,7 +338,7 @@ describe('real-world fixtures', () => {
 	})
 
 	it(
-		'parses non-blacklisted fixture files with error-level unknownKeys',
+		'parses non-blacklisted fixture files with error-level unknownKeyPolicy',
 		{ timeout: 60_000 },
 		async () => {
 			// Fixtures that fail error-level validation.

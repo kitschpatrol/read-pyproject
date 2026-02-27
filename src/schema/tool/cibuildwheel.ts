@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.cibuildwheel] table.
  * @see [cibuildwheel configuration reference](https://cibuildwheel.pypa.io/en/stable/options/)
  */
-export function createCibuildwheelSchema(unknownKeys: UnknownKeys) {
+export function createCibuildwheelSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const platformOverrideSchema = z.object({}).loose()
 
 	const base = z.object({
@@ -26,7 +26,7 @@ export function createCibuildwheelSchema(unknownKeys: UnknownKeys) {
 		windows: platformOverrideSchema.optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'before-all': beforeAll,

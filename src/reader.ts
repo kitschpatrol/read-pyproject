@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { parse } from 'smol-toml'
-import type { PyprojectData, UnknownKeys } from './types'
+import type { PyprojectData, UnknownKeyPolicy } from './types'
 import { PyprojectError } from './error'
 import { log } from './log'
 import { createPyprojectSchema } from './schema/pyproject'
@@ -9,11 +9,11 @@ import { createPyprojectSchema } from './schema/pyproject'
 /**
  * Read, parse, validate, and normalize a pyproject.toml file.
  * @param pathOrDirectory - A file path or directory. If a directory (no extension), appends `/pyproject.toml`. Defaults to `process.cwd()`.
- * @param unknownKeys - How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
+ * @param unknownKeyPolicy - How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
  */
 export async function readPyproject(
 	pathOrDirectory?: string,
-	unknownKeys: UnknownKeys = 'passthrough',
+	unknownKeyPolicy: UnknownKeyPolicy = 'passthrough',
 ): Promise<PyprojectData> {
 	const filePath = await resolveFilePath(pathOrDirectory ?? process.cwd())
 
@@ -40,7 +40,7 @@ export async function readPyproject(
 		})
 	}
 
-	const schema = createPyprojectSchema(unknownKeys)
+	const schema = createPyprojectSchema(unknownKeyPolicy)
 	const result = schema.safeParse(parsed)
 
 	if (!result.success) {

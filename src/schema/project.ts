@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { NormalizedLicense, NormalizedReadme } from '../normalize'
-import type { UnknownKeys } from '../types'
+import type { UnknownKeyPolicy } from '../types'
 import { correctSpdx, normalizePep503Name } from '../normalize'
 
 const personSchema = z
@@ -95,10 +95,10 @@ const projectRawShape = {
 /**
  * Create a Zod schema for the PEP 621 [project] table.
  */
-export function createProjectSchema(unknownKeys: UnknownKeys) {
+export function createProjectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object(projectRawShape)
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'entry-points': entryPoints,

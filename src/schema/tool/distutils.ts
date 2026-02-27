@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.distutils] table.
  * @see [Distutils configuration reference](https://docs.python.org/3/distutils/configfile.html)
  */
-export function createDistutilsSchema(unknownKeys: UnknownKeys) {
+export function createDistutilsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const bdistWheelSchema = z
 		.object({
 			// eslint-disable-next-line ts/naming-convention
@@ -24,7 +24,7 @@ export function createDistutilsSchema(unknownKeys: UnknownKeys) {
 		sdist: z.object({}).loose().optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(({ bdist_wheel: bdistWheel, ...rest }) => ({
 		...rest,
 		bdistWheel,

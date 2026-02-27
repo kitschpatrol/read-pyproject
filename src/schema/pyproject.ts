@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../types'
+import type { UnknownKeyPolicy } from '../types'
 import { createBuildSystemSchema } from './build-system'
 import { createProjectSchema } from './project'
 import {
@@ -58,51 +58,51 @@ const dependencyGroupsSchema = z.record(
 /**
  * Create the top-level pyproject.toml Zod schema.
  */
-export function createPyprojectSchema(unknownKeys: UnknownKeys) {
+export function createPyprojectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const toolShape = {
-		autopep8: createAutopep8Schema(unknownKeys).optional(),
-		bandit: createBanditSchema(unknownKeys).optional(),
-		black: createBlackSchema(unknownKeys).optional(),
-		bumpversion: createBumpversionSchema(unknownKeys).optional(),
-		'check-wheel-contents': createCheckWheelContentsSchema(unknownKeys).optional(),
-		cibuildwheel: createCibuildwheelSchema(unknownKeys).optional(),
-		codespell: createCodespellSchema(unknownKeys).optional(),
-		comfy: createComfySchema(unknownKeys).optional(),
-		commitizen: createCommitizenSchema(unknownKeys).optional(),
-		coverage: createCoverageSchema(unknownKeys).optional(),
-		dagster: createDagsterSchema(unknownKeys).optional(),
-		distutils: createDistutilsSchema(unknownKeys).optional(),
-		docformatter: createDocformatterSchema(unknownKeys).optional(),
-		flake8: createFlake8Schema(unknownKeys).optional(),
-		flit: createFlitSchema(unknownKeys).optional(),
-		hatch: createHatchSchema(unknownKeys).optional(),
-		isort: createIsortSchema(unknownKeys).optional(),
-		'jupyter-releaser': createJupyterReleaserSchema(unknownKeys).optional(),
-		mypy: createMypySchema(unknownKeys).optional(),
-		pdm: createPdmSchema(unknownKeys).optional(),
-		pixi: createPixiSchema(unknownKeys).optional(),
-		poe: createPoeSchema(unknownKeys).optional(),
-		poetry: createPoetrySchema(unknownKeys).optional(),
-		pydocstyle: createPydocstyleSchema(unknownKeys).optional(),
-		pylint: createPylintSchema(unknownKeys).optional(),
-		pyright: createPyrightSchema(unknownKeys).optional(),
-		pytest: createPytestSchema(unknownKeys).optional(),
-		ruff: createRuffSchema(unknownKeys).optional(),
-		setuptools: createSetuptoolsSchema(unknownKeys).optional(),
+		autopep8: createAutopep8Schema(unknownKeyPolicy).optional(),
+		bandit: createBanditSchema(unknownKeyPolicy).optional(),
+		black: createBlackSchema(unknownKeyPolicy).optional(),
+		bumpversion: createBumpversionSchema(unknownKeyPolicy).optional(),
+		'check-wheel-contents': createCheckWheelContentsSchema(unknownKeyPolicy).optional(),
+		cibuildwheel: createCibuildwheelSchema(unknownKeyPolicy).optional(),
+		codespell: createCodespellSchema(unknownKeyPolicy).optional(),
+		comfy: createComfySchema(unknownKeyPolicy).optional(),
+		commitizen: createCommitizenSchema(unknownKeyPolicy).optional(),
+		coverage: createCoverageSchema(unknownKeyPolicy).optional(),
+		dagster: createDagsterSchema(unknownKeyPolicy).optional(),
+		distutils: createDistutilsSchema(unknownKeyPolicy).optional(),
+		docformatter: createDocformatterSchema(unknownKeyPolicy).optional(),
+		flake8: createFlake8Schema(unknownKeyPolicy).optional(),
+		flit: createFlitSchema(unknownKeyPolicy).optional(),
+		hatch: createHatchSchema(unknownKeyPolicy).optional(),
+		isort: createIsortSchema(unknownKeyPolicy).optional(),
+		'jupyter-releaser': createJupyterReleaserSchema(unknownKeyPolicy).optional(),
+		mypy: createMypySchema(unknownKeyPolicy).optional(),
+		pdm: createPdmSchema(unknownKeyPolicy).optional(),
+		pixi: createPixiSchema(unknownKeyPolicy).optional(),
+		poe: createPoeSchema(unknownKeyPolicy).optional(),
+		poetry: createPoetrySchema(unknownKeyPolicy).optional(),
+		pydocstyle: createPydocstyleSchema(unknownKeyPolicy).optional(),
+		pylint: createPylintSchema(unknownKeyPolicy).optional(),
+		pyright: createPyrightSchema(unknownKeyPolicy).optional(),
+		pytest: createPytestSchema(unknownKeyPolicy).optional(),
+		ruff: createRuffSchema(unknownKeyPolicy).optional(),
+		setuptools: createSetuptoolsSchema(unknownKeyPolicy).optional(),
 		// eslint-disable-next-line ts/naming-convention
-		setuptools_scm: createSetuptoolsScmSchema(unknownKeys).optional(),
-		tbump: createTbumpSchema(unknownKeys).optional(),
-		towncrier: createTowncrierSchema(unknownKeys).optional(),
-		uv: createUvSchema(unknownKeys).optional(),
-		yapf: createYapfSchema(unknownKeys).optional(),
+		setuptools_scm: createSetuptoolsScmSchema(unknownKeyPolicy).optional(),
+		tbump: createTbumpSchema(unknownKeyPolicy).optional(),
+		towncrier: createTowncrierSchema(unknownKeyPolicy).optional(),
+		uv: createUvSchema(unknownKeyPolicy).optional(),
+		yapf: createYapfSchema(unknownKeyPolicy).optional(),
 	}
 
-	// Tool table respects unknownKeys so unknown tools are handled accordingly
+	// Tool table respects unknownKeyPolicy so unknown tools are handled accordingly
 	const toolBase = z.object(toolShape)
 	const tool = (
-		unknownKeys === 'error'
+		unknownKeyPolicy === 'error'
 			? toolBase.strict()
-			: unknownKeys === 'strip'
+			: unknownKeyPolicy === 'strip'
 				? toolBase
 				: toolBase.loose()
 	).transform(
@@ -120,14 +120,14 @@ export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 	)
 
 	const shape = {
-		'build-system': createBuildSystemSchema(unknownKeys).optional(),
+		'build-system': createBuildSystemSchema(unknownKeyPolicy).optional(),
 		'dependency-groups': dependencyGroupsSchema.optional(),
-		project: createProjectSchema(unknownKeys).optional(),
+		project: createProjectSchema(unknownKeyPolicy).optional(),
 		tool: tool.optional(),
 	}
 	const base = z.object(shape)
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({ 'build-system': buildSystem, 'dependency-groups': dependencyGroups, ...rest }) => ({
 			...rest,

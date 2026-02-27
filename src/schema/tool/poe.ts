@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /** String or array of strings. */
 const multiString = z.union([z.string(), z.array(z.string())])
@@ -9,7 +9,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
  * @see [Poe the Poet configuration reference](https://poethepoet.natn.io/global_options.html)
  * @see [Poe the Poet task options](https://poethepoet.natn.io/tasks/options.html)
  */
-export function createPoeSchema(unknownKeys: UnknownKeys) {
+export function createPoeSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		'default-array-item-task-type': z.string().optional(),
 		'default-array-task-type': z.string().optional(),
@@ -28,7 +28,7 @@ export function createPoeSchema(unknownKeys: UnknownKeys) {
 	})
 
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'default-array-item-task-type': defaultArrayItemTaskType,

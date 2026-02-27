@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pylint] table.
  * @see [Pylint configuration reference](https://pylint.readthedocs.io/en/latest/user_guide/configuration/index.html)
  */
-export function createPylintSchema(unknownKeys: UnknownKeys) {
+export function createPylintSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	// Pylint uses many dynamic sub-sections (messages_control, "messages control",
 	// "MESSAGES CONTROL", main, format, basic, classes, reports, etc.) with
 	// arbitrary keys, so we use a loose record for maximum compatibility.
@@ -29,7 +29,7 @@ export function createPylintSchema(unknownKeys: UnknownKeys) {
 	})
 	// Always loose — pylint uses many dynamic sub-sections (messages_control,
 	// "MESSAGES CONTROL", format, main, basic, classes, reports, etc.)
-	const object = unknownKeys === 'strip' ? base : base.loose()
+	const object = unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'fail-on': failOn,

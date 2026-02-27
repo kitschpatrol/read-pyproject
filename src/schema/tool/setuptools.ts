@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.setuptools] table.
  * @see [Setuptools pyproject.toml reference](https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html)
  */
-export function createSetuptoolsSchema(unknownKeys: UnknownKeys) {
+export function createSetuptoolsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		dynamic: z.object({}).loose().optional(),
 		'include-package-data': z.boolean().optional(),
@@ -20,7 +20,7 @@ export function createSetuptoolsSchema(unknownKeys: UnknownKeys) {
 		'zip-safe': z.boolean().optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'include-package-data': includePackageData,

@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pytest] table.
  * @see [Pytest configuration reference](https://docs.pytest.org/en/stable/reference/customize.html)
  * @see [Pytest ini-options](https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref)
  */
-export function createPytestSchema(unknownKeys: UnknownKeys) {
+export function createPytestSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const stringOrArray = z.union([z.string(), z.array(z.string())])
 
 	const iniOptionsSchema = z
@@ -78,7 +78,7 @@ export function createPytestSchema(unknownKeys: UnknownKeys) {
 		ini_options: iniOptionsSchema.optional(),
 	})
 	// Always loose — some configs place ini options directly under [tool.pytest]
-	const object = unknownKeys === 'strip' ? base : base.loose()
+	const object = unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(({ ini_options: iniOptions, ...rest }) => ({
 		...rest,
 		iniOptions,

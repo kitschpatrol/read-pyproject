@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../types'
+import type { UnknownKeyPolicy } from '../types'
 
 const buildSystemRawShape = {
 	'backend-path': z.array(z.string()).optional(),
@@ -10,10 +10,10 @@ const buildSystemRawShape = {
 /**
  * Create a Zod schema for the [build-system] table.
  */
-export function createBuildSystemSchema(unknownKeys: UnknownKeys) {
+export function createBuildSystemSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object(buildSystemRawShape)
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({ 'backend-path': backendPath, 'build-backend': buildBackend, ...rest }) => ({
 			...rest,

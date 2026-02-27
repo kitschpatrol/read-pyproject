@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pydocstyle] table.
  * @see [pydocstyle configuration reference](https://www.pydocstyle.org/en/stable/usage.html#configuration-files)
  */
-export function createPydocstyleSchema(unknownKeys: UnknownKeys) {
+export function createPydocstyleSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const stringOrArray = z.union([z.string(), z.array(z.string())])
 
 	const base = z.object({
@@ -23,12 +23,13 @@ export function createPydocstyleSchema(unknownKeys: UnknownKeys) {
 		select: stringOrArray.optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			add_ignore: addIgnore,
 			add_select: addSelect,
 			ignore_decorators: ignoreDecorators,
+			// eslint-disable-next-line unicorn/prevent-abbreviations
 			match_dir: matchDir,
 			...rest
 		}) => ({

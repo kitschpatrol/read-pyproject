@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.mypy] table.
  * @see [Mypy configuration reference](https://mypy.readthedocs.io/en/stable/config_file.html)
  */
-export function createMypySchema(unknownKeys: UnknownKeys) {
+export function createMypySchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const overrideSchema = z.object({}).loose()
 
 	const base = z.object({
@@ -102,7 +102,7 @@ export function createMypySchema(unknownKeys: UnknownKeys) {
 		warn_unused_ignores: z.boolean().optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			allow_redefinition: allowRedefinition,

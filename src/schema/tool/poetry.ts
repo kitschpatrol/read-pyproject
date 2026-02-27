@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.poetry] table.
  * @see [Poetry pyproject.toml reference](https://python-poetry.org/docs/pyproject/)
  */
-export function createPoetrySchema(unknownKeys: UnknownKeys) {
+export function createPoetrySchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		authors: z.array(z.string()).optional(),
 		build: z.union([z.object({}).loose(), z.string()]).optional(),
@@ -37,7 +37,7 @@ export function createPoetrySchema(unknownKeys: UnknownKeys) {
 		version: z.string().optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'dev-dependencies': devDependencies,

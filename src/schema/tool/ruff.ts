@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.ruff] table.
  * @see [Ruff configuration reference](https://docs.astral.sh/ruff/configuration/)
  * @see [Ruff settings](https://docs.astral.sh/ruff/settings/)
  */
-export function createRuffSchema(unknownKeys: UnknownKeys) {
+export function createRuffSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const lintSchema = z
 		.object({
 			'extend-select': z.array(z.string()).optional(),
@@ -83,7 +83,7 @@ export function createRuffSchema(unknownKeys: UnknownKeys) {
 		unfixable: z.array(z.string()).optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'extend-exclude': extendExclude,

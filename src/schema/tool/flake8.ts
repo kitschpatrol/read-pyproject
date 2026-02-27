@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /** String or array of strings. */
 const multiString = z.union([z.string(), z.array(z.string())])
@@ -8,7 +8,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
  * Create a Zod schema for the [tool.flake8] table.
  * @see [Flake8 options reference](https://flake8.pycqa.org/en/latest/user/options.html)
  */
-export function createFlake8Schema(unknownKeys: UnknownKeys) {
+export function createFlake8Schema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		builtins: multiString.optional(),
 		'copyright-check': z.boolean().optional(),
@@ -39,7 +39,7 @@ export function createFlake8Schema(unknownKeys: UnknownKeys) {
 	})
 
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'copyright-check': copyrightCheck,

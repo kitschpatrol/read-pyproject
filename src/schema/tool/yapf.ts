@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.yapf] table.
@@ -9,7 +9,7 @@ import type { UnknownKeys } from '../../types'
  * passthrough mode.
  * @see [YAPF knobs reference](https://github.com/google/yapf#knobs)
  */
-export function createYapfSchema(unknownKeys: UnknownKeys) {
+export function createYapfSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		allow_split_before_dict_value: z.boolean().optional(),
@@ -41,7 +41,7 @@ export function createYapfSchema(unknownKeys: UnknownKeys) {
 
 	// Always loose — YAPF has 100+ style knobs
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			allow_split_before_dict_value: allowSplitBeforeDictValue,

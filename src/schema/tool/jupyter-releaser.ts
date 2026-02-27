@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.jupyter-releaser] table.
  * @see [Jupyter Releaser reference](https://jupyter-releaser.readthedocs.io/en/latest/)
  */
-export function createJupyterReleaserSchema(unknownKeys: UnknownKeys) {
+export function createJupyterReleaserSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const hooksSchema = z
 		.object({
 			'before-build-npm': z.array(z.string()).optional(),
@@ -31,6 +31,6 @@ export function createJupyterReleaserSchema(unknownKeys: UnknownKeys) {
 		options: optionsSchema.optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object
 }

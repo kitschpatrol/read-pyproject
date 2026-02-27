@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /** String or array of strings, common in coverage.py config. */
 const multiString = z.union([z.string(), z.array(z.string())])
@@ -8,7 +8,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
  * Create a Zod schema for the [tool.coverage] table.
  * @see [Coverage.py configuration reference](https://coverage.readthedocs.io/en/latest/config.html)
  */
-export function createCoverageSchema(unknownKeys: UnknownKeys) {
+export function createCoverageSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const runShape = z.object({
 		branch: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -108,9 +108,9 @@ export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	const pathsSchema = z.record(z.string(), z.array(z.string()))
 
 	const runTransformed = (
-		unknownKeys === 'error'
+		unknownKeyPolicy === 'error'
 			? runShape.strict()
-			: unknownKeys === 'strip'
+			: unknownKeyPolicy === 'strip'
 				? runShape
 				: runShape.loose()
 	).transform(
@@ -140,9 +140,9 @@ export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	)
 
 	const reportTransformed = (
-		unknownKeys === 'error'
+		unknownKeyPolicy === 'error'
 			? reportShape.strict()
-			: unknownKeys === 'strip'
+			: unknownKeyPolicy === 'strip'
 				? reportShape
 				: reportShape.loose()
 	).transform(
@@ -174,9 +174,9 @@ export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	)
 
 	const htmlTransformed = (
-		unknownKeys === 'error'
+		unknownKeyPolicy === 'error'
 			? htmlShape.strict()
-			: unknownKeys === 'strip'
+			: unknownKeyPolicy === 'strip'
 				? htmlShape
 				: htmlShape.loose()
 	).transform(
@@ -196,9 +196,9 @@ export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	)
 
 	const xmlTransformed = (
-		unknownKeys === 'error'
+		unknownKeyPolicy === 'error'
 			? xmlShape.strict()
-			: unknownKeys === 'strip'
+			: unknownKeyPolicy === 'strip'
 				? xmlShape
 				: xmlShape.loose()
 	).transform(({ package_depth: packageDepth, ...rest }) => ({
@@ -207,9 +207,9 @@ export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	}))
 
 	const jsonTransformed = (
-		unknownKeys === 'error'
+		unknownKeyPolicy === 'error'
 			? jsonShape.strict()
-			: unknownKeys === 'strip'
+			: unknownKeyPolicy === 'strip'
 				? jsonShape
 				: jsonShape.loose()
 	).transform(({ pretty_print: prettyPrint, show_contexts: showContexts, ...rest }) => ({
@@ -219,9 +219,9 @@ export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	}))
 
 	const lcovTransformed = (
-		unknownKeys === 'error'
+		unknownKeyPolicy === 'error'
 			? lcovShape.strict()
-			: unknownKeys === 'strip'
+			: unknownKeyPolicy === 'strip'
 				? lcovShape
 				: lcovShape.loose()
 	).transform(({ line_checksums: lineChecksums, ...rest }) => ({
@@ -240,6 +240,6 @@ export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	})
 
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object
 }

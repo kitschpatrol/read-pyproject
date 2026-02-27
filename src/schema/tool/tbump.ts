@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.tbump] table.
  * @see [tbump configuration reference](https://github.com/your-tools/tbump)
  */
-export function createTbumpSchema(unknownKeys: UnknownKeys) {
+export function createTbumpSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const fileSchema = z.object({}).loose()
 
 	const versionSchema = z
@@ -51,7 +51,7 @@ export function createTbumpSchema(unknownKeys: UnknownKeys) {
 		version: versionSchema.optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(({ before_commit: beforeCommit, github_url: githubUrl, ...rest }) => ({
 		...rest,
 		beforeCommit,

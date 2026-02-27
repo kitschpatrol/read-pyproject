@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 const fragmentTypeSchema = z.object({
 	check: z.boolean().optional(),
@@ -12,7 +12,7 @@ const fragmentTypeSchema = z.object({
  * Create a Zod schema for the [tool.towncrier] table.
  * @see [Towncrier configuration reference](https://towncrier.readthedocs.io/en/stable/configuration.html)
  */
-export function createTowncrierSchema(unknownKeys: UnknownKeys) {
+export function createTowncrierSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		all_bullets: z.boolean().optional(),
@@ -47,7 +47,7 @@ export function createTowncrierSchema(unknownKeys: UnknownKeys) {
 	})
 
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			all_bullets: allBullets,

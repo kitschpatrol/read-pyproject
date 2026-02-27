@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.commitizen] table.
  * @see [Commitizen configuration](https://commitizen-tools.github.io/commitizen/config/configuration_file/)
  */
-export function createCommitizenSchema(unknownKeys: UnknownKeys) {
+export function createCommitizenSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		allowed_prefixes: z.array(z.string()).optional(),
@@ -50,7 +50,7 @@ export function createCommitizenSchema(unknownKeys: UnknownKeys) {
 	})
 
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			allowed_prefixes: allowedPrefixes,

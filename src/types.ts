@@ -9,7 +9,7 @@ import type { createPyprojectSchema } from './schema/pyproject'
  * - `'strip'` — unknown keys are silently removed
  * - `'error'` — unknown keys cause a validation error
  */
-export type UnknownKeys = 'error' | 'passthrough' | 'strip'
+export type UnknownKeyPolicy = 'error' | 'passthrough' | 'strip'
 
 type SchemaReturn<T extends (...args: never[]) => unknown> = ReturnType<T>
 

@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { UnknownKeys } from '../../types'
+import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.flit] table.
  * @see [Flit configuration reference](https://flit.pypa.io/en/stable/pyproject_toml.html)
  */
-export function createFlitSchema(unknownKeys: UnknownKeys) {
+export function createFlitSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const moduleSchema = z
 		.object({
 			name: z.string().optional(),
@@ -24,6 +24,6 @@ export function createFlitSchema(unknownKeys: UnknownKeys) {
 		sdist: sdistSchema.optional(),
 	})
 	const object =
-		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
 	return object
 }
