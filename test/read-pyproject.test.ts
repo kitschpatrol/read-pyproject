@@ -20,6 +20,7 @@ import {
 	createDistutilsSchema,
 	createDocformatterSchema,
 	createFlake8Schema,
+	createFlitSchema,
 	createIsortSchema,
 	createJupyterReleaserSchema,
 	createMypySchema,
@@ -633,6 +634,20 @@ describe('tool schemas', () => {
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
 		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
+	})
+
+	it('parses flit config', () => {
+		const schema = createFlitSchema('passthrough')
+		const result = schema.parse({
+			module: { name: 'mypackage' },
+			sdist: {
+				exclude: [],
+				include: ['CHANGELOG.md', 'README.md', '*/test*.py'],
+			},
+		})
+		expect(result.module?.name).toBe('mypackage')
+		expect(result.sdist?.include).toEqual(['CHANGELOG.md', 'README.md', '*/test*.py'])
+		expect(result.sdist?.exclude).toEqual([])
 	})
 
 	it('parses autopep8 config', () => {
