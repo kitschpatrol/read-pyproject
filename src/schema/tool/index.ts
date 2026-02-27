@@ -1,5 +1,6 @@
 export { createBlackSchema } from './black'
 export { createCodespellSchema } from './codespell'
+export { createCommitizenSchema } from './commitizen'
 export { createCoverageSchema } from './coverage'
 export { createDocformatterSchema } from './docformatter'
 export { createFlake8Schema } from './flake8'

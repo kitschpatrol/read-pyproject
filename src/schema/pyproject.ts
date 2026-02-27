@@ -4,6 +4,7 @@ import { createProjectSchema } from './project'
 import {
 	createBlackSchema,
 	createCodespellSchema,
+	createCommitizenSchema,
 	createCoverageSchema,
 	createDocformatterSchema,
 	createFlake8Schema,
@@ -45,6 +46,7 @@ export function createPyprojectSchema(strict: boolean) {
 	const toolShape = {
 		black: createBlackSchema(strict).optional(),
 		codespell: createCodespellSchema(strict).optional(),
+		commitizen: createCommitizenSchema(strict).optional(),
 		coverage: createCoverageSchema(strict).optional(),
 		docformatter: createDocformatterSchema(strict).optional(),
 		flake8: createFlake8Schema(strict).optional(),

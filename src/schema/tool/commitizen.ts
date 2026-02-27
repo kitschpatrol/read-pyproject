@@ -1,0 +1,94 @@
+import { z } from 'zod'
+
+/**
+ * Create a Zod schema for the [tool.commitizen] table.
+ */
+export function createCommitizenSchema(strict: boolean) {
+	const base = z.object({
+		// eslint-disable-next-line ts/naming-convention
+		allowed_prefixes: z.array(z.string()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		annotated_tag: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		breaking_change_exclamation_in_title: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		bump_message: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		changelog_file: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		changelog_format: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		changelog_incremental: z.boolean().optional(),
+		encoding: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		gpg_sign: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		major_version_zero: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		message_length_limit: z.number().optional(),
+		name: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		post_bump_hooks: z.array(z.string()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		pre_bump_hooks: z.array(z.string()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		prerelease_offset: z.number().optional(),
+		style: z.array(z.unknown()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		tag_format: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		update_changelog_on_bump: z.boolean().optional(),
+		version: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		version_files: z.array(z.string()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		version_provider: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		version_scheme: z.string().optional(),
+	})
+
+	const object = strict ? base.strict() : base.loose()
+	return object.transform(
+		({
+			allowed_prefixes: allowedPrefixes,
+			annotated_tag: annotatedTag,
+			breaking_change_exclamation_in_title: breakingChangeExclamationInTitle,
+			bump_message: bumpMessage,
+			changelog_file: changelogFile,
+			changelog_format: changelogFormat,
+			changelog_incremental: changelogIncremental,
+			gpg_sign: gpgSign,
+			major_version_zero: majorVersionZero,
+			message_length_limit: messageLengthLimit,
+			post_bump_hooks: postBumpHooks,
+			pre_bump_hooks: preBumpHooks,
+			prerelease_offset: prereleaseOffset,
+			tag_format: tagFormat,
+			update_changelog_on_bump: updateChangelogOnBump,
+			version_files: versionFiles,
+			version_provider: versionProvider,
+			version_scheme: versionScheme,
+			...rest
+		}) => ({
+			...rest,
+			allowedPrefixes,
+			annotatedTag,
+			breakingChangeExclamationInTitle,
+			bumpMessage,
+			changelogFile,
+			changelogFormat,
+			changelogIncremental,
+			gpgSign,
+			majorVersionZero,
+			messageLengthLimit,
+			postBumpHooks,
+			preBumpHooks,
+			prereleaseOffset,
+			tagFormat,
+			updateChangelogOnBump,
+			versionFiles,
+			versionProvider,
+			versionScheme,
+		}),
+	)
+}

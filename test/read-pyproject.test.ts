@@ -10,6 +10,7 @@ import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
 	createBlackSchema,
 	createCodespellSchema,
+	createCommitizenSchema,
 	createCoverageSchema,
 	createDocformatterSchema,
 	createFlake8Schema,
@@ -557,6 +558,34 @@ describe('tool schemas', () => {
 		expect(result.preSummaryNewline).toBe(true)
 		expect(result.closeQuotesOnNewline).toBe(true)
 		expect(result.inPlace).toBe(true)
+	})
+
+	it('parses commitizen config', () => {
+		const schema = createCommitizenSchema(false)
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			major_version_zero: false,
+			name: 'cz_conventional_commits',
+			// eslint-disable-next-line ts/naming-convention
+			tag_format: 'v$version',
+			// eslint-disable-next-line ts/naming-convention
+			update_changelog_on_bump: true,
+			version: '1.0.0',
+			// eslint-disable-next-line ts/naming-convention
+			version_files: ['pyproject.toml:version', 'src/pkg/version.py'],
+			// eslint-disable-next-line ts/naming-convention
+			version_provider: 'poetry',
+			// eslint-disable-next-line ts/naming-convention
+			version_scheme: 'pep440',
+		})
+		expect(result.name).toBe('cz_conventional_commits')
+		expect(result.version).toBe('1.0.0')
+		expect(result.tagFormat).toBe('v$version')
+		expect(result.versionScheme).toBe('pep440')
+		expect(result.versionProvider).toBe('poetry')
+		expect(result.versionFiles).toEqual(['pyproject.toml:version', 'src/pkg/version.py'])
+		expect(result.updateChangelogOnBump).toBe(true)
+		expect(result.majorVersionZero).toBe(false)
 	})
 })
 
