@@ -13,6 +13,22 @@ import {
 	createUvSchema,
 } from './tool'
 
+const dependencyGroupIncludeSchema = z
+	.object({
+		'include-group': z.string(),
+	})
+	.loose()
+	.transform(({ 'include-group': includeGroup }) => ({
+		includeGroup,
+	}))
+
+const dependencyGroupItemSchema = z.union([z.string(), dependencyGroupIncludeSchema])
+
+const dependencyGroupsSchema = z.record(
+	z.string(),
+	z.union([z.array(dependencyGroupItemSchema), z.unknown()]),
+)
+
 /**
  * Create the top-level pyproject.toml Zod schema.
  */
@@ -34,13 +50,17 @@ export function createPyprojectSchema(strict: boolean) {
 
 	const shape = {
 		'build-system': createBuildSystemSchema(strict).optional(),
+		'dependency-groups': dependencyGroupsSchema.optional(),
 		project: createProjectSchema(strict).optional(),
 		tool: tool.optional(),
 	}
 	const base = z.object(shape)
 	const object = strict ? base.strict() : base.loose()
-	return object.transform(({ 'build-system': buildSystem, ...rest }) => ({
-		...rest,
-		buildSystem,
-	}))
+	return object.transform(
+		({ 'build-system': buildSystem, 'dependency-groups': dependencyGroups, ...rest }) => ({
+			...rest,
+			buildSystem,
+			dependencyGroups,
+		}),
+	)
 }

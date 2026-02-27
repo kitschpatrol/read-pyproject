@@ -192,6 +192,50 @@ describe('camelCase key conversion', () => {
 })
 
 // ---------------------------------------------------------------------------
+// PEP 735 dependency-groups
+// ---------------------------------------------------------------------------
+
+describe('PEP 735 dependency-groups', () => {
+	it('parses string-only dependency groups', () => {
+		const schema = createPyprojectSchema(false)
+		const result = schema.parse({
+			'dependency-groups': {
+				dev: ['pytest>=7', 'coverage'],
+				docs: ['sphinx'],
+			},
+		})
+		expect(result.dependencyGroups).toEqual({
+			dev: ['pytest>=7', 'coverage'],
+			docs: ['sphinx'],
+		})
+	})
+
+	it('parses include-group references and camelCases the key', () => {
+		const schema = createPyprojectSchema(false)
+		const result = schema.parse({
+			'dependency-groups': {
+				test: ['pytest>7'],
+				'typing-test': [{ 'include-group': 'typing' }, { 'include-group': 'test' }, 'useful-types'],
+			},
+		})
+		expect(result.dependencyGroups?.['typing-test']).toEqual([
+			{ includeGroup: 'typing' },
+			{ includeGroup: 'test' },
+			'useful-types',
+		])
+	})
+
+	it('camelCases the top-level dependency-groups key', () => {
+		const schema = createPyprojectSchema(false)
+		const result = schema.parse({
+			'dependency-groups': { dev: ['ruff'] },
+		})
+		expect(result.dependencyGroups).toBeDefined()
+		expect('dependency-groups' in result).toBe(false)
+	})
+})
+
+// ---------------------------------------------------------------------------
 // Tool schemas
 // ---------------------------------------------------------------------------
 
