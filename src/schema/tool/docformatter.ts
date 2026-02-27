@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 /** String or array of strings. */
 const multiString = z.union([z.string(), z.array(z.string())])
@@ -7,7 +8,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
  * Create a Zod schema for the [tool.docformatter] table.
  * @see [Docformatter configuration](https://docformatter.readthedocs.io/en/latest/configuration.html)
  */
-export function createDocformatterSchema(strict: boolean) {
+export function createDocformatterSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		black: z.boolean().optional(),
 		blank: z.boolean().optional(),
@@ -23,7 +24,8 @@ export function createDocformatterSchema(strict: boolean) {
 		'wrap-summaries': z.number().optional(),
 	})
 
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'close-quotes-on-newline': closeQuotesOnNewline,

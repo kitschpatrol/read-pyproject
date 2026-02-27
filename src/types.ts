@@ -3,6 +3,14 @@ import type { createBuildSystemSchema } from './schema/build-system'
 import type { createProjectSchema } from './schema/project'
 import type { createPyprojectSchema } from './schema/pyproject'
 
+/**
+ * Controls how unknown keys are handled during schema validation.
+ * - `'passthrough'` — unknown keys are kept as-is (default)
+ * - `'strip'` — unknown keys are silently removed
+ * - `'error'` — unknown keys cause a validation error
+ */
+export type UnknownKeys = 'error' | 'passthrough' | 'strip'
+
 type SchemaReturn<T extends (...args: never[]) => unknown> = ReturnType<T>
 
 export type PyprojectData = z.output<SchemaReturn<typeof createPyprojectSchema>>

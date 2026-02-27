@@ -1,14 +1,15 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.yapf] table.
  *
  * YAPF has 100+ style knobs. This schema covers the most common options
  * seen in real-world pyproject.toml files. Unknown keys pass through in
- * non-strict mode.
+ * passthrough mode.
  * @see [YAPF knobs reference](https://github.com/google/yapf#knobs)
  */
-export function createYapfSchema(strict: boolean) {
+export function createYapfSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		allow_split_before_dict_value: z.boolean().optional(),
@@ -39,7 +40,8 @@ export function createYapfSchema(strict: boolean) {
 	})
 
 	// Always loose — YAPF has 100+ style knobs
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			allow_split_before_dict_value: allowSplitBeforeDictValue,

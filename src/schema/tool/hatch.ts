@@ -1,10 +1,11 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.hatch] table.
  * @see [Hatch configuration reference](https://hatch.pypa.io/latest/config/metadata/)
  */
-export function createHatchSchema(strict: boolean) {
+export function createHatchSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		build: z
 			.object({ targets: z.object({}).loose().optional() })
@@ -17,6 +18,7 @@ export function createHatchSchema(strict: boolean) {
 			.loose()
 			.optional(),
 	})
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object
 }

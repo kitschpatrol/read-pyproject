@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { parse } from 'smol-toml'
-import type { PyprojectData } from './types'
+import type { PyprojectData, UnknownKeys } from './types'
 import { PyprojectError } from './error'
 import { log } from './log'
 import { createPyprojectSchema } from './schema/pyproject'
@@ -9,8 +9,13 @@ import { createPyprojectSchema } from './schema/pyproject'
 export type ReadPyprojectOptions = {
 	/** Working directory to resolve pyproject.toml from. Defaults to `process.cwd()`. */
 	cwd?: string
-	/** Reject unknown keys in known sections. Defaults to `false`. */
-	strict?: boolean
+	/**
+	 * Controls how unknown keys are handled during schema validation.
+	 * - `'passthrough'` — unknown keys are kept as-is (default)
+	 * - `'strip'` — unknown keys are silently removed
+	 * - `'error'` — unknown keys cause a validation error
+	 */
+	unknownKeys?: UnknownKeys
 }
 
 export async function readPyproject(path: string): Promise<PyprojectData>
@@ -21,7 +26,7 @@ export async function readPyproject(options?: ReadPyprojectOptions): Promise<Pyp
 export async function readPyproject(
 	pathOrOptions?: ReadPyprojectOptions | string,
 ): Promise<PyprojectData> {
-	const { filePath, strict } = resolveArgs(pathOrOptions)
+	const { filePath, unknownKeys } = resolveArgs(pathOrOptions)
 
 	log.info(`Reading pyproject.toml from ${filePath}`)
 
@@ -46,7 +51,7 @@ export async function readPyproject(
 		})
 	}
 
-	const schema = createPyprojectSchema(strict)
+	const schema = createPyprojectSchema(unknownKeys)
 	const result = schema.safeParse(parsed)
 
 	if (!result.success) {
@@ -64,12 +69,12 @@ export async function readPyproject(
 
 function resolveArgs(pathOrOptions?: ReadPyprojectOptions | string): {
 	filePath: string
-	strict: boolean
+	unknownKeys: UnknownKeys
 } {
 	if (typeof pathOrOptions === 'string') {
 		return {
 			filePath: resolveFilePath(pathOrOptions),
-			strict: false,
+			unknownKeys: 'passthrough',
 		}
 	}
 
@@ -77,7 +82,7 @@ function resolveArgs(pathOrOptions?: ReadPyprojectOptions | string): {
 	const cwd = options.cwd ?? process.cwd()
 	return {
 		filePath: path.resolve(cwd, 'pyproject.toml'),
-		strict: options.strict ?? false,
+		unknownKeys: options.unknownKeys ?? 'passthrough',
 	}
 }
 

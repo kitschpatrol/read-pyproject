@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 /** String or array of strings, common in coverage.py config. */
 const multiString = z.union([z.string(), z.array(z.string())])
@@ -7,7 +8,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
  * Create a Zod schema for the [tool.coverage] table.
  * @see [Coverage.py configuration reference](https://coverage.readthedocs.io/en/latest/config.html)
  */
-export function createCoverageSchema(strict: boolean) {
+export function createCoverageSchema(unknownKeys: UnknownKeys) {
 	const runShape = z.object({
 		branch: z.boolean().optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -106,7 +107,13 @@ export function createCoverageSchema(strict: boolean) {
 	// [tool.coverage.paths] uses user-defined keys with list-of-string values
 	const pathsSchema = z.record(z.string(), z.array(z.string()))
 
-	const runTransformed = (strict ? runShape.strict() : runShape.loose()).transform(
+	const runTransformed = (
+		unknownKeys === 'error'
+			? runShape.strict()
+			: unknownKeys === 'strip'
+				? runShape
+				: runShape.loose()
+	).transform(
 		({
 			command_line: commandLine,
 			cover_pylib: coverPylib,
@@ -132,7 +139,13 @@ export function createCoverageSchema(strict: boolean) {
 		}),
 	)
 
-	const reportTransformed = (strict ? reportShape.strict() : reportShape.loose()).transform(
+	const reportTransformed = (
+		unknownKeys === 'error'
+			? reportShape.strict()
+			: unknownKeys === 'strip'
+				? reportShape
+				: reportShape.loose()
+	).transform(
 		({
 			exclude_also: excludeAlso,
 			exclude_lines: excludeLines,
@@ -160,7 +173,13 @@ export function createCoverageSchema(strict: boolean) {
 		}),
 	)
 
-	const htmlTransformed = (strict ? htmlShape.strict() : htmlShape.loose()).transform(
+	const htmlTransformed = (
+		unknownKeys === 'error'
+			? htmlShape.strict()
+			: unknownKeys === 'strip'
+				? htmlShape
+				: htmlShape.loose()
+	).transform(
 		({
 			extra_css: extraCss,
 			show_contexts: showContexts,
@@ -176,27 +195,39 @@ export function createCoverageSchema(strict: boolean) {
 		}),
 	)
 
-	const xmlTransformed = (strict ? xmlShape.strict() : xmlShape.loose()).transform(
-		({ package_depth: packageDepth, ...rest }) => ({
-			...rest,
-			packageDepth,
-		}),
-	)
+	const xmlTransformed = (
+		unknownKeys === 'error'
+			? xmlShape.strict()
+			: unknownKeys === 'strip'
+				? xmlShape
+				: xmlShape.loose()
+	).transform(({ package_depth: packageDepth, ...rest }) => ({
+		...rest,
+		packageDepth,
+	}))
 
-	const jsonTransformed = (strict ? jsonShape.strict() : jsonShape.loose()).transform(
-		({ pretty_print: prettyPrint, show_contexts: showContexts, ...rest }) => ({
-			...rest,
-			prettyPrint,
-			showContexts,
-		}),
-	)
+	const jsonTransformed = (
+		unknownKeys === 'error'
+			? jsonShape.strict()
+			: unknownKeys === 'strip'
+				? jsonShape
+				: jsonShape.loose()
+	).transform(({ pretty_print: prettyPrint, show_contexts: showContexts, ...rest }) => ({
+		...rest,
+		prettyPrint,
+		showContexts,
+	}))
 
-	const lcovTransformed = (strict ? lcovShape.strict() : lcovShape.loose()).transform(
-		({ line_checksums: lineChecksums, ...rest }) => ({
-			...rest,
-			lineChecksums,
-		}),
-	)
+	const lcovTransformed = (
+		unknownKeys === 'error'
+			? lcovShape.strict()
+			: unknownKeys === 'strip'
+				? lcovShape
+				: lcovShape.loose()
+	).transform(({ line_checksums: lineChecksums, ...rest }) => ({
+		...rest,
+		lineChecksums,
+	}))
 
 	const base = z.object({
 		html: htmlTransformed.optional(),
@@ -208,6 +239,7 @@ export function createCoverageSchema(strict: boolean) {
 		xml: xmlTransformed.optional(),
 	})
 
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object
 }

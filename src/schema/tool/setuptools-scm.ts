@@ -1,10 +1,11 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.setuptools_scm] table.
  * @see [Setuptools-scm configuration reference](https://setuptools-scm.readthedocs.io/en/latest/config/)
  */
-export function createSetuptoolsScmSchema(strict: boolean) {
+export function createSetuptoolsScmSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		dist_name: z.string().optional(),
@@ -38,7 +39,8 @@ export function createSetuptoolsScmSchema(strict: boolean) {
 		write_to_template: z.string().optional(),
 	})
 
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			dist_name: distributionName,

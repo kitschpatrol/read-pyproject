@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 // Isort stores booleans as actual booleans or legacy string "True"/"False"
 const looseBoolean = z.union([z.boolean(), z.string()])
@@ -7,7 +8,7 @@ const looseBoolean = z.union([z.boolean(), z.string()])
  * Create a Zod schema for the [tool.isort] table.
  * @see [isort configuration reference](https://pycqa.github.io/isort/docs/configuration/options.html)
  */
-export function createIsortSchema(strict: boolean) {
+export function createIsortSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		combine_as_imports: looseBoolean.optional(),
@@ -46,7 +47,8 @@ export function createIsortSchema(strict: boolean) {
 		// eslint-disable-next-line ts/naming-convention
 		use_parentheses: looseBoolean.optional(),
 	})
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			combine_as_imports: combineAsImports,

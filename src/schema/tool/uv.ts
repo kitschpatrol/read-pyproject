@@ -1,10 +1,11 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.uv] table.
  * @see [uv configuration reference](https://docs.astral.sh/uv/reference/settings/)
  */
-export function createUvSchema(strict: boolean) {
+export function createUvSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		'constraint-dependencies': z.array(z.string()).optional(),
 		'dev-dependencies': z.array(z.string()).optional(),
@@ -18,7 +19,8 @@ export function createUvSchema(strict: boolean) {
 		'override-dependencies': z.array(z.string()).optional(),
 		sources: z.record(z.string(), z.unknown()).optional(),
 	})
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'constraint-dependencies': constraintDependencies,

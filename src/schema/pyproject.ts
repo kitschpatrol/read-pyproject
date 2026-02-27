@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../types'
 import { createBuildSystemSchema } from './build-system'
 import { createProjectSchema } from './project'
 import {
@@ -43,48 +44,53 @@ const dependencyGroupsSchema = z.record(
 /**
  * Create the top-level pyproject.toml Zod schema.
  */
-export function createPyprojectSchema(strict: boolean) {
+export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 	const toolShape = {
-		black: createBlackSchema(strict).optional(),
-		bumpversion: createBumpversionSchema(strict).optional(),
-		codespell: createCodespellSchema(strict).optional(),
-		commitizen: createCommitizenSchema(strict).optional(),
-		coverage: createCoverageSchema(strict).optional(),
-		docformatter: createDocformatterSchema(strict).optional(),
-		flake8: createFlake8Schema(strict).optional(),
-		hatch: createHatchSchema(strict).optional(),
-		isort: createIsortSchema(strict).optional(),
-		mypy: createMypySchema(strict).optional(),
-		pdm: createPdmSchema(strict).optional(),
-		poetry: createPoetrySchema(strict).optional(),
-		pyright: createPyrightSchema(strict).optional(),
-		pytest: createPytestSchema(strict).optional(),
-		ruff: createRuffSchema(strict).optional(),
-		setuptools: createSetuptoolsSchema(strict).optional(),
+		black: createBlackSchema(unknownKeys).optional(),
+		bumpversion: createBumpversionSchema(unknownKeys).optional(),
+		codespell: createCodespellSchema(unknownKeys).optional(),
+		commitizen: createCommitizenSchema(unknownKeys).optional(),
+		coverage: createCoverageSchema(unknownKeys).optional(),
+		docformatter: createDocformatterSchema(unknownKeys).optional(),
+		flake8: createFlake8Schema(unknownKeys).optional(),
+		hatch: createHatchSchema(unknownKeys).optional(),
+		isort: createIsortSchema(unknownKeys).optional(),
+		mypy: createMypySchema(unknownKeys).optional(),
+		pdm: createPdmSchema(unknownKeys).optional(),
+		poetry: createPoetrySchema(unknownKeys).optional(),
+		pyright: createPyrightSchema(unknownKeys).optional(),
+		pytest: createPytestSchema(unknownKeys).optional(),
+		ruff: createRuffSchema(unknownKeys).optional(),
+		setuptools: createSetuptoolsSchema(unknownKeys).optional(),
 		// eslint-disable-next-line ts/naming-convention
-		setuptools_scm: createSetuptoolsScmSchema(strict).optional(),
-		towncrier: createTowncrierSchema(strict).optional(),
-		uv: createUvSchema(strict).optional(),
-		yapf: createYapfSchema(strict).optional(),
+		setuptools_scm: createSetuptoolsScmSchema(unknownKeys).optional(),
+		towncrier: createTowncrierSchema(unknownKeys).optional(),
+		uv: createUvSchema(unknownKeys).optional(),
+		yapf: createYapfSchema(unknownKeys).optional(),
 	}
 
-	// Tool table is always loose so unknown tools pass through
-	const tool = z
-		.object(toolShape)
-		.loose()
-		.transform(({ setuptools_scm: setuptoolsScm, ...rest }) => ({
-			...rest,
-			setuptoolsScm,
-		}))
+	// Tool table respects unknownKeys so unknown tools are handled accordingly
+	const toolBase = z.object(toolShape)
+	const tool = (
+		unknownKeys === 'error'
+			? toolBase.strict()
+			: unknownKeys === 'strip'
+				? toolBase
+				: toolBase.loose()
+	).transform(({ setuptools_scm: setuptoolsScm, ...rest }) => ({
+		...rest,
+		setuptoolsScm,
+	}))
 
 	const shape = {
-		'build-system': createBuildSystemSchema(strict).optional(),
+		'build-system': createBuildSystemSchema(unknownKeys).optional(),
 		'dependency-groups': dependencyGroupsSchema.optional(),
-		project: createProjectSchema(strict).optional(),
+		project: createProjectSchema(unknownKeys).optional(),
 		tool: tool.optional(),
 	}
 	const base = z.object(shape)
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({ 'build-system': buildSystem, 'dependency-groups': dependencyGroups, ...rest }) => ({
 			...rest,

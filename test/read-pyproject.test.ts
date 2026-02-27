@@ -86,7 +86,7 @@ describe('PEP 503 name normalization', () => {
 	})
 
 	it('preserves rawName on project', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ name: 'My.Package_Name' })
 		expect(result.name).toBe('my-package-name')
 		expect(result.rawName).toBe('My.Package_Name')
@@ -99,19 +99,19 @@ describe('PEP 503 name normalization', () => {
 
 describe('readme normalization', () => {
 	it('normalizes string "README.md" to object with contentType', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ name: 'test', readme: 'README.md' })
 		expect(result.readme).toEqual({ contentType: 'text/markdown', file: 'README.md' })
 	})
 
 	it('normalizes string "README.rst" to object with contentType', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ name: 'test', readme: 'README.rst' })
 		expect(result.readme).toEqual({ contentType: 'text/x-rst', file: 'README.rst' })
 	})
 
 	it('normalizes table with file and content-type', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({
 			name: 'test',
 			readme: { 'content-type': 'text/markdown', file: 'README.md' },
@@ -120,7 +120,7 @@ describe('readme normalization', () => {
 	})
 
 	it('normalizes table with text and content-type', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({
 			name: 'test',
 			readme: { 'content-type': 'text/plain', text: 'Hello world' },
@@ -135,19 +135,19 @@ describe('readme normalization', () => {
 
 describe('license normalization', () => {
 	it('normalizes SPDX string "MIT" to {spdx: "MIT"}', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ license: 'MIT', name: 'test' })
 		expect(result.license).toEqual({ spdx: 'MIT' })
 	})
 
 	it('normalizes table {file: "LICENSE"} as-is', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ license: { file: 'LICENSE' }, name: 'test' })
 		expect(result.license).toEqual({ file: 'LICENSE' })
 	})
 
 	it('normalizes table {text: "..."} as-is', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ license: { text: 'MIT License...' }, name: 'test' })
 		expect(result.license).toEqual({ text: 'MIT License...' })
 	})
@@ -167,7 +167,7 @@ describe('license normalization', () => {
 
 describe('camelCase key conversion', () => {
 	it('converts build-system keys', () => {
-		const schema = createBuildSystemSchema(false)
+		const schema = createBuildSystemSchema('passthrough')
 		const result = schema.parse({
 			'backend-path': ['src'],
 			'build-backend': 'setuptools.build_meta',
@@ -178,7 +178,7 @@ describe('camelCase key conversion', () => {
 	})
 
 	it('converts project kebab-case keys', () => {
-		const schema = createProjectSchema(false)
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({
 			'entry-points': { group: { name: 'module:func' } },
 			'gui-scripts': { app: 'app:main' },
@@ -193,7 +193,7 @@ describe('camelCase key conversion', () => {
 	})
 
 	it('converts top-level build-system key', () => {
-		const schema = createPyprojectSchema(false)
+		const schema = createPyprojectSchema('passthrough')
 		const result = schema.parse({
 			'build-system': { 'build-backend': 'setuptools.build_meta', requires: ['setuptools'] },
 		})
@@ -208,7 +208,7 @@ describe('camelCase key conversion', () => {
 
 describe('PEP 735 dependency-groups', () => {
 	it('parses string-only dependency groups', () => {
-		const schema = createPyprojectSchema(false)
+		const schema = createPyprojectSchema('passthrough')
 		const result = schema.parse({
 			'dependency-groups': {
 				dev: ['pytest>=7', 'coverage'],
@@ -222,7 +222,7 @@ describe('PEP 735 dependency-groups', () => {
 	})
 
 	it('parses include-group references and camelCases the key', () => {
-		const schema = createPyprojectSchema(false)
+		const schema = createPyprojectSchema('passthrough')
 		const result = schema.parse({
 			'dependency-groups': {
 				test: ['pytest>7'],
@@ -237,7 +237,7 @@ describe('PEP 735 dependency-groups', () => {
 	})
 
 	it('camelCases the top-level dependency-groups key', () => {
-		const schema = createPyprojectSchema(false)
+		const schema = createPyprojectSchema('passthrough')
 		const result = schema.parse({
 			'dependency-groups': { dev: ['ruff'] },
 		})
@@ -252,7 +252,7 @@ describe('PEP 735 dependency-groups', () => {
 
 describe('tool schemas', () => {
 	it('parses poetry config', () => {
-		const schema = createPoetrySchema(false)
+		const schema = createPoetrySchema('passthrough')
 		const result = schema.parse({
 			authors: ['Author <author@example.com>'],
 			description: 'A project',
@@ -265,7 +265,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses ruff config', () => {
-		const schema = createRuffSchema(false)
+		const schema = createRuffSchema('passthrough')
 		const result = schema.parse({
 			format: { 'docstring-code-format': true, 'quote-style': 'double' },
 			'line-length': 100,
@@ -279,7 +279,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses mypy config', () => {
-		const schema = createMypySchema(false)
+		const schema = createMypySchema('passthrough')
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			ignore_missing_imports: true,
@@ -293,7 +293,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses pytest config', () => {
-		const schema = createPytestSchema(false)
+		const schema = createPytestSchema('passthrough')
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			ini_options: {
@@ -308,7 +308,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses black config', () => {
-		const schema = createBlackSchema(false)
+		const schema = createBlackSchema('passthrough')
 		const result = schema.parse({
 			'line-length': 88,
 			preview: true,
@@ -319,7 +319,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses uv config', () => {
-		const schema = createUvSchema(false)
+		const schema = createUvSchema('passthrough')
 		const result = schema.parse({
 			'dev-dependencies': ['pytest>=7.0'],
 			'index-url': 'https://pypi.org/simple',
@@ -331,7 +331,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses isort config', () => {
-		const schema = createIsortSchema(false)
+		const schema = createIsortSchema('passthrough')
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			force_single_line: true,
@@ -355,7 +355,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses coverage config', () => {
-		const schema = createCoverageSchema(false)
+		const schema = createCoverageSchema('passthrough')
 		const result = schema.parse({
 			html: { directory: 'htmlcov' },
 			paths: {
@@ -400,7 +400,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses pyright config', () => {
-		const schema = createPyrightSchema(false)
+		const schema = createPyrightSchema('passthrough')
 		const result = schema.parse({
 			exclude: ['**/__pycache__'],
 			extraPaths: ['src'],
@@ -430,7 +430,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses setuptools_scm config', () => {
-		const schema = createSetuptoolsScmSchema(false)
+		const schema = createSetuptoolsScmSchema('passthrough')
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			fallback_version: '0.0.0',
@@ -453,7 +453,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses codespell config', () => {
-		const schema = createCodespellSchema(false)
+		const schema = createCodespellSchema('passthrough')
 		const result = schema.parse({
 			'check-filenames': true,
 			'ignore-words-list': 'crate,nd,ned',
@@ -467,7 +467,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses yapf config', () => {
-		const schema = createYapfSchema(false)
+		const schema = createYapfSchema('passthrough')
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			based_on_style: 'pep8',
@@ -491,7 +491,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses flake8 config', () => {
-		const schema = createFlake8Schema(false)
+		const schema = createFlake8Schema('passthrough')
 		const result = schema.parse({
 			exclude: ['.git', 'venv', 'build', 'dist'],
 			'extend-ignore': ['E203', 'E501', 'W503'],
@@ -511,7 +511,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses towncrier config', () => {
-		const schema = createTowncrierSchema(false)
+		const schema = createTowncrierSchema('passthrough')
 		const result = schema.parse({
 			directory: 'changelog.d',
 			filename: 'CHANGELOG.md',
@@ -546,7 +546,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses docformatter config', () => {
-		const schema = createDocformatterSchema(false)
+		const schema = createDocformatterSchema('passthrough')
 		const result = schema.parse({
 			'close-quotes-on-newline': true,
 			'in-place': true,
@@ -562,7 +562,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses bumpversion config', () => {
-		const schema = createBumpversionSchema(false)
+		const schema = createBumpversionSchema('passthrough')
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			allow_dirty: false,
@@ -597,7 +597,7 @@ describe('tool schemas', () => {
 	})
 
 	it('parses commitizen config', () => {
-		const schema = createCommitizenSchema(false)
+		const schema = createCommitizenSchema('passthrough')
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			major_version_zero: false,
@@ -629,16 +629,49 @@ describe('tool schemas', () => {
 // Error cases
 // ---------------------------------------------------------------------------
 
-describe('error cases', () => {
-	it('strict mode rejects unknown keys in project', () => {
-		const schema = createProjectSchema(true)
+describe('unknownKeys modes', () => {
+	it('error mode rejects unknown keys in project', () => {
+		const schema = createProjectSchema('error')
 		expect(() => schema.parse({ name: 'test', 'unknown-key': 'value' })).toThrow()
 	})
 
-	it('non-strict mode allows unknown keys in project', () => {
-		const schema = createProjectSchema(false)
+	it('passthrough mode keeps unknown keys in project', () => {
+		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ name: 'test', 'unknown-key': 'value' })
 		expect(result.name).toBe('test')
+		expect((result as Record<string, unknown>)['unknown-key']).toBe('value')
+	})
+
+	it('strip mode silently removes unknown keys in project', () => {
+		const schema = createProjectSchema('strip')
+		const result = schema.parse({ name: 'test', 'unknown-key': 'value' })
+		expect(result.name).toBe('test')
+		expect('unknown-key' in result).toBe(false)
+	})
+
+	it('error mode rejects unknown tools in tool table', () => {
+		const schema = createPyprojectSchema('error')
+		expect(() =>
+			schema.parse({
+				tool: {
+					// eslint-disable-next-line ts/naming-convention
+					some_unknown_tool: { key: 'value' },
+				},
+			}),
+		).toThrow()
+	})
+
+	it('strip mode removes unknown tools from tool table', () => {
+		const schema = createPyprojectSchema('strip')
+		const result = schema.parse({
+			tool: {
+				// eslint-disable-next-line ts/naming-convention
+				some_unknown_tool: { key: 'value' },
+			},
+		})
+		// eslint-disable-next-line ts/no-unsafe-type-assertion
+		const tool = result.tool as Record<string, unknown>
+		expect(tool.some_unknown_tool).toBeUndefined()
 	})
 })
 
@@ -648,7 +681,7 @@ describe('error cases', () => {
 
 describe('unknown tool passthrough', () => {
 	it('passes through unknown tools as-is', () => {
-		const schema = createPyprojectSchema(false)
+		const schema = createPyprojectSchema('passthrough')
 		const result = schema.parse({
 			tool: {
 				// eslint-disable-next-line ts/naming-convention

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { UnknownKeys } from '../../types'
 
 /** String or array of strings. */
 const multiString = z.union([z.string(), z.array(z.string())])
@@ -7,7 +8,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
  * Create a Zod schema for the [tool.codespell] table.
  * @see [Codespell README (configuration)](https://github.com/codespell-project/codespell#readme)
  */
-export function createCodespellSchema(strict: boolean) {
+export function createCodespellSchema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		'after-context': z.number().optional(),
 		'before-context': z.number().optional(),
@@ -31,7 +32,8 @@ export function createCodespellSchema(strict: boolean) {
 		'write-changes': z.boolean().optional(),
 	})
 
-	const object = strict ? base.strict() : base.loose()
+	const object =
+		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
 			'after-context': afterContext,
