@@ -16,6 +16,7 @@ import {
 	createSetuptoolsSchema,
 	createSetuptoolsScmSchema,
 	createUvSchema,
+	createYapfSchema,
 } from './tool'
 
 const dependencyGroupIncludeSchema = z
@@ -54,6 +55,7 @@ export function createPyprojectSchema(strict: boolean) {
 		// eslint-disable-next-line ts/naming-convention
 		setuptools_scm: createSetuptoolsScmSchema(strict).optional(),
 		uv: createUvSchema(strict).optional(),
+		yapf: createYapfSchema(strict).optional(),
 	}
 
 	// Tool table is always loose so unknown tools pass through

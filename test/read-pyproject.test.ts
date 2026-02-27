@@ -19,6 +19,7 @@ import {
 	createRuffSchema,
 	createSetuptoolsScmSchema,
 	createUvSchema,
+	createYapfSchema,
 } from '../src/schema/tool'
 
 const fixturesDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'fixtures')
@@ -458,6 +459,30 @@ describe('tool schemas', () => {
 		expect(result.ignoreWordsList).toBe('crate,nd,ned')
 		expect(result.quietLevel).toBe(3)
 		expect(result.skip).toBe('*.pt,*.pth,.git')
+	})
+
+	it('parses yapf config', () => {
+		const schema = createYapfSchema(false)
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			based_on_style: 'pep8',
+			// eslint-disable-next-line ts/naming-convention
+			coalesce_brackets: true,
+			// eslint-disable-next-line ts/naming-convention
+			column_limit: 120,
+			// eslint-disable-next-line ts/naming-convention
+			spaces_before_comment: 2,
+			// eslint-disable-next-line ts/naming-convention
+			split_before_closing_bracket: false,
+			// eslint-disable-next-line ts/naming-convention
+			split_before_first_argument: false,
+		})
+		expect(result.basedOnStyle).toBe('pep8')
+		expect(result.columnLimit).toBe(120)
+		expect(result.coalesceBrackets).toBe(true)
+		expect(result.spacesBeforeComment).toBe(2)
+		expect(result.splitBeforeClosingBracket).toBe(false)
+		expect(result.splitBeforeFirstArgument).toBe(false)
 	})
 })
 

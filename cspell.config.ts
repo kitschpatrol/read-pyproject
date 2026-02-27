@@ -17,5 +17,6 @@ export default cspellConfig({
 		'typeshed',
 		'smol',
 		'testpaths',
+		'yapf',
 	],
 })
