@@ -4,6 +4,7 @@ import { createBuildSystemSchema } from './build-system'
 import { createProjectSchema } from './project'
 import {
 	createBlackSchema,
+	createCheckWheelContentsSchema,
 	createBumpversionSchema,
 	createCodespellSchema,
 	createCommitizenSchema,
@@ -51,6 +52,7 @@ export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 	const toolShape = {
 		black: createBlackSchema(unknownKeys).optional(),
 		bumpversion: createBumpversionSchema(unknownKeys).optional(),
+		'check-wheel-contents': createCheckWheelContentsSchema(unknownKeys).optional(),
 		codespell: createCodespellSchema(unknownKeys).optional(),
 		commitizen: createCommitizenSchema(unknownKeys).optional(),
 		coverage: createCoverageSchema(unknownKeys).optional(),
@@ -84,8 +86,14 @@ export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 				? toolBase
 				: toolBase.loose()
 	).transform(
-		({ 'jupyter-releaser': jupyterReleaser, setuptools_scm: setuptoolsScm, ...rest }) => ({
+		({
+			'check-wheel-contents': checkWheelContents,
+			'jupyter-releaser': jupyterReleaser,
+			setuptools_scm: setuptoolsScm,
+			...rest
+		}) => ({
 			...rest,
+			checkWheelContents,
 			jupyterReleaser,
 			setuptoolsScm,
 		}),

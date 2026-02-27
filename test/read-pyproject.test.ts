@@ -9,6 +9,7 @@ import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
 	createBlackSchema,
+	createCheckWheelContentsSchema,
 	createBumpversionSchema,
 	createCodespellSchema,
 	createCommitizenSchema,
@@ -627,6 +628,14 @@ describe('tool schemas', () => {
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
 		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
+	})
+
+	it('parses check-wheel-contents config', () => {
+		const schema = createCheckWheelContentsSchema('passthrough')
+		const result = schema.parse({
+			ignore: ['W002'],
+		})
+		expect(result.ignore).toEqual(['W002'])
 	})
 
 	it('parses jupyter-releaser config', () => {
