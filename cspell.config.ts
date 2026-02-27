@@ -6,6 +6,7 @@ export default cspellConfig({
 		'addopts',
 		'asyncio',
 		'bumpversion',
+		'cibuildwheel',
 		'distutils',
 		'docformatter',
 		'doctest',

@@ -11,6 +11,7 @@ import {
 	createBanditSchema,
 	createBlackSchema,
 	createCheckWheelContentsSchema,
+	createCibuildwheelSchema,
 	createBumpversionSchema,
 	createCodespellSchema,
 	createCommitizenSchema,
@@ -643,6 +644,22 @@ describe('tool schemas', () => {
 		expect(result.excludeDirs).toEqual(['tests', 'examples'])
 		expect(result.skips).toEqual(['B101', 'B601'])
 		expect(result.tests).toEqual(['B201'])
+	})
+
+	it('parses cibuildwheel config', () => {
+		const schema = createCibuildwheelSchema('passthrough')
+		const result = schema.parse({
+			build: 'cp310-*',
+			'build-frontend': 'build',
+			skip: '*-musllinux*',
+			'test-command': 'pytest {project}/tests',
+			'test-requires': 'pytest',
+		})
+		expect(result.build).toBe('cp310-*')
+		expect(result.buildFrontend).toBe('build')
+		expect(result.skip).toBe('*-musllinux*')
+		expect(result.testCommand).toBe('pytest {project}/tests')
+		expect(result.testRequires).toBe('pytest')
 	})
 
 	it('parses distutils config', () => {

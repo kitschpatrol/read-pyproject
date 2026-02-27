@@ -1,6 +1,7 @@
 export { createBanditSchema } from './bandit'
 export { createBlackSchema } from './black'
 export { createCheckWheelContentsSchema } from './check-wheel-contents'
+export { createCibuildwheelSchema } from './cibuildwheel'
 export { createBumpversionSchema } from './bumpversion'
 export { createCodespellSchema } from './codespell'
 export { createCommitizenSchema } from './commitizen'
