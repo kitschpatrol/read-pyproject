@@ -15,71 +15,130 @@
 
 <!-- short-description -->
 
-**A library project.**
+**Parse and normalize pyproject.toml metadata into strictly typed JavaScript objects.**
 
 <!-- /short-description -->
 
 ## Overview
 
-TODO Into sentence or two.
+A typed [`pyproject.toml`](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) reader for Node.js.
 
-Key characteristics:
+Highlights:
 
-- **Types**\
-  TODO
+- **Typed output**\
+  The returned object is deeply typed via Zod schema inference, giving you autocomplete and type safety for `[project]`, `[build-system]`, `[dependency-groups]`, and 30+ `[tool.*]` sections.
 
-- **Normalization**\
-  TODO, mention camelCase keys
+- **Normalized keys**\
+  TOML's mix of `kebab-case`, `snake_case`, and `PascalCase` keys are all converted to `camelCase` in the output. PEP 503 package name normalization is applied to `project.name`, with the original preserved as `rawName`.
 
 - **Flexibly strict**\
-  TODO
+  Control how unknown keys are handled with three modes: `'passthrough'` (default, keeps everything), `'strip'` (silently removes unknown keys), or `'error'` (throws on unknown keys).
 
-- **Tool coverage**\
-  TODO
+- **Broad tool coverage**\
+  Typed schemas for 30+ common `[tool.*]` sections. Unrecognized tools pass through as `unknown` by default.
+
+Note that this library currently only _reads_, it does not write changes back to the `.toml` file.
 
 ## Getting started
 
 ### Dependencies
 
-Node 20.19.0+
+[Node](https://nodejs.org/) 20.19.0+
 
 ### Installation
-
-#### Local
 
 ```sh
 npm install read-pyproject
 ```
 
-### Quick Start
+### Quick start
 
 ```ts
 import { readPyproject } from 'read-pyproject'
 
-// Get a strictly typed and normalized representation of pyproject.toml
-const parsedPyproject = await readPyproject('/path/to/project', 'passthrough')
+const pyproject = await readPyproject('/path/to/project')
 
-// Log the object
-console.log(parsedPyproject)
+console.log(pyproject.project?.name) // Normalized PEP 503 name
+console.log(pyproject) // The rest of the object...
 ```
 
 ## Usage
 
 ### API
 
-### Examples
+#### `readPyproject(pathOrDirectory?, unknownKeyPolicy?)`
+
+Read, parse, validate, and normalize a `pyproject.toml` file.
+
+##### Parameters
+
+- `pathOrDirectory` — A file path or directory. If a directory, appends `/pyproject.toml`. Defaults to `process.cwd()`.
+- `unknownKeyPolicy` — How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
+
+##### Returns
+
+`Promise<PyprojectData>`
+
+##### Throws
+
+`PyprojectError` on missing files, invalid TOML, or validation failures (in `'error'` mode).
+
+##### Examples
+
+```ts
+import { readPyproject } from 'read-pyproject'
+
+// Read from current directory
+await readPyproject()
+
+// Read from a specific file
+await readPyproject('/path/to/pyproject.toml')
+
+// Read from a directory
+await readPyproject('/path/to/project')
+
+// Reject unknown keys
+await readPyproject('/path/to/project', 'error')
+
+// Strip unknown keys from the output
+await readPyproject('/path/to/project', 'strip')
+```
+
+#### `PyprojectError`
+
+Custom error class thrown for file read errors, TOML parse errors, and validation failures. Includes a `filePath` property for context.
+
+#### `setLogger(logger?)`
+
+Inject a custom logger. Accepts a [LogLayer](https://github.com/theogravity/loglayer) instance or a `Console`-like object.
+
+### Normalization
+
+- All kebab-case and snake_case keys in the TOML are converted to camelCase in the output.
+
+- `project.name` is normalized per [PEP 503](https://peps.python.org/pep-0503/#normalized-names) (lowercased, runs of `[-_.]+` collapsed to a single `-`). The original name is available as `project.rawName`.
+
+- `project.readme` is normalized to a string when the readme is file-based (`"README.md"` stays as-is, `{ file: "README.md", content-type: "..." }` collapses to `"README.md"`). Inline-text readmes (`{ text: "...", content-type: "..." }`) are kept as a `{ text, contentType? }` object.
+
+- `project.license` is normalized from an SPDX string (`"MIT"`) to `{ spdx }`, validated and corrected via [spdx-correct](https://github.com/jslicense/spdx-correct.js). Legacy table-form licenses (`{ file }` or `{ text }`) pass through as-is.
+
+### Supported `[tool.*]` sections
+
+The following tools have typed schemas. Unknown tools pass through as `unknown` by default.
+
+autopep8, bandit, black, bumpversion, check-wheel-contents, cibuildwheel, codespell, comfy, commitizen, coverage, dagster, distutils, docformatter, flake8, flit, hatch, isort, jupyter-releaser, mypy, pdm, pixi, poe, poetry, pydocstyle, pylint, pyright, pytest, ruff, setuptools, setuptools_scm, tbump, towncrier, uv, yapf
 
 ## Background
 
 ### Motivation
 
-I wanted something like [read-pkg](https://github.com/sindresorhus/read-pkg) or [pkg-types](https://github.com/unjs/pkg-types), but with support for `pyproject.toml` files.
+I wanted something like [read-pkg](https://github.com/sindresorhus/read-pkg) or [pkg-types](https://github.com/unjs/pkg-types), but for `pyproject.toml` files.
 
 It's a bit strange to work across language ecosystems like this, but I had occasion to do so for some other Node-based projects related to project metadata extraction, specifically [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta) and [metascope](https://github.com/kitschpatrol/metascope).
 
 ### Implementation notes
 
-The project consists of a number of Zod schemas responsible for mapping, and normalizing data found in a `pyproject.toml` a nicely typed JavaScript object.
+The project consists of a number of [Zod](https://zod.dev) schemas responsible for mapping and normalizing data found in a `pyproject.toml` into a nicely typed JavaScript object.
 
 Forcing the rather dynamic and extensible data structure found in `pyproject.toml` into a TypeScript straightjacket is likely futile, but an LLM makes the project at least somewhat tractable.
 
@@ -91,7 +150,7 @@ Forcing the rather dynamic and extensible data structure found in `pyproject.tom
 
 _High._
 
-An initial human-crafted specification was implemented by Claude Code. The output has been subject to only moderate post-facto human scrutiny.
+An initial human-crafted specification was implemented by LLM. The output has been subject to only moderate post-facto human scrutiny.
 
 <!-- contributing -->
 
@@ -108,7 +167,3 @@ An initial human-crafted specification was implemented by Claude Code. The outpu
 [MIT](license.txt) © Eric Mika
 
 <!-- /license -->
-
-```
-
-```

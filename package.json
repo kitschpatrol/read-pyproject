@@ -3,10 +3,11 @@
 	"version": "0.0.0",
 	"description": "Parse and normalize pyproject.toml metadata into strictly typed JavaScript objects.",
 	"keywords": [
-		"npm-package",
 		"python",
 		"pep-518",
-		"pyproject"
+		"pyproject",
+		"toml",
+		"npm-package"
 	],
 	"homepage": "https://github.com/kitschpatrol/read-pyproject",
 	"bugs": "https://github.com/kitschpatrol/read-pyproject/issues",
@@ -42,8 +43,6 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"@types/node": "~20.19.35",
-		"@types/spdx-correct": "^3.1.3",
 		"lognow": "^0.4.1",
 		"smol-toml": "^1.6.0",
 		"spdx-correct": "^3.2.0",
@@ -53,6 +52,8 @@
 	"devDependencies": {
 		"@arethetypeswrong/core": "^0.18.2",
 		"@kitschpatrol/shared-config": "^6.0.1",
+		"@types/node": "~20.19.35",
+		"@types/spdx-correct": "^3.1.3",
 		"bumpp": "^10.4.1",
 		"publint": "^0.3.17",
 		"tsdown": "^0.20.3",
