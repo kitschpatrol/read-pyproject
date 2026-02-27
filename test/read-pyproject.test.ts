@@ -346,8 +346,6 @@ describe('real-world fixtures', () => {
 			const errorBlacklist = new Set([
 				// unknown tool: crewai
 				'agenticfsu-quantbot.pyproject.toml',
-				// root-level: isort (not under tool)
-				'alenai97-peft-mllm.pyproject.toml',
 				// unknown tool: oxt
 				'amourspirit-libreoffice-python-path-ext.pyproject.toml',
 				// unknown tools: doc8, nbqa, poetry_bumpversion, poetry-sort
@@ -356,8 +354,6 @@ describe('real-world fixtures', () => {
 				'bartoszzolkiewski-asi.pyproject.toml',
 				// unknown tool: codeflash
 				'bbelderbos-code-quality.pyproject.toml',
-				// unknown tool: maturin; root-level: options
-				'bk7084-framework.pyproject.toml',
 				// unknown tool: comfy
 				'brekel-comfyui-brekel.pyproject.toml',
 				// unknown tool: check-manifest
@@ -366,14 +362,10 @@ describe('real-world fixtures', () => {
 				'craigtrim-lingpatlab.pyproject.toml',
 				// unknown tool: uv_build
 				'douile-friends-queue.pyproject.toml',
-				// root-level: tools (typo for tool)
-				'e-eight-pennylearn.pyproject.toml',
 				// unknown tool: chango
 				'eatsky1006-python-telegram-bot.pyproject.toml',
 				// unknown tool: dagster
 				'fearnworks-graphcap-prototype.pyproject.toml',
-				// root-level: poetry (not under tool)
-				'firefly-cpp-arm-preprocessing.pyproject.toml',
 				// unknown tool: pixi
 				'fppdf-fppdf.pyproject.toml',
 				// unknown tool: bumpver
@@ -384,48 +376,20 @@ describe('real-world fixtures', () => {
 				'ig248-tensorpandas.pyproject.toml',
 				// unknown tool: scikit-build
 				'iitpvisionlab-adrt.pyproject.toml',
-				// root-level: poetry (not under tool)
-				'inqbus-braille-radio.pyproject.toml',
-				// root-level: isort (not under tool)
-				'ist-daslab-peft-rosa.pyproject.toml',
 				// unknown tool: poetry-dynamic-versioning
 				'kaisbn-openly.pyproject.toml',
 				// unknown tool: dagster
 				'kayrnt-dlt-iceberg-slack-backup.pyproject.toml',
 				// unknown tool: pixi
 				'khanlab-cfmm2tar.pyproject.toml',
-				// project: python, homepage, repository, documentation; root-level: dependencies
-				'lorenanicole-eventbrite-scraper.pyproject.toml',
 				// unknown tool: pydantic-mypy
 				'lucas-six-python-cookbook.pyproject.toml',
-				// unknown tools: pydocstyle, interrogate, radon; root-level: coverage
-				'maanibeigy-dash-boilerplate.pyproject.toml',
-				// root-level: isort (not under tool)
-				'njunlp-moe-lpr.pyproject.toml',
 				// unknown tool: uv-dynamic-versioning
 				'omniagentpay-omniagentpay.pyproject.toml',
-				// build-system: include-package-data
-				'omsf-openpharmmdflow.pyproject.toml',
 				// unknown tool: dagster
 				'open-model-initiative-graphcap.pyproject.toml',
-				// project: python, homepage, repository, documentation; unknown tools: curlylint, djlint, codereviewdoctor
-				'pack144-packman.pyproject.toml',
-				// project: repository, homepage; unknown tools: semantic_release, pyrefly; root-level: semantic_release
-				'pythonhubdev-scaffoldr.pyproject.toml',
-				// project: packages
-				'runekaagaard-mcp-redmine.pyproject.toml',
 				// unknown tool: build_sphinx
 				'salt-extensions-saltext-github.pyproject.toml',
-				// root-level: isort (not under tool)
-				'saltychtao-moe-lpr.pyproject.toml',
-				// root-level: isort (not under tool)
-				'thunlp-loraflow.pyproject.toml',
-				// tool.pytest: ini_option (typo); root-level: mypy
-				'timgrob-crypto-warren.pyproject.toml',
-				// project: url, license_files
-				'uhlive-python-sdk.pyproject.toml',
-				// root-level: isort (not under tool)
-				'vityavitalich-llm-compression.pyproject.toml',
 				// unknown tool: coverage_rich
 				'waylonwalker-coverage-rich.pyproject.toml',
 				// unknown tool: comfy
