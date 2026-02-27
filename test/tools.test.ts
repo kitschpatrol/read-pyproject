@@ -1,4 +1,6 @@
+/* eslint-disable ts/no-unsafe-type-assertion */
 import { describe, expect, it } from 'vitest'
+import { deepCamelCaseKeys } from '../src/camel-case'
 import {
 	createAutopep8Schema,
 	createBanditSchema,
@@ -36,23 +38,76 @@ import {
 	createYapfSchema,
 } from '../src/schema/tool'
 
-describe('tool schemas', () => {
-	it('parses poe config', () => {
+/** Helper: parse with schema then apply deepCamelCaseKeys for camelCase output. */
+function parseCamel(
+	schema: { parse: (data: unknown) => unknown },
+	data: unknown,
+	path = '',
+): unknown {
+	return deepCamelCaseKeys(schema.parse(data), path)
+}
+
+describe('tool schemas — raw key output', () => {
+	it('poe schema outputs raw keys', () => {
 		const schema = createPoeSchema('passthrough')
 		const result = schema.parse({
 			'default-task-type': 'cmd',
 			// eslint-disable-next-line ts/naming-convention
 			env: { NODE_ENV: 'test' },
-			executor: { type: 'poetry' },
 			'poetry-command': 'poe',
 			'shell-interpreter': 'bash',
-			tasks: {
-				format: { cmd: 'black app', help: 'Run black on the code base' },
-				lint: 'ruff check .',
-				test: ['lint', 'unit-test'],
-			},
-			verbosity: 1,
+			tasks: { lint: 'ruff check .' },
 		})
+		expect(result['default-task-type']).toBe('cmd')
+		expect(result['poetry-command']).toBe('poe')
+		expect(result['shell-interpreter']).toBe('bash')
+		expect(result.tasks).toEqual({ lint: 'ruff check .' })
+	})
+
+	it('poetry schema outputs raw keys', () => {
+		const schema = createPoetrySchema('passthrough')
+		const result = schema.parse({
+			'dev-dependencies': { pytest: '^7.0' },
+			name: 'my-project',
+		})
+		expect(result['dev-dependencies']).toEqual({ pytest: '^7.0' })
+		expect(result.name).toBe('my-project')
+	})
+
+	it('ruff schema outputs raw keys', () => {
+		const schema = createRuffSchema('passthrough')
+		const result = schema.parse({
+			'line-length': 100,
+			lint: { 'per-file-ignores': { '__init__.py': ['F401'] }, select: ['E', 'F'] },
+			'target-version': 'py311',
+		})
+		expect(result['target-version']).toBe('py311')
+		expect(result['line-length']).toBe(100)
+		expect(result.lint?.['per-file-ignores']).toEqual({ '__init__.py': ['F401'] })
+	})
+})
+
+describe('tool schemas — camelCase via deepCamelCaseKeys', () => {
+	it('parses poe config', () => {
+		const schema = createPoeSchema('passthrough')
+		const result = parseCamel(
+			schema,
+			{
+				'default-task-type': 'cmd',
+				// eslint-disable-next-line ts/naming-convention
+				env: { NODE_ENV: 'test' },
+				executor: { type: 'poetry' },
+				'poetry-command': 'poe',
+				'shell-interpreter': 'bash',
+				tasks: {
+					format: { cmd: 'black app', help: 'Run black on the code base' },
+					lint: 'ruff check .',
+					test: ['lint', 'unit-test'],
+				},
+				verbosity: 1,
+			},
+			'tool.poe',
+		) as Record<string, unknown>
 		expect(result.defaultTaskType).toBe('cmd')
 		// eslint-disable-next-line ts/naming-convention
 		expect(result.env).toEqual({ NODE_ENV: 'test' })
@@ -69,40 +124,54 @@ describe('tool schemas', () => {
 
 	it('parses poetry config', () => {
 		const schema = createPoetrySchema('passthrough')
-		const result = schema.parse({
-			authors: ['Author <author@example.com>'],
-			description: 'A project',
-			'dev-dependencies': { pytest: '^7.0' },
-			name: 'my-project',
-			version: '1.0.0',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				authors: ['Author <author@example.com>'],
+				description: 'A project',
+				'dev-dependencies': { pytest: '^7.0' },
+				name: 'my-project',
+				version: '1.0.0',
+			},
+			'tool.poetry',
+		) as Record<string, unknown>
 		expect(result.name).toBe('my-project')
 		expect(result.devDependencies).toEqual({ pytest: '^7.0' })
 	})
 
 	it('parses ruff config', () => {
 		const schema = createRuffSchema('passthrough')
-		const result = schema.parse({
-			format: { 'docstring-code-format': true, 'quote-style': 'double' },
-			'line-length': 100,
-			lint: { 'per-file-ignores': { '__init__.py': ['F401'] }, select: ['E', 'F'] },
-			'target-version': 'py311',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				format: { 'docstring-code-format': true, 'quote-style': 'double' },
+				'line-length': 100,
+				lint: { 'per-file-ignores': { '__init__.py': ['F401'] }, select: ['E', 'F'] },
+				'target-version': 'py311',
+			},
+			'tool.ruff',
+		) as Record<string, unknown>
 		expect(result.targetVersion).toBe('py311')
 		expect(result.lineLength).toBe(100)
-		expect(result.lint?.perFileIgnores).toEqual({ '__init__.py': ['F401'] })
-		expect(result.format?.docstringCodeFormat).toBe(true)
+		const lint = result.lint as Record<string, unknown>
+		expect(lint.perFileIgnores).toEqual({ '__init__.py': ['F401'] })
+		const format = result.format as Record<string, unknown>
+		expect(format.docstringCodeFormat).toBe(true)
 	})
 
 	it('parses mypy config', () => {
 		const schema = createMypySchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			ignore_missing_imports: true,
-			// eslint-disable-next-line ts/naming-convention
-			python_version: '3.11',
-			strict: true,
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				ignore_missing_imports: true,
+				// eslint-disable-next-line ts/naming-convention
+				python_version: '3.11',
+				strict: true,
+			},
+			'tool.mypy',
+		) as Record<string, unknown>
 		expect(result.pythonVersion).toBe('3.11')
 		expect(result.strict).toBe(true)
 		expect(result.ignoreMissingImports).toBe(true)
@@ -110,58 +179,75 @@ describe('tool schemas', () => {
 
 	it('parses pytest config', () => {
 		const schema = createPytestSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			ini_options: {
-				addopts: '-v --tb=short',
+		const result = parseCamel(
+			schema,
+			{
 				// eslint-disable-next-line ts/naming-convention
-				python_files: 'test_*.py',
-				testpaths: ['tests'],
+				ini_options: {
+					addopts: '-v --tb=short',
+					// eslint-disable-next-line ts/naming-convention
+					python_files: 'test_*.py',
+					testpaths: ['tests'],
+				},
 			},
-		})
-		expect(result.iniOptions?.addopts).toBe('-v --tb=short')
-		expect(result.iniOptions?.pythonFiles).toBe('test_*.py')
+			'tool.pytest',
+		) as Record<string, unknown>
+		const iniOptions = result.iniOptions as Record<string, unknown>
+		expect(iniOptions.addopts).toBe('-v --tb=short')
+		expect(iniOptions.pythonFiles).toBe('test_*.py')
 	})
 
 	it('parses black config', () => {
 		const schema = createBlackSchema('passthrough')
-		const result = schema.parse({
-			'line-length': 88,
-			preview: true,
-			'target-version': ['py38', 'py39'],
-		})
+		const result = parseCamel(
+			schema,
+			{
+				'line-length': 88,
+				preview: true,
+				'target-version': ['py38', 'py39'],
+			},
+			'tool.black',
+		) as Record<string, unknown>
 		expect(result.lineLength).toBe(88)
 		expect(result.targetVersion).toEqual(['py38', 'py39'])
 	})
 
 	it('parses uv config', () => {
 		const schema = createUvSchema('passthrough')
-		const result = schema.parse({
-			'dev-dependencies': ['pytest>=7.0'],
-			'index-url': 'https://pypi.org/simple',
-			// eslint-disable-next-line ts/naming-convention
-			sources: { my_pkg: { path: './packages/my_pkg' } },
-		})
+		const result = parseCamel(
+			schema,
+			{
+				'dev-dependencies': ['pytest>=7.0'],
+				'index-url': 'https://pypi.org/simple',
+				// eslint-disable-next-line ts/naming-convention
+				sources: { my_pkg: { path: './packages/my_pkg' } },
+			},
+			'tool.uv',
+		) as Record<string, unknown>
 		expect(result.devDependencies).toEqual(['pytest>=7.0'])
 		expect(result.indexUrl).toBe('https://pypi.org/simple')
 	})
 
 	it('parses isort config', () => {
 		const schema = createIsortSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			force_single_line: true,
-			// eslint-disable-next-line ts/naming-convention
-			known_first_party: ['mypackage'],
-			// eslint-disable-next-line ts/naming-convention
-			line_length: 100,
-			// eslint-disable-next-line ts/naming-convention
-			multi_line_output: 3,
-			profile: 'black',
-			skip: ['__init__.py'],
-			// eslint-disable-next-line ts/naming-convention
-			src_paths: ['src', 'tests'],
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				force_single_line: true,
+				// eslint-disable-next-line ts/naming-convention
+				known_first_party: ['mypackage'],
+				// eslint-disable-next-line ts/naming-convention
+				line_length: 100,
+				// eslint-disable-next-line ts/naming-convention
+				multi_line_output: 3,
+				profile: 'black',
+				skip: ['__init__.py'],
+				// eslint-disable-next-line ts/naming-convention
+				src_paths: ['src', 'tests'],
+			},
+			'tool.isort',
+		) as Record<string, unknown>
 		expect(result.profile).toBe('black')
 		expect(result.lineLength).toBe(100)
 		expect(result.multiLineOutput).toBe(3)
@@ -172,65 +258,76 @@ describe('tool schemas', () => {
 
 	it('parses coverage config', () => {
 		const schema = createCoverageSchema('passthrough')
-		const result = schema.parse({
-			html: { directory: 'htmlcov' },
-			paths: {
-				source: ['src', '*/site-packages'],
-				tests: ['tests', '*/tests'],
+		const result = parseCamel(
+			schema,
+			{
+				html: { directory: 'htmlcov' },
+				paths: {
+					source: ['src', '*/site-packages'],
+					tests: ['tests', '*/tests'],
+				},
+				report: {
+					// eslint-disable-next-line ts/naming-convention
+					exclude_lines: ['pragma: no cover', 'if TYPE_CHECKING:'],
+					// eslint-disable-next-line ts/naming-convention
+					fail_under: 90,
+					precision: 2,
+					// eslint-disable-next-line ts/naming-convention
+					show_missing: true,
+					// eslint-disable-next-line ts/naming-convention
+					skip_covered: true,
+				},
+				run: {
+					branch: true,
+					omit: ['*/tests/*'],
+					parallel: true,
+					source: ['mypackage'],
+					// eslint-disable-next-line ts/naming-convention
+					source_pkgs: ['mypackage'],
+				},
 			},
-			report: {
-				// eslint-disable-next-line ts/naming-convention
-				exclude_lines: ['pragma: no cover', 'if TYPE_CHECKING:'],
-				// eslint-disable-next-line ts/naming-convention
-				fail_under: 90,
-				precision: 2,
-				// eslint-disable-next-line ts/naming-convention
-				show_missing: true,
-				// eslint-disable-next-line ts/naming-convention
-				skip_covered: true,
-			},
-			run: {
-				branch: true,
-				omit: ['*/tests/*'],
-				parallel: true,
-				source: ['mypackage'],
-				// eslint-disable-next-line ts/naming-convention
-				source_pkgs: ['mypackage'],
-			},
-		})
-		expect(result.run?.branch).toBe(true)
-		expect(result.run?.parallel).toBe(true)
-		expect(result.run?.source).toEqual(['mypackage'])
-		expect(result.run?.sourcePackages).toEqual(['mypackage'])
-		expect(result.run?.omit).toEqual(['*/tests/*'])
-		expect(result.report?.failUnder).toBe(90)
-		expect(result.report?.showMissing).toBe(true)
-		expect(result.report?.skipCovered).toBe(true)
-		expect(result.report?.excludeLines).toEqual(['pragma: no cover', 'if TYPE_CHECKING:'])
-		expect(result.report?.precision).toBe(2)
+			'tool.coverage',
+		) as Record<string, unknown>
+		const run = result.run as Record<string, unknown>
+		expect(run.branch).toBe(true)
+		expect(run.parallel).toBe(true)
+		expect(run.source).toEqual(['mypackage'])
+		expect(run.sourcePkgs).toEqual(['mypackage'])
+		expect(run.omit).toEqual(['*/tests/*'])
+		const report = result.report as Record<string, unknown>
+		expect(report.failUnder).toBe(90)
+		expect(report.showMissing).toBe(true)
+		expect(report.skipCovered).toBe(true)
+		expect(report.excludeLines).toEqual(['pragma: no cover', 'if TYPE_CHECKING:'])
+		expect(report.precision).toBe(2)
 		expect(result.paths).toEqual({
 			source: ['src', '*/site-packages'],
 			tests: ['tests', '*/tests'],
 		})
-		expect(result.html?.directory).toBe('htmlcov')
+		const html = result.html as Record<string, unknown>
+		expect(html.directory).toBe('htmlcov')
 	})
 
 	it('parses pyright config', () => {
 		const schema = createPyrightSchema('passthrough')
-		const result = schema.parse({
-			exclude: ['**/__pycache__'],
-			extraPaths: ['src'],
-			include: ['src'],
-			pythonPlatform: 'All',
-			pythonVersion: '3.11',
-			reportMissingImports: true,
-			reportMissingTypeStubs: false,
-			reportUnusedImport: 'warning',
-			strictListInference: true,
-			typeCheckingMode: 'strict',
-			venv: '.venv',
-			venvPath: '.',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				exclude: ['**/__pycache__'],
+				extraPaths: ['src'],
+				include: ['src'],
+				pythonPlatform: 'All',
+				pythonVersion: '3.11',
+				reportMissingImports: true,
+				reportMissingTypeStubs: false,
+				reportUnusedImport: 'warning',
+				strictListInference: true,
+				typeCheckingMode: 'strict',
+				venv: '.venv',
+				venvPath: '.',
+			},
+			'tool.pyright',
+		) as Record<string, unknown>
 		expect(result.typeCheckingMode).toBe('strict')
 		expect(result.pythonVersion).toBe('3.11')
 		expect(result.pythonPlatform).toBe('All')
@@ -247,19 +344,23 @@ describe('tool schemas', () => {
 
 	it('parses setuptools_scm config', () => {
 		const schema = createSetuptoolsScmSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			fallback_version: '0.0.0',
-			root: '.',
-			// eslint-disable-next-line ts/naming-convention
-			version_file: 'src/mypackage/_version.py',
-			// eslint-disable-next-line ts/naming-convention
-			version_scheme: 'post-release',
-			// eslint-disable-next-line ts/naming-convention
-			write_to: 'src/mypackage/_version.py',
-			// eslint-disable-next-line ts/naming-convention
-			write_to_template: '__version__ = "{version}"',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				fallback_version: '0.0.0',
+				root: '.',
+				// eslint-disable-next-line ts/naming-convention
+				version_file: 'src/mypackage/_version.py',
+				// eslint-disable-next-line ts/naming-convention
+				version_scheme: 'post-release',
+				// eslint-disable-next-line ts/naming-convention
+				write_to: 'src/mypackage/_version.py',
+				// eslint-disable-next-line ts/naming-convention
+				write_to_template: '__version__ = "{version}"',
+			},
+			'tool.setuptools_scm',
+		) as Record<string, unknown>
 		expect(result.root).toBe('.')
 		expect(result.fallbackVersion).toBe('0.0.0')
 		expect(result.versionFile).toBe('src/mypackage/_version.py')
@@ -270,12 +371,16 @@ describe('tool schemas', () => {
 
 	it('parses codespell config', () => {
 		const schema = createCodespellSchema('passthrough')
-		const result = schema.parse({
-			'check-filenames': true,
-			'ignore-words-list': 'crate,nd,ned',
-			'quiet-level': 3,
-			skip: '*.pt,*.pth,.git',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				'check-filenames': true,
+				'ignore-words-list': 'crate,nd,ned',
+				'quiet-level': 3,
+				skip: '*.pt,*.pth,.git',
+			},
+			'tool.codespell',
+		) as Record<string, unknown>
 		expect(result.checkFilenames).toBe(true)
 		expect(result.ignoreWordsList).toBe('crate,nd,ned')
 		expect(result.quietLevel).toBe(3)
@@ -284,20 +389,24 @@ describe('tool schemas', () => {
 
 	it('parses yapf config', () => {
 		const schema = createYapfSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			based_on_style: 'pep8',
-			// eslint-disable-next-line ts/naming-convention
-			coalesce_brackets: true,
-			// eslint-disable-next-line ts/naming-convention
-			column_limit: 120,
-			// eslint-disable-next-line ts/naming-convention
-			spaces_before_comment: 2,
-			// eslint-disable-next-line ts/naming-convention
-			split_before_closing_bracket: false,
-			// eslint-disable-next-line ts/naming-convention
-			split_before_first_argument: false,
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				based_on_style: 'pep8',
+				// eslint-disable-next-line ts/naming-convention
+				coalesce_brackets: true,
+				// eslint-disable-next-line ts/naming-convention
+				column_limit: 120,
+				// eslint-disable-next-line ts/naming-convention
+				spaces_before_comment: 2,
+				// eslint-disable-next-line ts/naming-convention
+				split_before_closing_bracket: false,
+				// eslint-disable-next-line ts/naming-convention
+				split_before_first_argument: false,
+			},
+			'tool.yapf',
+		) as Record<string, unknown>
 		expect(result.basedOnStyle).toBe('pep8')
 		expect(result.columnLimit).toBe(120)
 		expect(result.coalesceBrackets).toBe(true)
@@ -308,15 +417,19 @@ describe('tool schemas', () => {
 
 	it('parses flake8 config', () => {
 		const schema = createFlake8Schema('passthrough')
-		const result = schema.parse({
-			exclude: ['.git', 'venv', 'build', 'dist'],
-			'extend-ignore': ['E203', 'E501', 'W503'],
-			'extend-select': ['B950'],
-			ignore: ['E501'],
-			'max-complexity': 30,
-			'max-line-length': 120,
-			select: ['E', 'F', 'W', 'C', 'B9'],
-		})
+		const result = parseCamel(
+			schema,
+			{
+				exclude: ['.git', 'venv', 'build', 'dist'],
+				'extend-ignore': ['E203', 'E501', 'W503'],
+				'extend-select': ['B950'],
+				ignore: ['E501'],
+				'max-complexity': 30,
+				'max-line-length': 120,
+				select: ['E', 'F', 'W', 'C', 'B9'],
+			},
+			'tool.flake8',
+		) as Record<string, unknown>
 		expect(result.maxLineLength).toBe(120)
 		expect(result.maxComplexity).toBe(30)
 		expect(result.exclude).toEqual(['.git', 'venv', 'build', 'dist'])
@@ -328,27 +441,31 @@ describe('tool schemas', () => {
 
 	it('parses towncrier config', () => {
 		const schema = createTowncrierSchema('passthrough')
-		const result = schema.parse({
-			directory: 'changelog.d',
-			filename: 'CHANGELOG.md',
-			// eslint-disable-next-line ts/naming-convention
-			issue_format: '#{issue}',
-			package: 'my-project',
-			// eslint-disable-next-line ts/naming-convention
-			package_dir: 'src',
-			// eslint-disable-next-line ts/naming-convention
-			start_string: '<!-- towncrier release notes start -->',
-			template: 'changelog.d/_template.md',
-			// eslint-disable-next-line ts/naming-convention
-			title_format: '## {version} ({project_date})',
-			type: [
-				{ directory: 'added', name: 'Added', showcontent: true },
-				{ directory: 'fixed', name: 'Fixed', showcontent: true },
-			],
-			underlines: ['', '', ''],
-		})
+		const result = parseCamel(
+			schema,
+			{
+				directory: 'changelog.d',
+				filename: 'CHANGELOG.md',
+				// eslint-disable-next-line ts/naming-convention
+				issue_format: '#{issue}',
+				package: 'my-project',
+				// eslint-disable-next-line ts/naming-convention
+				package_dir: 'src',
+				// eslint-disable-next-line ts/naming-convention
+				start_string: '<!-- towncrier release notes start -->',
+				template: 'changelog.d/_template.md',
+				// eslint-disable-next-line ts/naming-convention
+				title_format: '## {version} ({project_date})',
+				type: [
+					{ directory: 'added', name: 'Added', showcontent: true },
+					{ directory: 'fixed', name: 'Fixed', showcontent: true },
+				],
+				underlines: ['', '', ''],
+			},
+			'tool.towncrier',
+		) as Record<string, unknown>
 		expect(result.package).toBe('my-project')
-		expect(result.packageDirectory).toBe('src')
+		expect(result.packageDir).toBe('src')
 		expect(result.directory).toBe('changelog.d')
 		expect(result.filename).toBe('CHANGELOG.md')
 		expect(result.issueFormat).toBe('#{issue}')
@@ -363,13 +480,17 @@ describe('tool schemas', () => {
 
 	it('parses docformatter config', () => {
 		const schema = createDocformatterSchema('passthrough')
-		const result = schema.parse({
-			'close-quotes-on-newline': true,
-			'in-place': true,
-			'pre-summary-newline': true,
-			'wrap-descriptions': 120,
-			'wrap-summaries': 120,
-		})
+		const result = parseCamel(
+			schema,
+			{
+				'close-quotes-on-newline': true,
+				'in-place': true,
+				'pre-summary-newline': true,
+				'wrap-descriptions': 120,
+				'wrap-summaries': 120,
+			},
+			'tool.docformatter',
+		) as Record<string, unknown>
 		expect(result.wrapSummaries).toBe(120)
 		expect(result.wrapDescriptions).toBe(120)
 		expect(result.preSummaryNewline).toBe(true)
@@ -379,36 +500,40 @@ describe('tool schemas', () => {
 
 	it('parses bumpversion config', () => {
 		const schema = createBumpversionSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			allow_dirty: false,
-			commit: true,
-			// eslint-disable-next-line ts/naming-convention
-			current_version: '1.2.3',
-			files: [
-				{ filename: 'setup.py' },
-				{
-					glob: 'src/**/*.py',
-					// eslint-disable-next-line ts/naming-convention
-					glob_exclude: ['*.bak'],
-					// eslint-disable-next-line ts/naming-convention
-					ignore_missing_file: true,
-					regex: true,
-				},
-			],
-			message: 'Release: {new_version}',
-			// eslint-disable-next-line ts/naming-convention
-			post_commit_hooks: ['git push', 'git push --tags'],
-			// eslint-disable-next-line ts/naming-convention
-			pre_commit_hooks: ['uv sync', 'git add uv.lock'],
-			// eslint-disable-next-line ts/naming-convention
-			sign_tags: false,
-			tag: true,
-			// eslint-disable-next-line ts/naming-convention
-			tag_message: 'Release: {new_version}',
-			// eslint-disable-next-line ts/naming-convention
-			tag_name: 'v{new_version}',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				allow_dirty: false,
+				commit: true,
+				// eslint-disable-next-line ts/naming-convention
+				current_version: '1.2.3',
+				files: [
+					{ filename: 'setup.py' },
+					{
+						glob: 'src/**/*.py',
+						// eslint-disable-next-line ts/naming-convention
+						glob_exclude: ['*.bak'],
+						// eslint-disable-next-line ts/naming-convention
+						ignore_missing_file: true,
+						regex: true,
+					},
+				],
+				message: 'Release: {new_version}',
+				// eslint-disable-next-line ts/naming-convention
+				post_commit_hooks: ['git push', 'git push --tags'],
+				// eslint-disable-next-line ts/naming-convention
+				pre_commit_hooks: ['uv sync', 'git add uv.lock'],
+				// eslint-disable-next-line ts/naming-convention
+				sign_tags: false,
+				tag: true,
+				// eslint-disable-next-line ts/naming-convention
+				tag_message: 'Release: {new_version}',
+				// eslint-disable-next-line ts/naming-convention
+				tag_name: 'v{new_version}',
+			},
+			'tool.bumpversion',
+		) as Record<string, unknown>
 		expect(result.allowDirty).toBe(false)
 		expect(result.commit).toBe(true)
 		expect(result.currentVersion).toBe('1.2.3')
@@ -419,8 +544,9 @@ describe('tool schemas', () => {
 		expect(result.signTags).toBe(false)
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
-		expect(result.files?.[0]).toEqual({ filename: 'setup.py' })
-		expect(result.files?.[1]).toEqual({
+		const files = result.files as Array<Record<string, unknown>>
+		expect(files[0]).toEqual({ filename: 'setup.py' })
+		expect(files[1]).toEqual({
 			glob: 'src/**/*.py',
 			globExclude: ['*.bak'],
 			ignoreMissingFile: true,
@@ -430,51 +556,69 @@ describe('tool schemas', () => {
 
 	it('parses flit config', () => {
 		const schema = createFlitSchema('passthrough')
-		const result = schema.parse({
-			module: { name: 'mypackage' },
-			sdist: {
-				exclude: [],
-				include: ['CHANGELOG.md', 'README.md', '*/test*.py'],
+		const result = parseCamel(
+			schema,
+			{
+				module: { name: 'mypackage' },
+				sdist: {
+					exclude: [],
+					include: ['CHANGELOG.md', 'README.md', '*/test*.py'],
+				},
 			},
-		})
-		expect(result.module?.name).toBe('mypackage')
-		expect(result.sdist?.include).toEqual(['CHANGELOG.md', 'README.md', '*/test*.py'])
-		expect(result.sdist?.exclude).toEqual([])
+			'tool.flit',
+		) as Record<string, unknown>
+		const module = result.module as Record<string, unknown>
+		expect(module.name).toBe('mypackage')
+		const sdist = result.sdist as Record<string, unknown>
+		expect(sdist.include).toEqual(['CHANGELOG.md', 'README.md', '*/test*.py'])
+		expect(sdist.exclude).toEqual([])
 	})
 
 	it('parses autopep8 config', () => {
 		const schema = createAutopep8Schema('passthrough')
-		const result = schema.parse({
-			aggressive: 2,
-			// eslint-disable-next-line ts/naming-convention
-			max_line_length: 120,
-		})
+		const result = parseCamel(
+			schema,
+			{
+				aggressive: 2,
+				// eslint-disable-next-line ts/naming-convention
+				max_line_length: 120,
+			},
+			'tool.autopep8',
+		) as Record<string, unknown>
 		expect(result.maxLineLength).toBe(120)
 		expect(result.aggressive).toBe(2)
 	})
 
 	it('parses bandit config', () => {
 		const schema = createBanditSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			exclude_dirs: ['tests', 'examples'],
-			skips: ['B101', 'B601'],
-			tests: ['B201'],
-		})
-		expect(result.excludeDirectories).toEqual(['tests', 'examples'])
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				exclude_dirs: ['tests', 'examples'],
+				skips: ['B101', 'B601'],
+				tests: ['B201'],
+			},
+			'tool.bandit',
+		) as Record<string, unknown>
+		expect(result.excludeDirs).toEqual(['tests', 'examples'])
 		expect(result.skips).toEqual(['B101', 'B601'])
 		expect(result.tests).toEqual(['B201'])
 	})
 
 	it('parses cibuildwheel config', () => {
 		const schema = createCibuildwheelSchema('passthrough')
-		const result = schema.parse({
-			build: 'cp310-*',
-			'build-frontend': 'build',
-			skip: '*-musllinux*',
-			'test-command': 'pytest {project}/tests',
-			'test-requires': 'pytest',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				build: 'cp310-*',
+				'build-frontend': 'build',
+				skip: '*-musllinux*',
+				'test-command': 'pytest {project}/tests',
+				'test-requires': 'pytest',
+			},
+			'tool.cibuildwheel',
+		) as Record<string, unknown>
 		expect(result.build).toBe('cp310-*')
 		expect(result.buildFrontend).toBe('build')
 		expect(result.skip).toBe('*-musllinux*')
@@ -484,85 +628,109 @@ describe('tool schemas', () => {
 
 	it('parses tbump config', () => {
 		const schema = createTbumpSchema('passthrough')
-		const result = schema.parse({
-			file: [{ search: '"version": "{current_version}"', src: 'package.json' }],
-			git: {
+		const result = parseCamel(
+			schema,
+			{
+				file: [{ search: '"version": "{current_version}"', src: 'package.json' }],
+				git: {
+					// eslint-disable-next-line ts/naming-convention
+					message_template: 'Bump to {new_version}',
+					// eslint-disable-next-line ts/naming-convention
+					tag_template: 'v{new_version}',
+				},
 				// eslint-disable-next-line ts/naming-convention
-				message_template: 'Bump to {new_version}',
-				// eslint-disable-next-line ts/naming-convention
-				tag_template: 'v{new_version}',
+				github_url: 'https://github.com/example/repo/',
+				version: {
+					current: '1.0.0',
+					regex: String.raw`(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)`,
+				},
 			},
-			// eslint-disable-next-line ts/naming-convention
-			github_url: 'https://github.com/example/repo/',
-			version: {
-				current: '1.0.0',
-				regex: String.raw`(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)`,
-			},
-		})
+			'tool.tbump',
+		) as Record<string, unknown>
 		expect(result.githubUrl).toBe('https://github.com/example/repo/')
-		expect(result.version?.current).toBe('1.0.0')
-		expect(result.git?.messageTemplate).toBe('Bump to {new_version}')
-		expect(result.git?.tagTemplate).toBe('v{new_version}')
+		const version = result.version as Record<string, unknown>
+		expect(version.current).toBe('1.0.0')
+		const git = result.git as Record<string, unknown>
+		expect(git.messageTemplate).toBe('Bump to {new_version}')
+		expect(git.tagTemplate).toBe('v{new_version}')
 		expect(result.file).toEqual([{ search: '"version": "{current_version}"', src: 'package.json' }])
 	})
 
 	it('parses distutils config', () => {
 		const schema = createDistutilsSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			bdist_wheel: {
+		const result = parseCamel(
+			schema,
+			{
 				// eslint-disable-next-line ts/naming-convention
-				python_tag: 'py3',
-				universal: true,
+				bdist_wheel: {
+					// eslint-disable-next-line ts/naming-convention
+					python_tag: 'py3',
+					universal: true,
+				},
+				sdist: { group: 'root', owner: 'root' },
 			},
-			sdist: { group: 'root', owner: 'root' },
-		})
-		expect(result.bdistWheel?.universal).toBe(true)
-		expect(result.bdistWheel?.pythonTag).toBe('py3')
+			'tool.distutils',
+		) as Record<string, unknown>
+		const bdistWheel = result.bdistWheel as Record<string, unknown>
+		expect(bdistWheel.universal).toBe(true)
+		expect(bdistWheel.pythonTag).toBe('py3')
 		expect(result.sdist).toEqual({ group: 'root', owner: 'root' })
 	})
 
 	it('parses check-wheel-contents config', () => {
 		const schema = createCheckWheelContentsSchema('passthrough')
-		const result = schema.parse({
-			ignore: ['W002'],
-		})
+		const result = parseCamel(
+			schema,
+			{
+				ignore: ['W002'],
+			},
+			'tool.check-wheel-contents',
+		) as Record<string, unknown>
 		expect(result.ignore).toEqual(['W002'])
 	})
 
 	it('parses jupyter-releaser config', () => {
 		const schema = createJupyterReleaserSchema('passthrough')
-		const result = schema.parse({
-			hooks: {
-				'before-build-npm': [
-					"python -m pip install 'jupyterlab>=4.0.0,<5'",
-					'jlpm',
-					'jlpm build:prod',
-				],
-				'before-build-python': ['jlpm clean:all'],
+		const result = parseCamel(
+			schema,
+			{
+				hooks: {
+					'before-build-npm': [
+						"python -m pip install 'jupyterlab>=4.0.0,<5'",
+						'jlpm',
+						'jlpm build:prod',
+					],
+					'before-build-python': ['jlpm clean:all'],
+				},
+				options: {
+					// eslint-disable-next-line ts/naming-convention
+					version_cmd: 'hatch version',
+				},
 			},
-			options: {
-				// eslint-disable-next-line ts/naming-convention
-				version_cmd: 'hatch version',
-			},
-		})
-		expect(result.hooks?.beforeBuildNpm).toEqual([
+			'tool.jupyter-releaser',
+		) as Record<string, unknown>
+		const hooks = result.hooks as Record<string, unknown>
+		expect(hooks.beforeBuildNpm).toEqual([
 			"python -m pip install 'jupyterlab>=4.0.0,<5'",
 			'jlpm',
 			'jlpm build:prod',
 		])
-		expect(result.hooks?.beforeBuildPython).toEqual(['jlpm clean:all'])
+		expect(hooks.beforeBuildPython).toEqual(['jlpm clean:all'])
 	})
 
 	it('parses pylint config', () => {
 		const schema = createPylintSchema('passthrough')
-		const result = schema.parse({
-			disable: ['missing-docstring', 'too-few-public-methods'],
-			'good-names': ['i', 'j', 'k', 'x'],
-			jobs: 0,
-			'load-plugins': ['pylint.extensions.mccabe'],
-			'max-line-length': 120,
-		})
+		const result = parseCamel(
+			schema,
+			{
+				disable: ['missing-docstring', 'too-few-public-methods'],
+				'good-names': ['i', 'j', 'k', 'x'],
+				jobs: 0,
+				'load-plugins': ['pylint.extensions.mccabe'],
+				'max-line-length': 120,
+			},
+			'tool.pylint',
+		) as Record<string, unknown>
 		expect(result.goodNames).toEqual(['i', 'j', 'k', 'x'])
 		expect(result.jobs).toBe(0)
 		expect(result.loadPlugins).toEqual(['pylint.extensions.mccabe'])
@@ -572,15 +740,19 @@ describe('tool schemas', () => {
 
 	it('parses comfy config', () => {
 		const schema = createComfySchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			DisplayName: 'My Custom Node',
-			// eslint-disable-next-line ts/naming-convention
-			Icon: 'icon.png',
-			includes: ['*.py'],
-			// eslint-disable-next-line ts/naming-convention
-			PublisherId: 'publisher-123',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				DisplayName: 'My Custom Node',
+				// eslint-disable-next-line ts/naming-convention
+				Icon: 'icon.png',
+				includes: ['*.py'],
+				// eslint-disable-next-line ts/naming-convention
+				PublisherId: 'publisher-123',
+			},
+			'tool.comfy',
+		) as Record<string, unknown>
 		expect(result.displayName).toBe('My Custom Node')
 		expect(result.icon).toBe('icon.png')
 		expect(result.includes).toEqual(['*.py'])
@@ -589,41 +761,55 @@ describe('tool schemas', () => {
 
 	it('parses dagster config', () => {
 		const schema = createDagsterSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			module_name: 'my_dagster_project',
-			// eslint-disable-next-line ts/naming-convention
-			project_name: 'my-project',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				module_name: 'my_dagster_project',
+				// eslint-disable-next-line ts/naming-convention
+				project_name: 'my-project',
+			},
+			'tool.dagster',
+		) as Record<string, unknown>
 		expect(result.moduleName).toBe('my_dagster_project')
 		expect(result.projectName).toBe('my-project')
 	})
 
 	it('parses hatch config', () => {
 		const schema = createHatchSchema('passthrough')
-		const result = schema.parse({
-			build: { targets: { wheel: { packages: ['src/pkg'] } } },
-			envs: { default: { dependencies: ['pytest'] } },
-			metadata: { 'allow-direct-references': true },
-			version: { path: 'src/pkg/__about__.py', source: 'regex' },
-		})
-		expect(result.version?.source).toBe('regex')
-		expect(result.version?.path).toBe('src/pkg/__about__.py')
-		expect(result.build?.targets).toEqual({ wheel: { packages: ['src/pkg'] } })
+		const result = parseCamel(
+			schema,
+			{
+				build: { targets: { wheel: { packages: ['src/pkg'] } } },
+				envs: { default: { dependencies: ['pytest'] } },
+				metadata: { 'allow-direct-references': true },
+				version: { path: 'src/pkg/__about__.py', source: 'regex' },
+			},
+			'tool.hatch',
+		) as Record<string, unknown>
+		const version = result.version as Record<string, unknown>
+		expect(version.source).toBe('regex')
+		expect(version.path).toBe('src/pkg/__about__.py')
+		const build = result.build as Record<string, unknown>
+		expect(build.targets).toEqual({ wheel: { packages: ['src/pkg'] } })
 		expect(result.envs).toEqual({ default: { dependencies: ['pytest'] } })
 	})
 
 	it('parses pdm config', () => {
 		const schema = createPdmSchema('passthrough')
-		const result = schema.parse({
-			build: { 'run-setuptools': true },
-			'dev-dependencies': {
-				dev: ['pytest>=7.0'],
-				lint: ['ruff'],
+		const result = parseCamel(
+			schema,
+			{
+				build: { 'run-setuptools': true },
+				'dev-dependencies': {
+					dev: ['pytest>=7.0'],
+					lint: ['ruff'],
+				},
+				distribution: true,
+				source: [{ name: 'pypi', url: 'https://pypi.org/simple' }],
 			},
-			distribution: true,
-			source: [{ name: 'pypi', url: 'https://pypi.org/simple' }],
-		})
+			'tool.pdm',
+		) as Record<string, unknown>
 		expect(result.devDependencies).toEqual({
 			dev: ['pytest>=7.0'],
 			lint: ['ruff'],
@@ -634,12 +820,16 @@ describe('tool schemas', () => {
 
 	it('parses pixi config', () => {
 		const schema = createPixiSchema('passthrough')
-		const result = schema.parse({
-			dependencies: { python: '>=3.11' },
-			environments: { test: ['test-group'] },
-			'pypi-dependencies': { numpy: '*' },
-			tasks: { test: 'pytest' },
-		})
+		const result = parseCamel(
+			schema,
+			{
+				dependencies: { python: '>=3.11' },
+				environments: { test: ['test-group'] },
+				'pypi-dependencies': { numpy: '*' },
+				tasks: { test: 'pytest' },
+			},
+			'tool.pixi',
+		) as Record<string, unknown>
 		expect(result.pypiDependencies).toEqual({ numpy: '*' })
 		expect(result.dependencies).toEqual({ python: '>=3.11' })
 		expect(result.tasks).toEqual({ test: 'pytest' })
@@ -647,33 +837,41 @@ describe('tool schemas', () => {
 
 	it('parses setuptools config', () => {
 		const schema = createSetuptoolsSchema('passthrough')
-		const result = schema.parse({
-			'include-package-data': true,
-			'package-data': { mypackage: ['*.txt', '*.rst'] },
-			'package-dir': { '': 'src' },
-			packages: { find: { where: ['src'] } },
-			'py-modules': ['mymodule'],
-			'zip-safe': false,
-		})
+		const result = parseCamel(
+			schema,
+			{
+				'include-package-data': true,
+				'package-data': { mypackage: ['*.txt', '*.rst'] },
+				'package-dir': { '': 'src' },
+				packages: { find: { where: ['src'] } },
+				'py-modules': ['mymodule'],
+				'zip-safe': false,
+			},
+			'tool.setuptools',
+		) as Record<string, unknown>
 		expect(result.includePackageData).toBe(true)
 		expect(result.packageData).toEqual({ mypackage: ['*.txt', '*.rst'] })
-		expect(result.packageDirectory).toEqual({ '': 'src' })
+		expect(result.packageDir).toEqual({ '': 'src' })
 		expect(result.pyModules).toEqual(['mymodule'])
 		expect(result.zipSafe).toBe(false)
 	})
 
 	it('parses pydocstyle config', () => {
 		const schema = createPydocstyleSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			add_ignore: ['D100', 'D101'],
-			convention: 'google',
-			// eslint-disable-next-line ts/naming-convention
-			ignore_decorators: 'property',
-			match: String.raw`(?!test_).*\.py`,
-			// eslint-disable-next-line ts/naming-convention
-			match_dir: String.raw`[^\.].*`,
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				add_ignore: ['D100', 'D101'],
+				convention: 'google',
+				// eslint-disable-next-line ts/naming-convention
+				ignore_decorators: 'property',
+				match: String.raw`(?!test_).*\.py`,
+				// eslint-disable-next-line ts/naming-convention
+				match_dir: String.raw`[^\.].*`,
+			},
+			'tool.pydocstyle',
+		) as Record<string, unknown>
 		expect(result.convention).toBe('google')
 		expect(result.addIgnore).toEqual(['D100', 'D101'])
 		expect(result.ignoreDecorators).toBe('property')
@@ -683,22 +881,26 @@ describe('tool schemas', () => {
 
 	it('parses commitizen config', () => {
 		const schema = createCommitizenSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			major_version_zero: false,
-			name: 'cz_conventional_commits',
-			// eslint-disable-next-line ts/naming-convention
-			tag_format: 'v$version',
-			// eslint-disable-next-line ts/naming-convention
-			update_changelog_on_bump: true,
-			version: '1.0.0',
-			// eslint-disable-next-line ts/naming-convention
-			version_files: ['pyproject.toml:version', 'src/pkg/version.py'],
-			// eslint-disable-next-line ts/naming-convention
-			version_provider: 'poetry',
-			// eslint-disable-next-line ts/naming-convention
-			version_scheme: 'pep440',
-		})
+		const result = parseCamel(
+			schema,
+			{
+				// eslint-disable-next-line ts/naming-convention
+				major_version_zero: false,
+				name: 'cz_conventional_commits',
+				// eslint-disable-next-line ts/naming-convention
+				tag_format: 'v$version',
+				// eslint-disable-next-line ts/naming-convention
+				update_changelog_on_bump: true,
+				version: '1.0.0',
+				// eslint-disable-next-line ts/naming-convention
+				version_files: ['pyproject.toml:version', 'src/pkg/version.py'],
+				// eslint-disable-next-line ts/naming-convention
+				version_provider: 'poetry',
+				// eslint-disable-next-line ts/naming-convention
+				version_scheme: 'pep440',
+			},
+			'tool.commitizen',
+		) as Record<string, unknown>
 		expect(result.name).toBe('cz_conventional_commits')
 		expect(result.version).toBe('1.0.0')
 		expect(result.tagFormat).toBe('v$version')

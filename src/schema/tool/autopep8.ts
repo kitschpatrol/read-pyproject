@@ -18,8 +18,5 @@ export function createAutopep8Schema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(({ max_line_length: maxLineLength, ...rest }) => ({
-		...rest,
-		maxLineLength,
-	}))
+	return object
 }

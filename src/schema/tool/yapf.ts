@@ -46,37 +46,5 @@ export function createYapfSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			allow_split_before_dict_value: allowSplitBeforeDictValue,
-			based_on_style: basedOnStyle,
-			coalesce_brackets: coalesceBrackets,
-			column_limit: columnLimit,
-			continuation_indent_width: continuationIndentWidth,
-			dedent_closing_brackets: dedentClosingBrackets,
-			indent_width: indentWidth,
-			space_between_ending_comma_and_closing_bracket: spaceBetweenEndingCommaAndClosingBracket,
-			spaces_around_power_operator: spacesAroundPowerOperator,
-			spaces_before_comment: spacesBeforeComment,
-			split_before_closing_bracket: splitBeforeClosingBracket,
-			split_before_first_argument: splitBeforeFirstArgument,
-			split_before_logical_operator: splitBeforeLogicalOperator,
-			...rest
-		}) => ({
-			...rest,
-			allowSplitBeforeDictValue,
-			basedOnStyle,
-			coalesceBrackets,
-			columnLimit,
-			continuationIndentWidth,
-			dedentClosingBrackets,
-			indentWidth,
-			spaceBetweenEndingCommaAndClosingBracket,
-			spacesAroundPowerOperator,
-			spacesBeforeComment,
-			splitBeforeClosingBracket,
-			splitBeforeFirstArgument,
-			splitBeforeLogicalOperator,
-		}),
-	)
+	return object
 }

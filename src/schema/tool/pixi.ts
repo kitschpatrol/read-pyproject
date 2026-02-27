@@ -16,8 +16,5 @@ export function createPixiSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	})
 	// Always loose — pixi has many dynamic sub-sections (feature.*, environments, etc.)
 	const object = unknownKeyPolicy === 'strip' ? base : base.loose()
-	return object.transform(({ 'pypi-dependencies': pypiDependencies, ...rest }) => ({
-		...rest,
-		pypiDependencies,
-	}))
+	return object
 }

@@ -18,11 +18,5 @@ export function createBuildSystemSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({ 'backend-path': backendPath, 'build-backend': buildBackend, ...rest }) => ({
-			...rest,
-			backendPath,
-			buildBackend,
-		}),
-	)
+	return object
 }

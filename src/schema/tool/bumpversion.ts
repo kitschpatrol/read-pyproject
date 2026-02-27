@@ -31,23 +31,7 @@ export function createBumpversionSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? fileBase
 				: fileBase.loose()
-	const fileSchema = fileObject.transform(
-		({
-			exclude_bumps: excludeBumps,
-			glob_exclude: globExclude,
-			ignore_missing_file: ignoreMissingFile,
-			ignore_missing_version: ignoreMissingVersion,
-			include_bumps: includeBumps,
-			...rest
-		}) => ({
-			...rest,
-			excludeBumps,
-			globExclude,
-			ignoreMissingFile,
-			ignoreMissingVersion,
-			includeBumps,
-		}),
-	)
+	const fileSchema = fileObject
 
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
@@ -87,31 +71,5 @@ export function createBumpversionSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			allow_dirty: allowDirty,
-			commit_args: commitArgs,
-			current_version: currentVersion,
-			ignore_missing_files: ignoreMissingFiles,
-			ignore_missing_version: ignoreMissingVersion,
-			post_commit_hooks: postCommitHooks,
-			pre_commit_hooks: preCommitHooks,
-			sign_tags: signTags,
-			tag_message: tagMessage,
-			tag_name: tagName,
-			...rest
-		}) => ({
-			...rest,
-			allowDirty,
-			commitArgs,
-			currentVersion,
-			ignoreMissingFiles,
-			ignoreMissingVersion,
-			postCommitHooks,
-			preCommitHooks,
-			signTags,
-			tagMessage,
-			tagName,
-		}),
-	)
+	return object
 }

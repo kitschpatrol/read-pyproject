@@ -30,37 +30,5 @@ export function createPylintSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	// Always loose — pylint uses many dynamic sub-sections (messages_control,
 	// "MESSAGES CONTROL", format, main, basic, classes, reports, etc.)
 	const object = unknownKeyPolicy === 'strip' ? base : base.loose()
-	return object.transform(
-		({
-			'fail-on': failOn,
-			'good-names': goodNames,
-			'ignore-paths': ignorePaths,
-			'ignore-patterns': ignorePatterns,
-			'load-plugins': loadPlugins,
-			'max-args': maxArgs,
-			'max-branches': maxBranches,
-			'max-line-length': maxLineLength,
-			'max-locals': maxLocals,
-			'max-nested-blocks': maxNestedBlocks,
-			'max-positional-arguments': maxPositionalArguments,
-			'max-statements': maxStatements,
-			'py-version': pyVersion,
-			...rest
-		}) => ({
-			...rest,
-			failOn,
-			goodNames,
-			ignorePaths,
-			ignorePatterns,
-			loadPlugins,
-			maxArgs,
-			maxBranches,
-			maxLineLength,
-			maxLocals,
-			maxNestedBlocks,
-			maxPositionalArguments,
-			maxStatements,
-			pyVersion,
-		}),
-	)
+	return object
 }

@@ -57,31 +57,5 @@ export function createTowncrierSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			all_bullets: allBullets,
-			create_add_extension: createAddExtension,
-			create_eof_newline: createEofNewline,
-			issue_format: issueFormat,
-			issue_pattern: issuePattern,
-			orphan_prefix: orphanPrefix,
-			package_dir: packageDirectory,
-			single_file: singleFile,
-			start_string: startString,
-			title_format: titleFormat,
-			...rest
-		}) => ({
-			...rest,
-			allBullets,
-			createAddExtension,
-			createEofNewline,
-			issueFormat,
-			issuePattern,
-			orphanPrefix,
-			packageDirectory,
-			singleFile,
-			startString,
-			titleFormat,
-		}),
-	)
+	return object
 }

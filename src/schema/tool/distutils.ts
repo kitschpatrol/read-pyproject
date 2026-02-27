@@ -17,10 +17,7 @@ export function createDistutilsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? bdistWheelBase
 				: bdistWheelBase.loose()
-	const bdistWheelSchema = bdistWheelObject.transform(({ python_tag: pythonTag, ...rest }) => ({
-		...rest,
-		pythonTag,
-	}))
+	const bdistWheelSchema = bdistWheelObject
 
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
@@ -33,8 +30,5 @@ export function createDistutilsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(({ bdist_wheel: bdistWheel, ...rest }) => ({
-		...rest,
-		bdistWheel,
-	}))
+	return object
 }

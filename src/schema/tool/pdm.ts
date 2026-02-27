@@ -29,8 +29,5 @@ export function createPdmSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(({ 'dev-dependencies': devDependencies, ...rest }) => ({
-		...rest,
-		devDependencies,
-	}))
+	return object
 }

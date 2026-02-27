@@ -43,10 +43,11 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"lognow": "^0.4.1",
+		"lognow": "^0.5.2",
 		"smol-toml": "^1.6.0",
 		"spdx-correct": "^3.2.0",
 		"spdx-expression-validate": "^2.0.0",
+		"type-fest": "^5.4.4",
 		"zod": "^4.3.6"
 	},
 	"devDependencies": {
@@ -62,6 +63,12 @@
 	},
 	"packageManager": "pnpm@10.30.3",
 	"engines": {
-		"node": ">=20.19.0"
+		"node": ">=20.17.0"
+	},
+	"devEngines": {
+		"runtime": {
+			"name": "node",
+			"version": ">=20.19.0"
+		}
 	}
 }

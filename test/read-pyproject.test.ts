@@ -158,22 +158,54 @@ describe('license normalization', () => {
 })
 
 // ---------------------------------------------------------------------------
-// camelCase conversion
+// camelCase conversion (via readPyproject with default camelCase: true)
 // ---------------------------------------------------------------------------
 
 describe('camelCase key conversion', () => {
-	it('converts build-system keys', () => {
+	it('converts build-system keys via readPyproject', async () => {
+		const temporaryDirectory = path.join(fixturesDirectory, '__tmp_camel_bs__')
+		await fs.mkdir(temporaryDirectory, { recursive: true })
+		await fs.writeFile(
+			path.join(temporaryDirectory, 'pyproject.toml'),
+			'[build-system]\nbuild-backend = "setuptools.build_meta"\nrequires = ["setuptools"]\nbackend-path = ["src"]\n',
+		)
+		try {
+			const result = await readPyproject(temporaryDirectory)
+			expect(result.buildSystem?.buildBackend).toBe('setuptools.build_meta')
+			expect(result.buildSystem?.backendPath).toEqual(['src'])
+		} finally {
+			await fs.rm(temporaryDirectory, { recursive: true })
+		}
+	})
+
+	it('converts project kebab-case keys via readPyproject', async () => {
+		const temporaryDirectory = path.join(fixturesDirectory, '__tmp_camel_proj__')
+		await fs.mkdir(temporaryDirectory, { recursive: true })
+		await fs.writeFile(
+			path.join(temporaryDirectory, 'pyproject.toml'),
+			'[project]\nname = "test"\nrequires-python = ">=3.8"\n\n[project.optional-dependencies]\ndev = ["pytest"]\n',
+		)
+		try {
+			const result = await readPyproject(temporaryDirectory)
+			expect(result.project?.requiresPython).toBe('>=3.8')
+			expect(result.project?.optionalDependencies).toEqual({ dev: ['pytest'] })
+		} finally {
+			await fs.rm(temporaryDirectory, { recursive: true })
+		}
+	})
+
+	it('raw schemas output raw keys (no camelCase)', () => {
 		const schema = createBuildSystemSchema('passthrough')
 		const result = schema.parse({
 			'backend-path': ['src'],
 			'build-backend': 'setuptools.build_meta',
 			requires: ['setuptools'],
 		})
-		expect(result.buildBackend).toBe('setuptools.build_meta')
-		expect(result.backendPath).toEqual(['src'])
+		expect(result['build-backend']).toBe('setuptools.build_meta')
+		expect(result['backend-path']).toEqual(['src'])
 	})
 
-	it('converts project kebab-case keys', () => {
+	it('raw schemas output raw project keys', () => {
 		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({
 			'entry-points': { group: { name: 'module:func' } },
@@ -182,19 +214,64 @@ describe('camelCase key conversion', () => {
 			'optional-dependencies': { dev: ['pytest'] },
 			'requires-python': '>=3.8',
 		})
-		expect(result.requiresPython).toBe('>=3.8')
-		expect(result.optionalDependencies).toEqual({ dev: ['pytest'] })
-		expect(result.guiScripts).toEqual({ app: 'app:main' })
-		expect(result.entryPoints).toEqual({ group: { name: 'module:func' } })
+		expect(result['requires-python']).toBe('>=3.8')
+		expect(result['optional-dependencies']).toEqual({ dev: ['pytest'] })
+		expect(result['gui-scripts']).toEqual({ app: 'app:main' })
+		expect(result['entry-points']).toEqual({ group: { name: 'module:func' } })
 	})
 
-	it('converts top-level build-system key', () => {
-		const schema = createPyprojectSchema('passthrough')
-		const result = schema.parse({
-			'build-system': { 'build-backend': 'setuptools.build_meta', requires: ['setuptools'] },
-		})
-		expect(result.buildSystem).toBeDefined()
-		expect(result.buildSystem?.buildBackend).toBe('setuptools.build_meta')
+	it('converts top-level build-system key via readPyproject', async () => {
+		const temporaryDirectory = path.join(fixturesDirectory, '__tmp_camel_top__')
+		await fs.mkdir(temporaryDirectory, { recursive: true })
+		await fs.writeFile(
+			path.join(temporaryDirectory, 'pyproject.toml'),
+			'[build-system]\nbuild-backend = "setuptools.build_meta"\nrequires = ["setuptools"]\n',
+		)
+		try {
+			const result = await readPyproject(temporaryDirectory)
+			expect(result.buildSystem).toBeDefined()
+			expect(result.buildSystem?.buildBackend).toBe('setuptools.build_meta')
+		} finally {
+			await fs.rm(temporaryDirectory, { recursive: true })
+		}
+	})
+})
+
+// ---------------------------------------------------------------------------
+// camelCase: false mode (raw key output)
+// ---------------------------------------------------------------------------
+
+describe('camelCase: false mode', () => {
+	it('returns raw keys when camelCase is false', async () => {
+		const temporaryDirectory = path.join(fixturesDirectory, '__tmp_raw_mode__')
+		await fs.mkdir(temporaryDirectory, { recursive: true })
+		await fs.writeFile(
+			path.join(temporaryDirectory, 'pyproject.toml'),
+			'[build-system]\nbuild-backend = "setuptools.build_meta"\nrequires = ["setuptools"]\n\n[project]\nname = "test"\nrequires-python = ">=3.8"\n',
+		)
+		try {
+			const result = await readPyproject(temporaryDirectory, { camelCase: false })
+			expect(result['build-system']?.['build-backend']).toBe('setuptools.build_meta')
+			expect(result.project?.['requires-python']).toBe('>=3.8')
+			expect(result.project?.name).toBe('test')
+		} finally {
+			await fs.rm(temporaryDirectory, { recursive: true })
+		}
+	})
+
+	it('preserves raw dependency-groups key when camelCase is false', async () => {
+		const temporaryDirectory = path.join(fixturesDirectory, '__tmp_raw_depgroups__')
+		await fs.mkdir(temporaryDirectory, { recursive: true })
+		await fs.writeFile(
+			path.join(temporaryDirectory, 'pyproject.toml'),
+			'[dependency-groups]\ndev = ["pytest"]\n',
+		)
+		try {
+			const result = await readPyproject(temporaryDirectory, { camelCase: false })
+			expect(result['dependency-groups']).toEqual({ dev: ['pytest'] })
+		} finally {
+			await fs.rm(temporaryDirectory, { recursive: true })
+		}
 	})
 })
 
@@ -211,13 +288,13 @@ describe('PEP 735 dependency-groups', () => {
 				docs: ['sphinx'],
 			},
 		})
-		expect(result.dependencyGroups).toEqual({
+		expect(result['dependency-groups']).toEqual({
 			dev: ['pytest>=7', 'coverage'],
 			docs: ['sphinx'],
 		})
 	})
 
-	it('parses include-group references and camelCases the key', () => {
+	it('parses include-group references', () => {
 		const schema = createPyprojectSchema('passthrough')
 		const result = schema.parse({
 			'dependency-groups': {
@@ -225,20 +302,19 @@ describe('PEP 735 dependency-groups', () => {
 				'typing-test': [{ 'include-group': 'typing' }, { 'include-group': 'test' }, 'useful-types'],
 			},
 		})
-		expect(result.dependencyGroups?.['typing-test']).toEqual([
-			{ includeGroup: 'typing' },
-			{ includeGroup: 'test' },
+		expect(result['dependency-groups']?.['typing-test']).toEqual([
+			{ 'include-group': 'typing' },
+			{ 'include-group': 'test' },
 			'useful-types',
 		])
 	})
 
-	it('camelCases the top-level dependency-groups key', () => {
+	it('keeps raw dependency-groups key in schema output', () => {
 		const schema = createPyprojectSchema('passthrough')
 		const result = schema.parse({
 			'dependency-groups': { dev: ['ruff'] },
 		})
-		expect(result.dependencyGroups).toBeDefined()
-		expect('dependency-groups' in result).toBe(false)
+		expect(result['dependency-groups']).toBeDefined()
 	})
 })
 
@@ -289,6 +365,22 @@ describe('unknownKeyPolicy modes', () => {
 		// eslint-disable-next-line ts/no-unsafe-type-assertion
 		const tool = result.tool as Record<string, unknown>
 		expect(tool.some_unknown_tool).toBeUndefined()
+	})
+
+	it('unknownKeyPolicy works via options object', async () => {
+		const temporaryDirectory = path.join(fixturesDirectory, '__tmp_opts_ukp__')
+		await fs.mkdir(temporaryDirectory, { recursive: true })
+		await fs.writeFile(
+			path.join(temporaryDirectory, 'pyproject.toml'),
+			'[project]\nname = "test"\nunknown-key = "value"\n',
+		)
+		try {
+			await expect(
+				readPyproject(temporaryDirectory, { unknownKeyPolicy: 'error' }),
+			).rejects.toThrow(PyprojectError)
+		} finally {
+			await fs.rm(temporaryDirectory, { recursive: true })
+		}
 	})
 })
 
@@ -350,6 +442,37 @@ describe('real-world fixtures', () => {
 		}
 	})
 
+	it('parses all fixture files with camelCase: false', { timeout: 60_000 }, async () => {
+		const files = await fs.readdir(fixturesDirectory)
+		const tomlFiles = files.filter((f) => f.endsWith('.toml'))
+		expect(tomlFiles.length).toBeGreaterThan(300)
+
+		const errors: Array<{ error: string; file: string }> = []
+
+		await Promise.all(
+			tomlFiles.map(async (file) => {
+				try {
+					await readPyproject(path.join(fixturesDirectory, file), { camelCase: false })
+				} catch (error) {
+					errors.push({
+						error: error instanceof Error ? error.message : String(error),
+						file,
+					})
+				}
+			}),
+		)
+
+		if (errors.length > 0) {
+			const summary = errors
+				.slice(0, 10)
+				.map((entry) => `  ${entry.file}: ${entry.error.split('\n')[0]}`)
+				.join('\n')
+			throw new Error(
+				`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed (camelCase: false):\n${summary}`,
+			)
+		}
+	})
+
 	it(
 		'parses non-blacklisted fixture files with error-level unknownKeyPolicy',
 		{ timeout: 60_000 },
@@ -402,7 +525,9 @@ describe('real-world fixtures', () => {
 			await Promise.all(
 				tomlFiles.map(async (file) => {
 					try {
-						await readPyproject(path.join(fixturesDirectory, file), 'error')
+						await readPyproject(path.join(fixturesDirectory, file), {
+							unknownKeyPolicy: 'error',
+						})
 					} catch (error) {
 						errors.push({
 							error: error instanceof Error ? error.message : String(error),

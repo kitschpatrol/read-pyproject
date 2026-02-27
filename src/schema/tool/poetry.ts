@@ -42,17 +42,5 @@ export function createPoetrySchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'dev-dependencies': devDependencies,
-			'package-mode': packageMode,
-			'requires-plugins': requiresPlugins,
-			...rest
-		}) => ({
-			...rest,
-			devDependencies,
-			packageMode,
-			requiresPlugins,
-		}),
-	)
+	return object
 }

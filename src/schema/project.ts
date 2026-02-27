@@ -101,28 +101,11 @@ export function createProjectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'entry-points': entryPoints,
-			'gui-scripts': guiScripts,
-			license,
-			'license-files': licenseFiles,
-			name,
-			'optional-dependencies': optionalDependencies,
-			readme,
-			'requires-python': requiresPython,
-			...rest
-		}) => ({
-			...rest,
-			entryPoints,
-			guiScripts,
-			license: transformLicense(license),
-			licenseFiles,
-			name: name ? normalizePep503Name(name) : undefined,
-			optionalDependencies,
-			rawName: name,
-			readme: transformReadme(readme),
-			requiresPython,
-		}),
-	)
+	return object.transform(({ license, name, readme, ...rest }) => ({
+		...rest,
+		license: transformLicense(license),
+		name: name ? normalizePep503Name(name) : undefined,
+		rawName: name,
+		readme: transformReadme(readme),
+	}))
 }

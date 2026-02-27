@@ -16,8 +16,5 @@ export function createBanditSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	})
 	// Always loose — bandit uses dynamic per-check sub-sections (assert_used, etc.)
 	const object = unknownKeyPolicy === 'strip' ? base : base.loose()
-	return object.transform(({ exclude_dirs: excludeDirectories, ...rest }) => ({
-		...rest,
-		excludeDirectories,
-	}))
+	return object
 }

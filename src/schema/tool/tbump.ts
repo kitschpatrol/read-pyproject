@@ -33,19 +33,7 @@ export function createTbumpSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? gitBase
 				: gitBase.loose()
-	const gitSchema = gitObject.transform(
-		({
-			message_template: messageTemplate,
-			push_remote: pushRemote,
-			tag_template: tagTemplate,
-			...rest
-		}) => ({
-			...rest,
-			messageTemplate,
-			pushRemote,
-			tagTemplate,
-		}),
-	)
+	const gitSchema = gitObject
 
 	const hookSchema = z.object({}).loose()
 
@@ -64,9 +52,5 @@ export function createTbumpSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(({ before_commit: beforeCommit, github_url: githubUrl, ...rest }) => ({
-		...rest,
-		beforeCommit,
-		githubUrl,
-	}))
+	return object
 }

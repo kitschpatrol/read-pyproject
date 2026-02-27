@@ -36,39 +36,5 @@ export function createUvSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'build-backend': buildBackend,
-			'build-constraint-dependencies': buildConstraintDependencies,
-			'constraint-dependencies': constraintDependencies,
-			'dependency-metadata': dependencyMetadata,
-			'dev-dependencies': devDependencies,
-			'extra-build-dependencies': extraBuildDependencies,
-			'extra-index-url': extraIndexUrl,
-			'find-links': findLinks,
-			'index-url': indexUrl,
-			'no-build-isolation-package': noBuildIsolationPackage,
-			'override-dependencies': overrideDependencies,
-			'python-downloads': pythonDownloads,
-			'python-preference': pythonPreference,
-			'required-environments': requiredEnvironments,
-			...rest
-		}) => ({
-			...rest,
-			buildBackend,
-			buildConstraintDependencies,
-			constraintDependencies,
-			dependencyMetadata,
-			devDependencies,
-			extraBuildDependencies,
-			extraIndexUrl,
-			findLinks,
-			indexUrl,
-			noBuildIsolationPackage,
-			overrideDependencies,
-			pythonDownloads,
-			pythonPreference,
-			requiredEnvironments,
-		}),
-	)
+	return object
 }

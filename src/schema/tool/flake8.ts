@@ -44,39 +44,5 @@ export function createFlake8Schema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'copyright-check': copyrightCheck,
-			'disable-noqa': disableNoqa,
-			'enable-extensions': enableExtensions,
-			'extend-exclude': extendExclude,
-			'extend-ignore': extendIgnore,
-			'extend-select': extendSelect,
-			'hang-closing': hangClosing,
-			'indent-size': indentSize,
-			'max-complexity': maxComplexity,
-			'max-doc-length': maxDocLength,
-			'max-line-length': maxLineLength,
-			'per-file-ignores': perFileIgnores,
-			'require-plugins': requirePlugins,
-			'show-source': showSource,
-			...rest
-		}) => ({
-			...rest,
-			copyrightCheck,
-			disableNoqa,
-			enableExtensions,
-			extendExclude,
-			extendIgnore,
-			extendSelect,
-			hangClosing,
-			indentSize,
-			maxComplexity,
-			maxDocLength,
-			maxLineLength,
-			perFileIgnores,
-			requirePlugins,
-			showSource,
-		}),
-	)
+	return object
 }

@@ -45,39 +45,5 @@ export function createSetuptoolsScmSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			dist_name: distributionName,
-			fallback_root: fallbackRoot,
-			fallback_version: fallbackVersion,
-			local_scheme: localScheme,
-			parentdir_prefix_version: parentdirPrefixVersion,
-			relative_to: relativeTo,
-			search_parent_directories: searchParentDirectories,
-			tag_regex: tagRegex,
-			version_cls: versionClass,
-			version_file: versionFile,
-			version_file_template: versionFileTemplate,
-			version_scheme: versionScheme,
-			write_to: writeTo,
-			write_to_template: writeToTemplate,
-			...rest
-		}) => ({
-			...rest,
-			distributionName,
-			fallbackRoot,
-			fallbackVersion,
-			localScheme,
-			parentdirPrefixVersion,
-			relativeTo,
-			searchParentDirectories,
-			tagRegex,
-			versionClass,
-			versionFile,
-			versionFileTemplate,
-			versionScheme,
-			writeTo,
-			writeToTemplate,
-		}),
-	)
+	return object
 }

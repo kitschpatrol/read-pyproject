@@ -1,20 +1,36 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { parse } from 'smol-toml'
-import type { PyprojectData, UnknownKeyPolicy } from './types'
+import type { PyprojectData, RawPyprojectData, UnknownKeyPolicy } from './types'
+import { deepCamelCaseKeys } from './camel-case'
 import { PyprojectError } from './error'
 import { log } from './log'
 import { createPyprojectSchema } from './schema/pyproject'
 
+export type ReadPyprojectOptions = {
+	camelCase?: boolean
+	unknownKeyPolicy?: UnknownKeyPolicy
+}
+
 /**
  * Read, parse, validate, and normalize a pyproject.toml file.
  * @param pathOrDirectory - A file path or directory. If a directory (no extension), appends `/pyproject.toml`. Defaults to `process.cwd()`.
- * @param unknownKeyPolicy - How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
+ * @param options - Options for parsing and key conversion.
+ * @returns The parsed pyproject data, with keys in camelCase by default.
  */
 export async function readPyproject(
 	pathOrDirectory?: string,
-	unknownKeyPolicy: UnknownKeyPolicy = 'passthrough',
-): Promise<PyprojectData> {
+	options?: ReadPyprojectOptions & { camelCase?: true },
+): Promise<PyprojectData>
+export async function readPyproject(
+	pathOrDirectory: string | undefined,
+	options: ReadPyprojectOptions & { camelCase: false },
+): Promise<RawPyprojectData>
+export async function readPyproject(
+	pathOrDirectory?: string,
+	options: ReadPyprojectOptions = {},
+): Promise<PyprojectData | RawPyprojectData> {
+	const { camelCase: camelCaseKeys = true, unknownKeyPolicy = 'passthrough' } = options
 	const filePath = await resolveFilePath(pathOrDirectory ?? process.cwd())
 
 	log.debug(`Reading pyproject.toml from ${filePath}`)
@@ -68,6 +84,11 @@ export async function readPyproject(
 			cause: result.error,
 			filePath,
 		})
+	}
+
+	if (camelCaseKeys) {
+		// eslint-disable-next-line ts/no-unsafe-type-assertion -- overload guarantees PyprojectData
+		return deepCamelCaseKeys(result.data) as PyprojectData
 	}
 
 	return result.data

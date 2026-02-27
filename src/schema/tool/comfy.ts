@@ -21,12 +21,5 @@ export function createComfySchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({ DisplayName: displayName, Icon: icon, PublisherId: publisherId, ...rest }) => ({
-			...rest,
-			displayName,
-			icon,
-			publisherId,
-		}),
-	)
+	return object
 }

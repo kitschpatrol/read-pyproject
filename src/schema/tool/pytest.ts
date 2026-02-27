@@ -43,35 +43,6 @@ export function createPytestSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			testpaths: stringOrArray.optional(),
 		})
 		.loose()
-		.transform(
-			({
-				asyncio_mode: asyncioMode,
-				consider_namespace_packages: considerNamespacePackages,
-				console_output_style: consoleOutputStyle,
-				doctest_optionflags: doctestOptionflags,
-				junit_family: junitFamily,
-				log_cli: logCli,
-				log_cli_level: logCliLevel,
-				python_classes: pythonClasses,
-				python_files: pythonFiles,
-				python_functions: pythonFunctions,
-				qt_api: qtApi,
-				...rest
-			}) => ({
-				...rest,
-				asyncioMode,
-				considerNamespacePackages,
-				consoleOutputStyle,
-				doctestOptionflags,
-				junitFamily,
-				logCli,
-				logCliLevel,
-				pythonClasses,
-				pythonFiles,
-				pythonFunctions,
-				qtApi,
-			}),
-		)
 
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
@@ -79,8 +50,5 @@ export function createPytestSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	})
 	// Always loose — some configs place ini options directly under [tool.pytest]
 	const object = unknownKeyPolicy === 'strip' ? base : base.loose()
-	return object.transform(({ ini_options: iniOptions, ...rest }) => ({
-		...rest,
-		iniOptions,
-	}))
+	return object
 }

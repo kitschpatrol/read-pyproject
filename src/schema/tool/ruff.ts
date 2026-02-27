@@ -18,13 +18,7 @@ export function createRuffSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		select: z.array(z.string()).optional(),
 	})
 	const lintObject = unknownKeyPolicy === 'strip' ? lintBase : lintBase.loose()
-	const lintSchema = lintObject.transform(
-		({ 'extend-select': extendSelect, 'per-file-ignores': perFileIgnores, ...rest }) => ({
-			...rest,
-			extendSelect,
-			perFileIgnores,
-		}),
-	)
+	const lintSchema = lintObject
 
 	// Ruff's format section has many more options than we model, so always allow unknown keys.
 	const formatBase = z.object({
@@ -34,21 +28,7 @@ export function createRuffSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		'quote-style': z.string().optional(),
 	})
 	const formatObject = unknownKeyPolicy === 'strip' ? formatBase : formatBase.loose()
-	const formatSchema = formatObject.transform(
-		({
-			'docstring-code-format': docstringCodeFormat,
-			'indent-style': indentStyle,
-			'line-ending': lineEnding,
-			'quote-style': quoteStyle,
-			...rest
-		}) => ({
-			...rest,
-			docstringCodeFormat,
-			indentStyle,
-			lineEnding,
-			quoteStyle,
-		}),
-	)
+	const formatSchema = formatObject
 
 	// Ruff has many per-linter sub-sections (flake8-*, mccabe, pyupgrade, etc.)
 	// that can appear at the top level in legacy config format.
@@ -89,35 +69,5 @@ export function createRuffSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'extend-exclude': extendExclude,
-			'extend-fixable': extendFixable,
-			'extend-select': extendSelect,
-			'flake8-quotes': flake8Quotes,
-			'flake8-tidy-imports': flake8TidyImports,
-			'ignore-init-module-imports': ignoreInitModuleImports,
-			'indent-width': indentWidth,
-			'line-length': lineLength,
-			'output-format': outputFormat,
-			'per-file-ignores': perFileIgnores,
-			'show-fixes': showFixes,
-			'target-version': targetVersion,
-			...rest
-		}) => ({
-			...rest,
-			extendExclude,
-			extendFixable,
-			extendSelect,
-			flake8Quotes,
-			flake8TidyImports,
-			ignoreInitModuleImports,
-			indentWidth,
-			lineLength,
-			outputFormat,
-			perFileIgnores,
-			showFixes,
-			targetVersion,
-		}),
-	)
+	return object
 }

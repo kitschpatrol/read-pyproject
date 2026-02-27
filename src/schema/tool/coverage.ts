@@ -107,127 +107,47 @@ export function createCoverageSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	// [tool.coverage.paths] uses user-defined keys with list-of-string values
 	const pathsSchema = z.record(z.string(), z.array(z.string()))
 
-	const runTransformed = (
+	const runTransformed =
 		unknownKeyPolicy === 'error'
 			? runShape.strict()
 			: unknownKeyPolicy === 'strip'
 				? runShape
 				: runShape.loose()
-	).transform(
-		({
-			command_line: commandLine,
-			cover_pylib: coverPylib,
-			data_file: dataFile,
-			debug_file: debugFile,
-			disable_warnings: disableWarnings,
-			dynamic_context: dynamicContext,
-			relative_files: relativeFiles,
-			source_dirs: sourceDirectories,
-			source_pkgs: sourcePackages,
-			...rest
-		}) => ({
-			...rest,
-			commandLine,
-			coverPylib,
-			dataFile,
-			debugFile,
-			disableWarnings,
-			dynamicContext,
-			relativeFiles,
-			sourceDirectories,
-			sourcePackages,
-		}),
-	)
 
-	const reportTransformed = (
+	const reportTransformed =
 		unknownKeyPolicy === 'error'
 			? reportShape.strict()
 			: unknownKeyPolicy === 'strip'
 				? reportShape
 				: reportShape.loose()
-	).transform(
-		({
-			exclude_also: excludeAlso,
-			exclude_lines: excludeLines,
-			fail_under: failUnder,
-			ignore_errors: ignoreErrors,
-			include_namespace_packages: includeNamespacePackages,
-			partial_also: partialAlso,
-			partial_branches: partialBranches,
-			show_missing: showMissing,
-			skip_covered: skipCovered,
-			skip_empty: skipEmpty,
-			...rest
-		}) => ({
-			...rest,
-			excludeAlso,
-			excludeLines,
-			failUnder,
-			ignoreErrors,
-			includeNamespacePackages,
-			partialAlso,
-			partialBranches,
-			showMissing,
-			skipCovered,
-			skipEmpty,
-		}),
-	)
 
-	const htmlTransformed = (
+	const htmlTransformed =
 		unknownKeyPolicy === 'error'
 			? htmlShape.strict()
 			: unknownKeyPolicy === 'strip'
 				? htmlShape
 				: htmlShape.loose()
-	).transform(
-		({
-			extra_css: extraCss,
-			show_contexts: showContexts,
-			skip_covered: skipCovered,
-			skip_empty: skipEmpty,
-			...rest
-		}) => ({
-			...rest,
-			extraCss,
-			showContexts,
-			skipCovered,
-			skipEmpty,
-		}),
-	)
 
-	const xmlTransformed = (
+	const xmlTransformed =
 		unknownKeyPolicy === 'error'
 			? xmlShape.strict()
 			: unknownKeyPolicy === 'strip'
 				? xmlShape
 				: xmlShape.loose()
-	).transform(({ package_depth: packageDepth, ...rest }) => ({
-		...rest,
-		packageDepth,
-	}))
 
-	const jsonTransformed = (
+	const jsonTransformed =
 		unknownKeyPolicy === 'error'
 			? jsonShape.strict()
 			: unknownKeyPolicy === 'strip'
 				? jsonShape
 				: jsonShape.loose()
-	).transform(({ pretty_print: prettyPrint, show_contexts: showContexts, ...rest }) => ({
-		...rest,
-		prettyPrint,
-		showContexts,
-	}))
 
-	const lcovTransformed = (
+	const lcovTransformed =
 		unknownKeyPolicy === 'error'
 			? lcovShape.strict()
 			: unknownKeyPolicy === 'strip'
 				? lcovShape
 				: lcovShape.loose()
-	).transform(({ line_checksums: lineChecksums, ...rest }) => ({
-		...rest,
-		lineChecksums,
-	}))
 
 	const base = z.object({
 		html: htmlTransformed.optional(),

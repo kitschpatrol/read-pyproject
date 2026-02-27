@@ -25,23 +25,5 @@ export function createSetuptoolsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'include-package-data': includePackageData,
-			'package-data': packageData,
-			'package-dir': packageDirectory,
-			'py-modules': pyModules,
-			'script-files': scriptFiles,
-			'zip-safe': zipSafe,
-			...rest
-		}) => ({
-			...rest,
-			includePackageData,
-			packageData,
-			packageDirectory,
-			pyModules,
-			scriptFiles,
-			zipSafe,
-		}),
-	)
+	return object
 }

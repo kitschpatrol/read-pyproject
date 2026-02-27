@@ -16,17 +16,7 @@ export function createJupyterReleaserSchema(unknownKeyPolicy: UnknownKeyPolicy) 
 			: unknownKeyPolicy === 'strip'
 				? hooksBase
 				: hooksBase.loose()
-	const hooksSchema = hooksObject.transform(
-		({
-			'before-build-npm': beforeBuildNpm,
-			'before-build-python': beforeBuildPython,
-			...rest
-		}) => ({
-			...rest,
-			beforeBuildNpm,
-			beforeBuildPython,
-		}),
-	)
+	const hooksSchema = hooksObject
 
 	const optionsSchema = z.object({}).loose()
 

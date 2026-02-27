@@ -38,37 +38,5 @@ export function createCodespellSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'after-context': afterContext,
-			'before-context': beforeContext,
-			'check-filenames': checkFilenames,
-			'check-hidden': checkHidden,
-			'exclude-file': excludeFile,
-			'ignore-multiline-regex': ignoreMultilineRegex,
-			'ignore-regex': ignoreRegex,
-			'ignore-words': ignoreWords,
-			'ignore-words-list': ignoreWordsList,
-			'quiet-level': quietLevel,
-			'uri-ignore-words-list': uriIgnoreWordsList,
-			'uri-regex': uriRegex,
-			'write-changes': writeChanges,
-			...rest
-		}) => ({
-			...rest,
-			afterContext,
-			beforeContext,
-			checkFilenames,
-			checkHidden,
-			excludeFile,
-			ignoreMultilineRegex,
-			ignoreRegex,
-			ignoreWords,
-			ignoreWordsList,
-			quietLevel,
-			uriIgnoreWordsList,
-			uriRegex,
-			writeChanges,
-		}),
-	)
+	return object
 }

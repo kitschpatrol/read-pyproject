@@ -33,23 +33,5 @@ export function createPoeSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'default-array-item-task-type': defaultArrayItemTaskType,
-			'default-array-task-type': defaultArrayTaskType,
-			'default-task-type': defaultTaskType,
-			'poetry-command': poetryCommand,
-			'poetry-hooks': poetryHooks,
-			'shell-interpreter': shellInterpreter,
-			...rest
-		}) => ({
-			...rest,
-			defaultArrayItemTaskType,
-			defaultArrayTaskType,
-			defaultTaskType,
-			poetryCommand,
-			poetryHooks,
-			shellInterpreter,
-		}),
-	)
+	return object
 }

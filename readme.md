@@ -28,8 +28,8 @@ Highlights:
 - **Typed output**\
   The returned object is deeply typed via Zod schema inference, giving you autocomplete and type safety for `[project]`, `[build-system]`, `[dependency-groups]`, and 30+ `[tool.*]` sections.
 
-- **Normalized keys**\
-  TOML's mix of `kebab-case`, `snake_case`, and `PascalCase` keys are all converted to `camelCase` in the output. PEP 503 package name normalization is applied to `project.name`, with the original preserved as `rawName`.
+- **Normalization**\
+  The mess of `kebab-case`, `snake_case`, and `PascalCase` keys are converted to `camelCase` in the output by default, and some other fields (like `license` and `readme` values) are sensibly normalized.
 
 - **Flexibly strict**\
   Control how unknown keys are handled with three modes: `'passthrough'` (default, keeps everything), `'strip'` (silently removes unknown keys), or `'error'` (throws on unknown keys).
@@ -43,7 +43,7 @@ Note that this library currently only _reads_, it does not write changes back to
 
 ### Dependencies
 
-[Node](https://nodejs.org/) 20.19.0+
+[Node](https://nodejs.org/) 20.17.0+
 
 ### Installation
 
@@ -66,18 +66,23 @@ console.log(pyproject) // The rest of the object...
 
 ### API
 
-#### `readPyproject(pathOrDirectory?, unknownKeyPolicy?)`
+#### `readPyproject(pathOrDirectory?, options?)`
 
 Read, parse, validate, and normalize a `pyproject.toml` file.
 
 ##### Parameters
 
 - `pathOrDirectory` — A file path or directory. If a directory, appends `/pyproject.toml`. Defaults to `process.cwd()`.
-- `unknownKeyPolicy` — How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
+- `options` — Optional configuration object:
+  - `camelCase` — Convert keys to camelCase (`true` by default). Set to `false` to get raw TOML keys.
+  - `unknownKeyPolicy` — How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
 
 ##### Returns
 
-`Promise<PyprojectData>`
+- `Promise<PyprojectData>` when `camelCase` is `true` (default)
+- `Promise<RawPyprojectData>` when `camelCase` is `false`
+
+The return type is inferred from the `camelCase` option via function overloads.
 
 ##### Throws
 
@@ -88,7 +93,7 @@ Read, parse, validate, and normalize a `pyproject.toml` file.
 ```ts
 import { readPyproject } from 'read-pyproject'
 
-// Read from current directory
+// Read from current directory (camelCase keys by default)
 await readPyproject()
 
 // Read from a specific file
@@ -97,11 +102,15 @@ await readPyproject('/path/to/pyproject.toml')
 // Read from a directory
 await readPyproject('/path/to/project')
 
+// Get raw TOML keys (no camelCase conversion)
+const raw = await readPyproject('/path/to/project', { camelCase: false })
+raw['build-system']?.['build-backend'] // Raw kebab-case keys
+
 // Reject unknown keys
-await readPyproject('/path/to/project', 'error')
+await readPyproject('/path/to/project', { unknownKeyPolicy: 'error' })
 
 // Strip unknown keys from the output
-await readPyproject('/path/to/project', 'strip')
+await readPyproject('/path/to/project', { unknownKeyPolicy: 'strip' })
 ```
 
 #### `PyprojectError`
@@ -114,9 +123,9 @@ Inject a custom logger. Accepts a [LogLayer](https://github.com/theogravity/logl
 
 ### Normalization
 
-- All kebab-case and snake_case keys in the TOML are converted to camelCase in the output.
+- All kebab-case, snake_case, and PascalCase keys in the TOML are converted to camelCase in the output by default. Pass `{ camelCase: false }` to disable this and receive raw TOML keys instead.
 
-- `project.name` is normalized per [PEP 503](https://peps.python.org/pep-0503/#normalized-names) (lowercased, runs of `[-_.]+` collapsed to a single `-`). The original name is available as `project.rawName`.
+- `project.name` is normalized per [PEP 503](https://peps.python.org/pep-0503/#normalized-names) (lowercased, runs of `[-_.]+` collapsed to a single `-`). The original name is available as `project.rawName`. This normalization is always applied regardless of the `camelCase` option.
 
 - `project.readme` is normalized to a string when the readme is file-based (`"README.md"` stays as-is, `{ file: "README.md", content-type: "..." }` collapses to `"README.md"`). Inline-text readmes (`{ text: "...", content-type: "..." }`) are kept as a `{ text, contentType? }` object.
 
@@ -124,9 +133,11 @@ Inject a custom logger. Accepts a [LogLayer](https://github.com/theogravity/logl
 
 ### Supported `[tool.*]` sections
 
-The following tools have typed schemas. Unknown tools pass through as `unknown` by default.
+The following tools have typed schemas:
 
 autopep8, bandit, black, bumpversion, check-wheel-contents, cibuildwheel, codespell, comfy, commitizen, coverage, dagster, distutils, docformatter, flake8, flit, hatch, isort, jupyter-releaser, mypy, pdm, pixi, poe, poetry, pydocstyle, pylint, pyright, pytest, ruff, setuptools, setuptools_scm, tbump, towncrier, uv, yapf
+
+Unknown tools pass through as `unknown` by default.
 
 ## Background
 
@@ -138,7 +149,7 @@ It's a bit strange to work across language ecosystems like this, but I had occas
 
 ### Implementation notes
 
-The project consists of a number of [Zod](https://zod.dev) schemas responsible for mapping and normalizing data found in a `pyproject.toml` into a nicely typed JavaScript object.
+The project consists of a number of [Zod](https://zod.dev) schemas responsible for validating and normalizing data found in a `pyproject.toml`. Schemas output raw TOML keys; camelCase conversion is handled centrally by a recursive `deepCamelCaseKeys` function that knows which paths contain user-defined record keys (like package names or file paths) and skips those. Type-level camelCase conversion uses [`CamelCasedPropertiesDeep`](https://github.com/sindresorhus/type-fest) from `type-fest`, and function overloads ensure the return type matches the `camelCase` option.
 
 Forcing the rather dynamic and extensible data structure found in `pyproject.toml` into a TypeScript straightjacket is likely futile, but an LLM makes the project at least somewhat tractable.
 

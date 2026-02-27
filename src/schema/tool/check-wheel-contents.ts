@@ -18,8 +18,5 @@ export function createCheckWheelContentsSchema(unknownKeyPolicy: UnknownKeyPolic
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(({ 'src-dir': srcDirectory, ...rest }) => ({
-		...rest,
-		srcDirectory,
-	}))
+	return object
 }

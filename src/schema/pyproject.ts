@@ -52,11 +52,7 @@ export function createPyprojectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? includeBase
 				: includeBase.loose()
-	const dependencyGroupIncludeSchema = includeObject.transform(
-		({ 'include-group': includeGroup }) => ({
-			includeGroup,
-		}),
-	)
+	const dependencyGroupIncludeSchema = includeObject
 
 	const dependencyGroupItemSchema = z.union([z.string(), dependencyGroupIncludeSchema])
 
@@ -104,25 +100,12 @@ export function createPyprojectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 
 	// Tool table respects unknownKeyPolicy so unknown tools are handled accordingly
 	const toolBase = z.object(toolShape)
-	const tool = (
+	const tool =
 		unknownKeyPolicy === 'error'
 			? toolBase.strict()
 			: unknownKeyPolicy === 'strip'
 				? toolBase
 				: toolBase.loose()
-	).transform(
-		({
-			'check-wheel-contents': checkWheelContents,
-			'jupyter-releaser': jupyterReleaser,
-			setuptools_scm: setuptoolsScm,
-			...rest
-		}) => ({
-			...rest,
-			checkWheelContents,
-			jupyterReleaser,
-			setuptoolsScm,
-		}),
-	)
 
 	const shape = {
 		'build-system': createBuildSystemSchema(unknownKeyPolicy).optional(),
@@ -137,11 +120,5 @@ export function createPyprojectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({ 'build-system': buildSystem, 'dependency-groups': dependencyGroups, ...rest }) => ({
-			...rest,
-			...(buildSystem !== undefined && { buildSystem }),
-			...(dependencyGroups !== undefined && { dependencyGroups }),
-		}),
-	)
+	return object
 }

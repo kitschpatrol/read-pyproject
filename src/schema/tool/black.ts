@@ -41,15 +41,10 @@ export function createBlackSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 				: base.loose()
 	return object.transform(
 		({
-			'extend-exclude': extendExclude,
-			'force-exclude': forceExclude,
 			'line-length': lineLength,
 			line_length: lineLengthSnake,
-			'python-version': pythonVersion,
 			'required-version': requiredVersion,
 			required_version: requiredVersionSnake,
-			'skip-magic-trailing-comma': skipMagicTrailingComma,
-			'skip-numeric-underscore-normalization': skipNumericUnderscoreNormalization,
 			'skip-string-normalization': skipStringNormalization,
 			skip_string_normalization: skipStringNormalizationSnake,
 			'target-version': targetVersion,
@@ -57,15 +52,10 @@ export function createBlackSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			...rest
 		}) => ({
 			...rest,
-			extendExclude,
-			forceExclude,
-			lineLength: lineLength ?? lineLengthSnake,
-			pythonVersion,
-			requiredVersion: requiredVersion ?? requiredVersionSnake,
-			skipMagicTrailingComma,
-			skipNumericUnderscoreNormalization,
-			skipStringNormalization: skipStringNormalization ?? skipStringNormalizationSnake,
-			targetVersion: targetVersion ?? targetVersionSnake,
+			'line-length': lineLength ?? lineLengthSnake,
+			'required-version': requiredVersion ?? requiredVersionSnake,
+			'skip-string-normalization': skipStringNormalization ?? skipStringNormalizationSnake,
+			'target-version': targetVersion ?? targetVersionSnake,
 		}),
 	)
 }

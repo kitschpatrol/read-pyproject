@@ -55,47 +55,5 @@ export function createCommitizenSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			allowed_prefixes: allowedPrefixes,
-			annotated_tag: annotatedTag,
-			breaking_change_exclamation_in_title: breakingChangeExclamationInTitle,
-			bump_message: bumpMessage,
-			changelog_file: changelogFile,
-			changelog_format: changelogFormat,
-			changelog_incremental: changelogIncremental,
-			gpg_sign: gpgSign,
-			major_version_zero: majorVersionZero,
-			message_length_limit: messageLengthLimit,
-			post_bump_hooks: postBumpHooks,
-			pre_bump_hooks: preBumpHooks,
-			prerelease_offset: prereleaseOffset,
-			tag_format: tagFormat,
-			update_changelog_on_bump: updateChangelogOnBump,
-			version_files: versionFiles,
-			version_provider: versionProvider,
-			version_scheme: versionScheme,
-			...rest
-		}) => ({
-			...rest,
-			allowedPrefixes,
-			annotatedTag,
-			breakingChangeExclamationInTitle,
-			bumpMessage,
-			changelogFile,
-			changelogFormat,
-			changelogIncremental,
-			gpgSign,
-			majorVersionZero,
-			messageLengthLimit,
-			postBumpHooks,
-			preBumpHooks,
-			prereleaseOffset,
-			tagFormat,
-			updateChangelogOnBump,
-			versionFiles,
-			versionProvider,
-			versionScheme,
-		}),
-	)
+	return object
 }

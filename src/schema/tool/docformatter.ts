@@ -30,25 +30,5 @@ export function createDocformatterSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'close-quotes-on-newline': closeQuotesOnNewline,
-			'in-place': inPlace,
-			'pre-summary-newline': preSummaryNewline,
-			'pre-summary-space': preSummarySpace,
-			'rest-section-adorns': restSectionAdorns,
-			'wrap-descriptions': wrapDescriptions,
-			'wrap-summaries': wrapSummaries,
-			...rest
-		}) => ({
-			...rest,
-			closeQuotesOnNewline,
-			inPlace,
-			preSummaryNewline,
-			preSummarySpace,
-			restSectionAdorns,
-			wrapDescriptions,
-			wrapSummaries,
-		}),
-	)
+	return object
 }

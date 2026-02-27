@@ -18,9 +18,5 @@ export function createDagsterSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(({ module_name: moduleName, project_name: projectName, ...rest }) => ({
-		...rest,
-		moduleName,
-		projectName,
-	}))
+	return object
 }

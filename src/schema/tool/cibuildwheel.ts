@@ -31,27 +31,5 @@ export function createCibuildwheelSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			'before-all': beforeAll,
-			'before-build': beforeBuild,
-			'before-test': beforeTest,
-			'build-frontend': buildFrontend,
-			'test-command': testCommand,
-			'test-extras': testExtras,
-			'test-requires': testRequires,
-			'test-skip': testSkip,
-			...rest
-		}) => ({
-			...rest,
-			beforeAll,
-			beforeBuild,
-			beforeTest,
-			buildFrontend,
-			testCommand,
-			testExtras,
-			testRequires,
-			testSkip,
-		}),
-	)
+	return object
 }

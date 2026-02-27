@@ -28,20 +28,5 @@ export function createPydocstyleSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			: unknownKeyPolicy === 'strip'
 				? base
 				: base.loose()
-	return object.transform(
-		({
-			add_ignore: addIgnore,
-			add_select: addSelect,
-			ignore_decorators: ignoreDecorators,
-			// eslint-disable-next-line unicorn/prevent-abbreviations
-			match_dir: matchDir,
-			...rest
-		}) => ({
-			...rest,
-			addIgnore,
-			addSelect,
-			ignoreDecorators,
-			matchDir,
-		}),
-	)
+	return object
 }
