@@ -9,6 +9,7 @@ import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
 	createBlackSchema,
+	createIsortSchema,
 	createMypySchema,
 	createPoetrySchema,
 	createPytestSchema,
@@ -318,6 +319,30 @@ describe('tool schemas', () => {
 		expect(result.devDependencies).toEqual(['pytest>=7.0'])
 		expect(result.indexUrl).toBe('https://pypi.org/simple')
 	})
+
+	it('parses isort config', () => {
+		const schema = createIsortSchema(false)
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			force_single_line: true,
+			// eslint-disable-next-line ts/naming-convention
+			known_first_party: ['mypackage'],
+			// eslint-disable-next-line ts/naming-convention
+			line_length: 100,
+			// eslint-disable-next-line ts/naming-convention
+			multi_line_output: 3,
+			profile: 'black',
+			skip: ['__init__.py'],
+			// eslint-disable-next-line ts/naming-convention
+			src_paths: ['src', 'tests'],
+		})
+		expect(result.profile).toBe('black')
+		expect(result.lineLength).toBe(100)
+		expect(result.multiLineOutput).toBe(3)
+		expect(result.forceSingleLine).toBe(true)
+		expect(result.knownFirstParty).toEqual(['mypackage'])
+		expect(result.srcPaths).toEqual(['src', 'tests'])
+	})
 })
 
 // ---------------------------------------------------------------------------
@@ -347,15 +372,14 @@ describe('unknown tool passthrough', () => {
 		const result = schema.parse({
 			tool: {
 				// eslint-disable-next-line ts/naming-convention
-				isort: { line_length: 100, profile: 'black' },
+				some_unknown_tool: { key: 'value', nested: { a: 1 } },
 			},
 		})
 		// eslint-disable-next-line ts/no-unsafe-type-assertion
 		const tool = result.tool as Record<string, unknown>
-		expect(tool.isort).toEqual({
-			// eslint-disable-next-line ts/naming-convention
-			line_length: 100,
-			profile: 'black',
+		expect(tool.some_unknown_tool).toEqual({
+			key: 'value',
+			nested: { a: 1 },
 		})
 	})
 })

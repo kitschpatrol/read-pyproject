@@ -1,5 +1,6 @@
 export { createBlackSchema } from './black'
 export { createHatchSchema } from './hatch'
+export { createIsortSchema } from './isort'
 export { createMypySchema } from './mypy'
 export { createPdmSchema } from './pdm'
 export { createPoetrySchema } from './poetry'

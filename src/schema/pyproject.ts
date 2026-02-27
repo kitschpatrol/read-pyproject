@@ -4,6 +4,7 @@ import { createProjectSchema } from './project'
 import {
 	createBlackSchema,
 	createHatchSchema,
+	createIsortSchema,
 	createMypySchema,
 	createPdmSchema,
 	createPoetrySchema,
@@ -36,6 +37,7 @@ export function createPyprojectSchema(strict: boolean) {
 	const toolShape = {
 		black: createBlackSchema(strict).optional(),
 		hatch: createHatchSchema(strict).optional(),
+		isort: createIsortSchema(strict).optional(),
 		mypy: createMypySchema(strict).optional(),
 		pdm: createPdmSchema(strict).optional(),
 		poetry: createPoetrySchema(strict).optional(),
