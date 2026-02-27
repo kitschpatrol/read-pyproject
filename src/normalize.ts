@@ -9,9 +9,7 @@ export function normalizePep503Name(name: string): string {
 	return name.toLowerCase().replaceAll(/[-_.]+/g, '-')
 }
 
-export type NormalizedReadme =
-	| { contentType?: string; file: string; text?: undefined }
-	| { contentType?: string; file?: undefined; text: string }
+export type NormalizedReadme = string | { contentType?: string; text: string }
 
 export type NormalizedLicense =
 	| { file: string; spdx?: undefined; text?: undefined }

@@ -24,7 +24,11 @@ export function createDistutilsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		sdist: z.object({}).loose().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(({ bdist_wheel: bdistWheel, ...rest }) => ({
 		...rest,
 		bdistWheel,

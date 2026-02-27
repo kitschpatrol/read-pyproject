@@ -31,7 +31,11 @@ export function createUvSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		workspace: z.object({}).loose().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			'build-backend': buildBackend,

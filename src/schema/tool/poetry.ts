@@ -37,7 +37,11 @@ export function createPoetrySchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		version: z.string().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			'dev-dependencies': devDependencies,

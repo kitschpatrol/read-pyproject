@@ -16,7 +16,11 @@ export function createComfySchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		PublisherId: z.string().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({ DisplayName: displayName, Icon: icon, PublisherId: publisherId, ...rest }) => ({
 			...rest,

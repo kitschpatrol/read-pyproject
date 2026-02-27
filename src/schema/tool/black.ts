@@ -34,7 +34,11 @@ export function createBlackSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		workers: z.number().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			'extend-exclude': extendExclude,

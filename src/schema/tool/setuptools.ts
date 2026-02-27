@@ -20,7 +20,11 @@ export function createSetuptoolsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		'zip-safe': z.boolean().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			'include-package-data': includePackageData,

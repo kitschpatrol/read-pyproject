@@ -19,6 +19,10 @@ export function createHatchSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 			.optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object
 }

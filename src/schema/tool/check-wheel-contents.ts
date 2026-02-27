@@ -13,7 +13,11 @@ export function createCheckWheelContentsSchema(unknownKeyPolicy: UnknownKeyPolic
 		toplevel: z.union([z.string(), z.array(z.string())]).optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(({ 'src-dir': srcDirectory, ...rest }) => ({
 		...rest,
 		srcDirectory,

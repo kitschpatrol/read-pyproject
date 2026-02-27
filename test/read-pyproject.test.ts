@@ -81,34 +81,43 @@ describe('PEP 503 name normalization', () => {
 // ---------------------------------------------------------------------------
 
 describe('readme normalization', () => {
-	it('normalizes string "README.md" to object with contentType', () => {
+	it('keeps string "README.md" as a string', () => {
 		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ name: 'test', readme: 'README.md' })
-		expect(result.readme).toEqual({ contentType: 'text/markdown', file: 'README.md' })
+		expect(result.readme).toBe('README.md')
 	})
 
-	it('normalizes string "README.rst" to object with contentType', () => {
+	it('keeps string "README.rst" as a string', () => {
 		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({ name: 'test', readme: 'README.rst' })
-		expect(result.readme).toEqual({ contentType: 'text/x-rst', file: 'README.rst' })
+		expect(result.readme).toBe('README.rst')
 	})
 
-	it('normalizes table with file and content-type', () => {
+	it('collapses table with file to a string', () => {
 		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({
 			name: 'test',
 			readme: { 'content-type': 'text/markdown', file: 'README.md' },
 		})
-		expect(result.readme).toEqual({ contentType: 'text/markdown', file: 'README.md' })
+		expect(result.readme).toBe('README.md')
 	})
 
-	it('normalizes table with text and content-type', () => {
+	it('normalizes table with text and content-type to object', () => {
 		const schema = createProjectSchema('passthrough')
 		const result = schema.parse({
 			name: 'test',
 			readme: { 'content-type': 'text/plain', text: 'Hello world' },
 		})
 		expect(result.readme).toEqual({ contentType: 'text/plain', text: 'Hello world' })
+	})
+
+	it('normalizes table with text only (no content-type)', () => {
+		const schema = createProjectSchema('passthrough')
+		const result = schema.parse({
+			name: 'test',
+			readme: { text: 'Hello world' },
+		})
+		expect(result.readme).toEqual({ text: 'Hello world' })
 	})
 })
 

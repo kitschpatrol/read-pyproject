@@ -102,7 +102,11 @@ export function createMypySchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		warn_unused_ignores: z.boolean().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			allow_redefinition: allowRedefinition,

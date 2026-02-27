@@ -127,7 +127,11 @@ export function createPyprojectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	}
 	const base = z.object(shape)
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({ 'build-system': buildSystem, 'dependency-groups': dependencyGroups, ...rest }) => ({
 			...rest,

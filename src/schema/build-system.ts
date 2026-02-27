@@ -13,7 +13,11 @@ const buildSystemRawShape = {
 export function createBuildSystemSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object(buildSystemRawShape)
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({ 'backend-path': backendPath, 'build-backend': buildBackend, ...rest }) => ({
 			...rest,

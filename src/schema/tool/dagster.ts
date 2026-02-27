@@ -13,7 +13,11 @@ export function createDagsterSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		project_name: z.string().optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(({ module_name: moduleName, project_name: projectName, ...rest }) => ({
 		...rest,
 		moduleName,

@@ -26,7 +26,11 @@ export function createCibuildwheelSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		windows: platformOverrideSchema.optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			'before-all': beforeAll,

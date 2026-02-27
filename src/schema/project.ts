@@ -31,27 +31,19 @@ const licenseRawSchema = z.union([
 		.loose(),
 ])
 
-function inferContentType(file: string): string | undefined {
-	const lower = file.toLowerCase()
-	if (lower.endsWith('.md')) return 'text/markdown'
-	if (lower.endsWith('.rst')) return 'text/x-rst'
-	if (lower.endsWith('.txt')) return 'text/plain'
-	return undefined
-}
-
 function transformReadme(
 	raw: undefined | z.output<typeof readmeRawSchema>,
 ): NormalizedReadme | undefined {
 	if (raw === undefined) return undefined
 
-	if (typeof raw === 'string') {
-		return { contentType: inferContentType(raw), file: raw }
+	if (typeof raw === 'string') return raw
+
+	if (raw.file !== undefined) return raw.file
+
+	if (raw.text !== undefined) {
+		const contentType = raw['content-type']
+		return contentType ? { contentType, text: raw.text } : { text: raw.text }
 	}
-
-	const contentType = raw['content-type'] ?? (raw.file ? inferContentType(raw.file) : undefined)
-
-	if (raw.file !== undefined) return { contentType, file: raw.file }
-	if (raw.text !== undefined) return { contentType, text: raw.text }
 
 	return undefined
 }
@@ -98,7 +90,11 @@ const projectRawShape = {
 export function createProjectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const base = z.object(projectRawShape)
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			'entry-points': entryPoints,

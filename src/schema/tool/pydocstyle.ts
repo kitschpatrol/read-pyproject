@@ -23,7 +23,11 @@ export function createPydocstyleSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		select: stringOrArray.optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			add_ignore: addIgnore,

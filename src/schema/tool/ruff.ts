@@ -83,7 +83,11 @@ export function createRuffSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 		unfixable: z.array(z.string()).optional(),
 	})
 	const object =
-		unknownKeyPolicy === 'error' ? base.strict() : unknownKeyPolicy === 'strip' ? base : base.loose()
+		unknownKeyPolicy === 'error'
+			? base.strict()
+			: unknownKeyPolicy === 'strip'
+				? base
+				: base.loose()
 	return object.transform(
 		({
 			'extend-exclude': extendExclude,
