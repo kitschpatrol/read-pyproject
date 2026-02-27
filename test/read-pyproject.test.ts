@@ -11,6 +11,7 @@ import {
 	createBlackSchema,
 	createCodespellSchema,
 	createCoverageSchema,
+	createDocformatterSchema,
 	createFlake8Schema,
 	createIsortSchema,
 	createMypySchema,
@@ -540,6 +541,22 @@ describe('tool schemas', () => {
 			{ directory: 'fixed', name: 'Fixed', showcontent: true },
 		])
 		expect(result.underlines).toEqual(['', '', ''])
+	})
+
+	it('parses docformatter config', () => {
+		const schema = createDocformatterSchema(false)
+		const result = schema.parse({
+			'close-quotes-on-newline': true,
+			'in-place': true,
+			'pre-summary-newline': true,
+			'wrap-descriptions': 120,
+			'wrap-summaries': 120,
+		})
+		expect(result.wrapSummaries).toBe(120)
+		expect(result.wrapDescriptions).toBe(120)
+		expect(result.preSummaryNewline).toBe(true)
+		expect(result.closeQuotesOnNewline).toBe(true)
+		expect(result.inPlace).toBe(true)
 	})
 })
 

@@ -4,6 +4,7 @@ export default cspellConfig({
 	ignorePaths: ['test/fixtures/**/*'],
 	words: [
 		'addopts',
+		'docformatter',
 		'doctests',
 		'dunder',
 		'filterwarnings',
