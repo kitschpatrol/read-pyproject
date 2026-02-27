@@ -26,6 +26,7 @@ export default cspellConfig({
 		'norecursedirs',
 		'optionflags',
 		'parentdir',
+		'pixi',
 		'pylib',
 		'pylint',
 		'pyupgrade',

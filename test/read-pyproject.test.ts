@@ -364,8 +364,6 @@ describe('real-world fixtures', () => {
 				'douile-friends-queue.pyproject.toml',
 				// unknown tool: chango
 				'eatsky1006-python-telegram-bot.pyproject.toml',
-				// unknown tool: pixi
-				'fppdf-fppdf.pyproject.toml',
 				// unknown tool: bumpver
 				'gardenerik-django-policies.pyproject.toml',
 				// unknown tool: pydocstyle
@@ -376,8 +374,6 @@ describe('real-world fixtures', () => {
 				'iitpvisionlab-adrt.pyproject.toml',
 				// unknown tool: poetry-dynamic-versioning
 				'kaisbn-openly.pyproject.toml',
-				// unknown tool: pixi
-				'khanlab-cfmm2tar.pyproject.toml',
 				// unknown tool: pydantic-mypy
 				'lucas-six-python-cookbook.pyproject.toml',
 				// unknown tool: uv-dynamic-versioning
