@@ -52,11 +52,9 @@ export function createTbumpSchema(unknownKeys: UnknownKeys) {
 	})
 	const object =
 		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
-	return object.transform(
-		({ before_commit: beforeCommit, github_url: githubUrl, ...rest }) => ({
-			...rest,
-			beforeCommit,
-			githubUrl,
-		}),
-	)
+	return object.transform(({ before_commit: beforeCommit, github_url: githubUrl, ...rest }) => ({
+		...rest,
+		beforeCommit,
+		githubUrl,
+	}))
 }

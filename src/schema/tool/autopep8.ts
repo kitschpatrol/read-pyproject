@@ -8,7 +8,6 @@ import type { UnknownKeys } from '../../types'
 export function createAutopep8Schema(unknownKeys: UnknownKeys) {
 	const base = z.object({
 		aggressive: z.number().optional(),
-		// eslint-disable-next-line ts/naming-convention
 		ignore: z.union([z.string(), z.array(z.string())]).optional(),
 		// eslint-disable-next-line ts/naming-convention
 		max_line_length: z.number().optional(),

@@ -11,9 +11,9 @@ import {
 	createAutopep8Schema,
 	createBanditSchema,
 	createBlackSchema,
+	createBumpversionSchema,
 	createCheckWheelContentsSchema,
 	createCibuildwheelSchema,
-	createBumpversionSchema,
 	createCodespellSchema,
 	createCommitizenSchema,
 	createCoverageSchema,
@@ -25,8 +25,8 @@ import {
 	createJupyterReleaserSchema,
 	createMypySchema,
 	createPoeSchema,
-	createPylintSchema,
 	createPoetrySchema,
+	createPylintSchema,
 	createPyrightSchema,
 	createPytestSchema,
 	createRuffSchema,
@@ -669,7 +669,7 @@ describe('tool schemas', () => {
 			skips: ['B101', 'B601'],
 			tests: ['B201'],
 		})
-		expect(result.excludeDirs).toEqual(['tests', 'examples'])
+		expect(result.excludeDirectories).toEqual(['tests', 'examples'])
 		expect(result.skips).toEqual(['B101', 'B601'])
 		expect(result.tests).toEqual(['B201'])
 	})
@@ -693,7 +693,7 @@ describe('tool schemas', () => {
 	it('parses tbump config', () => {
 		const schema = createTbumpSchema('passthrough')
 		const result = schema.parse({
-			file: [{ src: 'package.json', search: '"version": "{current_version}"' }],
+			file: [{ search: '"version": "{current_version}"', src: 'package.json' }],
 			git: {
 				// eslint-disable-next-line ts/naming-convention
 				message_template: 'Bump to {new_version}',
@@ -702,13 +702,16 @@ describe('tool schemas', () => {
 			},
 			// eslint-disable-next-line ts/naming-convention
 			github_url: 'https://github.com/example/repo/',
-			version: { current: '1.0.0', regex: '(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)' },
+			version: {
+				current: '1.0.0',
+				regex: String.raw`(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)`,
+			},
 		})
 		expect(result.githubUrl).toBe('https://github.com/example/repo/')
 		expect(result.version?.current).toBe('1.0.0')
 		expect(result.git?.messageTemplate).toBe('Bump to {new_version}')
 		expect(result.git?.tagTemplate).toBe('v{new_version}')
-		expect(result.file).toEqual([{ src: 'package.json', search: '"version": "{current_version}"' }])
+		expect(result.file).toEqual([{ search: '"version": "{current_version}"', src: 'package.json' }])
 	})
 
 	it('parses distutils config', () => {
@@ -716,15 +719,15 @@ describe('tool schemas', () => {
 		const result = schema.parse({
 			// eslint-disable-next-line ts/naming-convention
 			bdist_wheel: {
-				universal: true,
 				// eslint-disable-next-line ts/naming-convention
 				python_tag: 'py3',
+				universal: true,
 			},
-			sdist: { owner: 'root', group: 'root' },
+			sdist: { group: 'root', owner: 'root' },
 		})
 		expect(result.bdistWheel?.universal).toBe(true)
 		expect(result.bdistWheel?.pythonTag).toBe('py3')
-		expect(result.sdist).toEqual({ owner: 'root', group: 'root' })
+		expect(result.sdist).toEqual({ group: 'root', owner: 'root' })
 	})
 
 	it('parses check-wheel-contents config', () => {
@@ -739,7 +742,11 @@ describe('tool schemas', () => {
 		const schema = createJupyterReleaserSchema('passthrough')
 		const result = schema.parse({
 			hooks: {
-				'before-build-npm': ["python -m pip install 'jupyterlab>=4.0.0,<5'", 'jlpm', 'jlpm build:prod'],
+				'before-build-npm': [
+					"python -m pip install 'jupyterlab>=4.0.0,<5'",
+					'jlpm',
+					'jlpm build:prod',
+				],
 				'before-build-python': ['jlpm clean:all'],
 			},
 			options: {

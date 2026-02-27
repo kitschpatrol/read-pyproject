@@ -16,8 +16,8 @@ export function createBanditSchema(unknownKeys: UnknownKeys) {
 	})
 	const object =
 		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
-	return object.transform(({ exclude_dirs: excludeDirs, ...rest }) => ({
+	return object.transform(({ exclude_dirs: excludeDirectories, ...rest }) => ({
 		...rest,
-		excludeDirs,
+		excludeDirectories,
 	}))
 }
