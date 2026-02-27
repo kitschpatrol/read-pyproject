@@ -28,6 +28,7 @@ export default cspellConfig({
 		'optionflags',
 		'parentdir',
 		'pixi',
+		'pydocstyle',
 		'pylib',
 		'pylint',
 		'pyupgrade',

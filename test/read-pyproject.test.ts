@@ -364,8 +364,6 @@ describe('real-world fixtures', () => {
 				'eatsky1006-python-telegram-bot.pyproject.toml',
 				// unknown tool: bumpver
 				'gardenerik-django-policies.pyproject.toml',
-				// unknown tool: pydocstyle
-				'hypothesis-data-tasks.pyproject.toml',
 				// unknown tool: dephell
 				'ig248-tensorpandas.pyproject.toml',
 				// unknown tool: scikit-build
