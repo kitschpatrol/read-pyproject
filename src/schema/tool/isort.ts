@@ -9,9 +9,21 @@ const looseBoolean = z.union([z.boolean(), z.string()])
  * @see [isort configuration reference](https://pycqa.github.io/isort/docs/configuration/options.html)
  */
 export function createIsortSchema(unknownKeys: UnknownKeys) {
+	const stringOrArray = z.union([z.string(), z.array(z.string())])
+
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
+		add_imports: stringOrArray.optional(),
+		// eslint-disable-next-line ts/naming-convention
+		color_output: looseBoolean.optional(),
+		// eslint-disable-next-line ts/naming-convention
 		combine_as_imports: looseBoolean.optional(),
+		// eslint-disable-next-line ts/naming-convention
+		default_section: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		ensure_newline_before_comments: looseBoolean.optional(),
+		// eslint-disable-next-line ts/naming-convention
+		extend_skip: stringOrArray.optional(),
 		// eslint-disable-next-line ts/naming-convention
 		force_grid_wrap: z.number().optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -19,11 +31,18 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 		// eslint-disable-next-line ts/naming-convention
 		force_sort_within_sections: looseBoolean.optional(),
 		// eslint-disable-next-line ts/naming-convention
+		forced_separate: z.array(z.string()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		ignore_whitespace: looseBoolean.optional(),
+		// eslint-disable-next-line ts/naming-convention
 		include_trailing_comma: looseBoolean.optional(),
+		indent: z.union([z.number(), z.string()]).optional(),
 		// eslint-disable-next-line ts/naming-convention
-		known_first_party: z.union([z.string(), z.array(z.string())]).optional(),
+		known_first_party: stringOrArray.optional(),
 		// eslint-disable-next-line ts/naming-convention
-		known_third_party: z.union([z.string(), z.array(z.string())]).optional(),
+		known_third_party: stringOrArray.optional(),
+		// eslint-disable-next-line ts/naming-convention
+		length_sort: looseBoolean.optional(),
 		// eslint-disable-next-line ts/naming-convention
 		line_length: z.number().optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -39,9 +58,12 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 		profile: z.string().optional(),
 		// eslint-disable-next-line ts/naming-convention
 		py_version: z.union([z.string(), z.number()]).optional(),
-		skip: z.union([z.string(), z.array(z.string())]).optional(),
+		sections: stringOrArray.optional(),
+		skip: stringOrArray.optional(),
 		// eslint-disable-next-line ts/naming-convention
 		skip_gitignore: looseBoolean.optional(),
+		// eslint-disable-next-line ts/naming-convention
+		skip_glob: stringOrArray.optional(),
 		// eslint-disable-next-line ts/naming-convention
 		src_paths: z.array(z.string()).optional(),
 		// eslint-disable-next-line ts/naming-convention
@@ -51,13 +73,21 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
 		({
+			add_imports: addImports,
+			color_output: colorOutput,
 			combine_as_imports: combineAsImports,
+			default_section: defaultSection,
+			ensure_newline_before_comments: ensureNewlineBeforeComments,
+			extend_skip: extendSkip,
 			force_grid_wrap: forceGridWrap,
 			force_single_line: forceSingleLine,
 			force_sort_within_sections: forceSortWithinSections,
+			forced_separate: forcedSeparate,
+			ignore_whitespace: ignoreWhitespace,
 			include_trailing_comma: includeTrailingComma,
 			known_first_party: knownFirstParty,
 			known_third_party: knownThirdParty,
+			length_sort: lengthSort,
 			line_length: lineLength,
 			lines_after_imports: linesAfterImports,
 			lines_between_sections: linesBetweenSections,
@@ -66,18 +96,27 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 			order_by_type: orderByType,
 			py_version: pyVersion,
 			skip_gitignore: skipGitignore,
+			skip_glob: skipGlob,
 			src_paths: srcPaths,
 			use_parentheses: useParentheses,
 			...rest
 		}) => ({
 			...rest,
+			addImports,
+			colorOutput,
 			combineAsImports,
+			defaultSection,
+			ensureNewlineBeforeComments,
+			extendSkip,
+			forcedSeparate,
 			forceGridWrap,
 			forceSingleLine,
 			forceSortWithinSections,
+			ignoreWhitespace,
 			includeTrailingComma,
 			knownFirstParty,
 			knownThirdParty,
+			lengthSort,
 			lineLength,
 			linesAfterImports,
 			linesBetweenSections,
@@ -86,6 +125,7 @@ export function createIsortSchema(unknownKeys: UnknownKeys) {
 			orderByType,
 			pyVersion,
 			skipGitignore,
+			skipGlob,
 			srcPaths,
 			useParentheses,
 		}),

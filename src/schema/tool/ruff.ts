@@ -50,18 +50,42 @@ export function createRuffSchema(unknownKeys: UnknownKeys) {
 		)
 
 	const base = z.object({
+		exclude: z.array(z.string()).optional(),
+		'extend-exclude': z.array(z.string()).optional(),
+		'extend-select': z.array(z.string()).optional(),
+		fix: z.boolean().optional(),
+		fixable: z.array(z.string()).optional(),
 		format: formatSchema.optional(),
+		ignore: z.array(z.string()).optional(),
+		'indent-width': z.number().optional(),
+		isort: z.object({}).loose().optional(),
 		'line-length': z.number().optional(),
 		lint: lintSchema.optional(),
+		'per-file-ignores': z.record(z.string(), z.array(z.string())).optional(),
+		preview: z.boolean().optional(),
+		select: z.array(z.string()).optional(),
 		src: z.array(z.string()).optional(),
 		'target-version': z.string().optional(),
+		unfixable: z.array(z.string()).optional(),
 	})
 	const object =
 		unknownKeys === 'error' ? base.strict() : unknownKeys === 'strip' ? base : base.loose()
 	return object.transform(
-		({ 'line-length': lineLength, 'target-version': targetVersion, ...rest }) => ({
+		({
+			'extend-exclude': extendExclude,
+			'extend-select': extendSelect,
+			'indent-width': indentWidth,
+			'line-length': lineLength,
+			'per-file-ignores': perFileIgnores,
+			'target-version': targetVersion,
+			...rest
+		}) => ({
 			...rest,
+			extendExclude,
+			extendSelect,
+			indentWidth,
 			lineLength,
+			perFileIgnores,
 			targetVersion,
 		}),
 	)

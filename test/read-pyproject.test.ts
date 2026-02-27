@@ -256,6 +256,7 @@ describe('tool schemas', () => {
 		const schema = createPoeSchema('passthrough')
 		const result = schema.parse({
 			'default-task-type': 'cmd',
+			// eslint-disable-next-line ts/naming-convention
 			env: { NODE_ENV: 'test' },
 			executor: { type: 'poetry' },
 			'poetry-command': 'poe',
@@ -268,6 +269,7 @@ describe('tool schemas', () => {
 			verbosity: 1,
 		})
 		expect(result.defaultTaskType).toBe('cmd')
+		// eslint-disable-next-line ts/naming-convention
 		expect(result.env).toEqual({ NODE_ENV: 'test' })
 		expect(result.executor).toEqual({ type: 'poetry' })
 		expect(result.poetryCommand).toBe('poe')
