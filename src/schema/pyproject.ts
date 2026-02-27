@@ -3,6 +3,7 @@ import type { UnknownKeys } from '../types'
 import { createBuildSystemSchema } from './build-system'
 import { createProjectSchema } from './project'
 import {
+	createBanditSchema,
 	createBlackSchema,
 	createCheckWheelContentsSchema,
 	createBumpversionSchema,
@@ -50,6 +51,7 @@ const dependencyGroupsSchema = z.record(
  */
 export function createPyprojectSchema(unknownKeys: UnknownKeys) {
 	const toolShape = {
+		bandit: createBanditSchema(unknownKeys).optional(),
 		black: createBlackSchema(unknownKeys).optional(),
 		bumpversion: createBumpversionSchema(unknownKeys).optional(),
 		'check-wheel-contents': createCheckWheelContentsSchema(unknownKeys).optional(),

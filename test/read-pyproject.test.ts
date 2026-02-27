@@ -8,6 +8,7 @@ import { createBuildSystemSchema } from '../src/schema/build-system'
 import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
+	createBanditSchema,
 	createBlackSchema,
 	createCheckWheelContentsSchema,
 	createBumpversionSchema,
@@ -628,6 +629,19 @@ describe('tool schemas', () => {
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
 		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
+	})
+
+	it('parses bandit config', () => {
+		const schema = createBanditSchema('passthrough')
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			exclude_dirs: ['tests', 'examples'],
+			skips: ['B101', 'B601'],
+			tests: ['B201'],
+		})
+		expect(result.excludeDirs).toEqual(['tests', 'examples'])
+		expect(result.skips).toEqual(['B101', 'B601'])
+		expect(result.tests).toEqual(['B201'])
 	})
 
 	it('parses check-wheel-contents config', () => {
