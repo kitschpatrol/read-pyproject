@@ -18,6 +18,7 @@ import {
 	createIsortSchema,
 	createMypySchema,
 	createPoeSchema,
+	createPylintSchema,
 	createPoetrySchema,
 	createPyrightSchema,
 	createPytestSchema,
@@ -625,6 +626,22 @@ describe('tool schemas', () => {
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
 		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
+	})
+
+	it('parses pylint config', () => {
+		const schema = createPylintSchema('passthrough')
+		const result = schema.parse({
+			disable: ['missing-docstring', 'too-few-public-methods'],
+			'good-names': ['i', 'j', 'k', 'x'],
+			jobs: 0,
+			'load-plugins': ['pylint.extensions.mccabe'],
+			'max-line-length': 120,
+		})
+		expect(result.goodNames).toEqual(['i', 'j', 'k', 'x'])
+		expect(result.jobs).toBe(0)
+		expect(result.loadPlugins).toEqual(['pylint.extensions.mccabe'])
+		expect(result.maxLineLength).toBe(120)
+		expect(result.disable).toEqual(['missing-docstring', 'too-few-public-methods'])
 	})
 
 	it('parses commitizen config', () => {

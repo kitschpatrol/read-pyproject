@@ -22,6 +22,7 @@ export default cspellConfig({
 		'parentdir',
 		'pycache',
 		'pylib',
+		'pylint',
 		'pythonpath',
 		'setuptools',
 		'showcontent',
