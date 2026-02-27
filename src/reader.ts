@@ -17,7 +17,7 @@ export async function readPyproject(
 ): Promise<PyprojectData> {
 	const filePath = await resolveFilePath(pathOrDirectory ?? process.cwd())
 
-	log.info(`Reading pyproject.toml from ${filePath}`)
+	log.debug(`Reading pyproject.toml from ${filePath}`)
 
 	let content: string
 	try {

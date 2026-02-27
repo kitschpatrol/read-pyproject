@@ -140,8 +140,8 @@ export function createPyprojectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	return object.transform(
 		({ 'build-system': buildSystem, 'dependency-groups': dependencyGroups, ...rest }) => ({
 			...rest,
-			buildSystem,
-			dependencyGroups,
+			...(buildSystem !== undefined && { buildSystem }),
+			...(dependencyGroups !== undefined && { dependencyGroups }),
 		}),
 	)
 }
