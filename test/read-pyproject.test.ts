@@ -9,6 +9,7 @@ import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
 	createBlackSchema,
+	createCodespellSchema,
 	createCoverageSchema,
 	createIsortSchema,
 	createMypySchema,
@@ -443,6 +444,20 @@ describe('tool schemas', () => {
 		expect(result.versionScheme).toBe('post-release')
 		expect(result.writeTo).toBe('src/mypackage/_version.py')
 		expect(result.writeToTemplate).toBe('__version__ = "{version}"')
+	})
+
+	it('parses codespell config', () => {
+		const schema = createCodespellSchema(false)
+		const result = schema.parse({
+			'check-filenames': true,
+			'ignore-words-list': 'crate,nd,ned',
+			'quiet-level': 3,
+			skip: '*.pt,*.pth,.git',
+		})
+		expect(result.checkFilenames).toBe(true)
+		expect(result.ignoreWordsList).toBe('crate,nd,ned')
+		expect(result.quietLevel).toBe(3)
+		expect(result.skip).toBe('*.pt,*.pth,.git')
 	})
 })
 
