@@ -107,24 +107,15 @@ export function createCoverageSchema(strict: boolean) {
 
 	const runTransformed = (strict ? runShape.strict() : runShape.loose()).transform(
 		({
-			// eslint-disable-next-line ts/naming-convention
 			command_line: commandLine,
-			// eslint-disable-next-line ts/naming-convention
 			cover_pylib: coverPylib,
-			// eslint-disable-next-line ts/naming-convention
 			data_file: dataFile,
-			// eslint-disable-next-line ts/naming-convention
 			debug_file: debugFile,
-			// eslint-disable-next-line ts/naming-convention
 			disable_warnings: disableWarnings,
-			// eslint-disable-next-line ts/naming-convention
 			dynamic_context: dynamicContext,
-			// eslint-disable-next-line ts/naming-convention
 			relative_files: relativeFiles,
-			// eslint-disable-next-line ts/naming-convention
-			source_dirs: sourceDirs,
-			// eslint-disable-next-line ts/naming-convention
-			source_pkgs: sourcePkgs,
+			source_dirs: sourceDirectories,
+			source_pkgs: sourcePackages,
 			...rest
 		}) => ({
 			...rest,
@@ -135,32 +126,22 @@ export function createCoverageSchema(strict: boolean) {
 			disableWarnings,
 			dynamicContext,
 			relativeFiles,
-			sourceDirs,
-			sourcePkgs,
+			sourceDirectories,
+			sourcePackages,
 		}),
 	)
 
 	const reportTransformed = (strict ? reportShape.strict() : reportShape.loose()).transform(
 		({
-			// eslint-disable-next-line ts/naming-convention
 			exclude_also: excludeAlso,
-			// eslint-disable-next-line ts/naming-convention
 			exclude_lines: excludeLines,
-			// eslint-disable-next-line ts/naming-convention
 			fail_under: failUnder,
-			// eslint-disable-next-line ts/naming-convention
 			ignore_errors: ignoreErrors,
-			// eslint-disable-next-line ts/naming-convention
 			include_namespace_packages: includeNamespacePackages,
-			// eslint-disable-next-line ts/naming-convention
 			partial_also: partialAlso,
-			// eslint-disable-next-line ts/naming-convention
 			partial_branches: partialBranches,
-			// eslint-disable-next-line ts/naming-convention
 			show_missing: showMissing,
-			// eslint-disable-next-line ts/naming-convention
 			skip_covered: skipCovered,
-			// eslint-disable-next-line ts/naming-convention
 			skip_empty: skipEmpty,
 			...rest
 		}) => ({
@@ -180,13 +161,9 @@ export function createCoverageSchema(strict: boolean) {
 
 	const htmlTransformed = (strict ? htmlShape.strict() : htmlShape.loose()).transform(
 		({
-			// eslint-disable-next-line ts/naming-convention
 			extra_css: extraCss,
-			// eslint-disable-next-line ts/naming-convention
 			show_contexts: showContexts,
-			// eslint-disable-next-line ts/naming-convention
 			skip_covered: skipCovered,
-			// eslint-disable-next-line ts/naming-convention
 			skip_empty: skipEmpty,
 			...rest
 		}) => ({
@@ -199,24 +176,14 @@ export function createCoverageSchema(strict: boolean) {
 	)
 
 	const xmlTransformed = (strict ? xmlShape.strict() : xmlShape.loose()).transform(
-		({
-			// eslint-disable-next-line ts/naming-convention
-			package_depth: packageDepth,
-			...rest
-		}) => ({
+		({ package_depth: packageDepth, ...rest }) => ({
 			...rest,
 			packageDepth,
 		}),
 	)
 
 	const jsonTransformed = (strict ? jsonShape.strict() : jsonShape.loose()).transform(
-		({
-			// eslint-disable-next-line ts/naming-convention
-			pretty_print: prettyPrint,
-			// eslint-disable-next-line ts/naming-convention
-			show_contexts: showContexts,
-			...rest
-		}) => ({
+		({ pretty_print: prettyPrint, show_contexts: showContexts, ...rest }) => ({
 			...rest,
 			prettyPrint,
 			showContexts,
@@ -224,11 +191,7 @@ export function createCoverageSchema(strict: boolean) {
 	)
 
 	const lcovTransformed = (strict ? lcovShape.strict() : lcovShape.loose()).transform(
-		({
-			// eslint-disable-next-line ts/naming-convention
-			line_checksums: lineChecksums,
-			...rest
-		}) => ({
+		({ line_checksums: lineChecksums, ...rest }) => ({
 			...rest,
 			lineChecksums,
 		}),

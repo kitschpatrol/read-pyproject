@@ -13,6 +13,7 @@ import {
 	createIsortSchema,
 	createMypySchema,
 	createPoetrySchema,
+	createPyrightSchema,
 	createPytestSchema,
 	createRuffSchema,
 	createUvSchema,
@@ -376,7 +377,7 @@ describe('tool schemas', () => {
 		expect(result.run?.branch).toBe(true)
 		expect(result.run?.parallel).toBe(true)
 		expect(result.run?.source).toEqual(['mypackage'])
-		expect(result.run?.sourcePkgs).toEqual(['mypackage'])
+		expect(result.run?.sourcePackages).toEqual(['mypackage'])
 		expect(result.run?.omit).toEqual(['*/tests/*'])
 		expect(result.report?.failUnder).toBe(90)
 		expect(result.report?.showMissing).toBe(true)
@@ -388,6 +389,36 @@ describe('tool schemas', () => {
 			tests: ['tests', '*/tests'],
 		})
 		expect(result.html?.directory).toBe('htmlcov')
+	})
+
+	it('parses pyright config', () => {
+		const schema = createPyrightSchema(false)
+		const result = schema.parse({
+			exclude: ['**/__pycache__'],
+			extraPaths: ['src'],
+			include: ['src'],
+			pythonPlatform: 'All',
+			pythonVersion: '3.11',
+			reportMissingImports: true,
+			reportMissingTypeStubs: false,
+			reportUnusedImport: 'warning',
+			strictListInference: true,
+			typeCheckingMode: 'strict',
+			venv: '.venv',
+			venvPath: '.',
+		})
+		expect(result.typeCheckingMode).toBe('strict')
+		expect(result.pythonVersion).toBe('3.11')
+		expect(result.pythonPlatform).toBe('All')
+		expect(result.include).toEqual(['src'])
+		expect(result.exclude).toEqual(['**/__pycache__'])
+		expect(result.extraPaths).toEqual(['src'])
+		expect(result.venvPath).toBe('.')
+		expect(result.venv).toBe('.venv')
+		expect(result.strictListInference).toBe(true)
+		expect(result.reportMissingImports).toBe(true)
+		expect(result.reportMissingTypeStubs).toBe(false)
+		expect(result.reportUnusedImport).toBe('warning')
 	})
 })
 
