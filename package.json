@@ -1,6 +1,6 @@
 {
 	"name": "read-pyproject",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Parse and normalize pyproject.toml metadata into strictly typed JavaScript objects.",
 	"keywords": [
 		"python",
