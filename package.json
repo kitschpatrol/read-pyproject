@@ -1,0 +1,62 @@
+{
+	"name": "read-pyproject",
+	"version": "0.0.0",
+	"description": "A library project.",
+	"keywords": [
+		"npm-package",
+		"python",
+		"pyproject"
+	],
+	"homepage": "https://github.com/kitschpatrol/read-pyproject",
+	"bugs": "https://github.com/kitschpatrol/read-pyproject/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kitschpatrol/read-pyproject.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Eric Mika",
+		"email": "eric@ericmika.com",
+		"url": "https://ericmika.com"
+	},
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"files": [
+		"dist/*"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"clean": "git rm -f pnpm-lock.yaml ; git clean -fdX",
+		"fix": "ksc fix",
+		"lint": "ksc lint",
+		"release": "bumpp --commit 'Release: %s' && pnpm run build && NPM_AUTH_TOKEN=$(op read 'op://Personal/npm/token') && pnpm publish",
+		"test": "vitest"
+	},
+	"dependencies": {
+		"@types/node": "~20.19.35",
+		"lognow": "^0.4.1",
+		"smol-toml": "^1.6.0",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"@arethetypeswrong/core": "^0.18.2",
+		"@kitschpatrol/shared-config": "^6.0.1",
+		"bumpp": "^10.4.1",
+		"publint": "^0.3.17",
+		"tsdown": "^0.20.3",
+		"typescript": "~5.9.3",
+		"vitest": "^4.0.18"
+	},
+	"packageManager": "pnpm@10.30.3",
+	"engines": {
+		"node": ">=20.19.0"
+	}
+}
