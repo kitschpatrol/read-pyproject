@@ -5,9 +5,8 @@ export default defineConfig([
 		attw: {
 			profile: 'esm-only',
 		},
+		dts: true,
 		fixedExtension: false,
-		minify: true,
-		platform: 'neutral',
 		publint: true,
 		tsconfig: 'tsconfig.build.json',
 	},

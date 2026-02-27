@@ -41,15 +41,15 @@
 
 ### Similar projects
 
-## The future
-
 ## Maintainers
 
-_List maintainer(s) for a repository, along with one way of contacting them (e.g. GitHub link or email)._
+@kitschpatrol
 
-## Acknowledgments
+## Slop factor
 
-_State anyone or anything that significantly helped with the development of your project. State public contact hyper-links if applicable._
+_High._
+
+An initial human-crafted specification was implemented by Claude Code. The output has been subject to only moderate post-facto human scrutiny.
 
 <!-- contributing -->
 
