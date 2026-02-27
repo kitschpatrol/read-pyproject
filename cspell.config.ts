@@ -5,6 +5,7 @@ export default cspellConfig({
 	words: [
 		'addopts',
 		'asyncio',
+		'autopep',
 		'bumpversion',
 		'cibuildwheel',
 		'distutils',

@@ -8,6 +8,7 @@ import { createBuildSystemSchema } from '../src/schema/build-system'
 import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
+	createAutopep8Schema,
 	createBanditSchema,
 	createBlackSchema,
 	createCheckWheelContentsSchema,
@@ -632,6 +633,17 @@ describe('tool schemas', () => {
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
 		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
+	})
+
+	it('parses autopep8 config', () => {
+		const schema = createAutopep8Schema('passthrough')
+		const result = schema.parse({
+			aggressive: 2,
+			// eslint-disable-next-line ts/naming-convention
+			max_line_length: 120,
+		})
+		expect(result.maxLineLength).toBe(120)
+		expect(result.aggressive).toBe(2)
 	})
 
 	it('parses bandit config', () => {
