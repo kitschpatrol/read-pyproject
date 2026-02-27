@@ -1,4 +1,5 @@
 export { createBlackSchema } from './black'
+export { createBumpversionSchema } from './bumpversion'
 export { createCodespellSchema } from './codespell'
 export { createCommitizenSchema } from './commitizen'
 export { createCoverageSchema } from './coverage'

@@ -3,6 +3,7 @@ import { createBuildSystemSchema } from './build-system'
 import { createProjectSchema } from './project'
 import {
 	createBlackSchema,
+	createBumpversionSchema,
 	createCodespellSchema,
 	createCommitizenSchema,
 	createCoverageSchema,
@@ -45,6 +46,7 @@ const dependencyGroupsSchema = z.record(
 export function createPyprojectSchema(strict: boolean) {
 	const toolShape = {
 		black: createBlackSchema(strict).optional(),
+		bumpversion: createBumpversionSchema(strict).optional(),
 		codespell: createCodespellSchema(strict).optional(),
 		commitizen: createCommitizenSchema(strict).optional(),
 		coverage: createCoverageSchema(strict).optional(),

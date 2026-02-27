@@ -9,6 +9,7 @@ import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
 import {
 	createBlackSchema,
+	createBumpversionSchema,
 	createCodespellSchema,
 	createCommitizenSchema,
 	createCoverageSchema,
@@ -558,6 +559,41 @@ describe('tool schemas', () => {
 		expect(result.preSummaryNewline).toBe(true)
 		expect(result.closeQuotesOnNewline).toBe(true)
 		expect(result.inPlace).toBe(true)
+	})
+
+	it('parses bumpversion config', () => {
+		const schema = createBumpversionSchema(false)
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			allow_dirty: false,
+			commit: true,
+			// eslint-disable-next-line ts/naming-convention
+			current_version: '1.2.3',
+			files: [{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }],
+			message: 'Release: {new_version}',
+			// eslint-disable-next-line ts/naming-convention
+			post_commit_hooks: ['git push', 'git push --tags'],
+			// eslint-disable-next-line ts/naming-convention
+			pre_commit_hooks: ['uv sync', 'git add uv.lock'],
+			// eslint-disable-next-line ts/naming-convention
+			sign_tags: false,
+			tag: true,
+			// eslint-disable-next-line ts/naming-convention
+			tag_message: 'Release: {new_version}',
+			// eslint-disable-next-line ts/naming-convention
+			tag_name: 'v{new_version}',
+		})
+		expect(result.allowDirty).toBe(false)
+		expect(result.commit).toBe(true)
+		expect(result.currentVersion).toBe('1.2.3')
+		expect(result.message).toBe('Release: {new_version}')
+		expect(result.tag).toBe(true)
+		expect(result.tagName).toBe('v{new_version}')
+		expect(result.tagMessage).toBe('Release: {new_version}')
+		expect(result.signTags).toBe(false)
+		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
+		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
+		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
 	})
 
 	it('parses commitizen config', () => {
