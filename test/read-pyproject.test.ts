@@ -16,6 +16,7 @@ import {
 	createPyrightSchema,
 	createPytestSchema,
 	createRuffSchema,
+	createSetuptoolsScmSchema,
 	createUvSchema,
 } from '../src/schema/tool'
 
@@ -419,6 +420,29 @@ describe('tool schemas', () => {
 		expect(result.reportMissingImports).toBe(true)
 		expect(result.reportMissingTypeStubs).toBe(false)
 		expect(result.reportUnusedImport).toBe('warning')
+	})
+
+	it('parses setuptools_scm config', () => {
+		const schema = createSetuptoolsScmSchema(false)
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			fallback_version: '0.0.0',
+			root: '.',
+			// eslint-disable-next-line ts/naming-convention
+			version_file: 'src/mypackage/_version.py',
+			// eslint-disable-next-line ts/naming-convention
+			version_scheme: 'post-release',
+			// eslint-disable-next-line ts/naming-convention
+			write_to: 'src/mypackage/_version.py',
+			// eslint-disable-next-line ts/naming-convention
+			write_to_template: '__version__ = "{version}"',
+		})
+		expect(result.root).toBe('.')
+		expect(result.fallbackVersion).toBe('0.0.0')
+		expect(result.versionFile).toBe('src/mypackage/_version.py')
+		expect(result.versionScheme).toBe('post-release')
+		expect(result.writeTo).toBe('src/mypackage/_version.py')
+		expect(result.writeToTemplate).toBe('__version__ = "{version}"')
 	})
 })
 

@@ -9,6 +9,7 @@ export default cspellConfig({
 		'htmlcov',
 		'isort',
 		'mypackage',
+		'parentdir',
 		'mypy',
 		'pycache',
 		'pylib',

@@ -13,6 +13,7 @@ import {
 	createPytestSchema,
 	createRuffSchema,
 	createSetuptoolsSchema,
+	createSetuptoolsScmSchema,
 	createUvSchema,
 } from './tool'
 
@@ -48,11 +49,19 @@ export function createPyprojectSchema(strict: boolean) {
 		pytest: createPytestSchema(strict).optional(),
 		ruff: createRuffSchema(strict).optional(),
 		setuptools: createSetuptoolsSchema(strict).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		setuptools_scm: createSetuptoolsScmSchema(strict).optional(),
 		uv: createUvSchema(strict).optional(),
 	}
 
 	// Tool table is always loose so unknown tools pass through
-	const tool = z.object(toolShape).loose()
+	const tool = z
+		.object(toolShape)
+		.loose()
+		.transform(({ setuptools_scm: setuptoolsScm, ...rest }) => ({
+			...rest,
+			setuptoolsScm,
+		}))
 
 	const shape = {
 		'build-system': createBuildSystemSchema(strict).optional(),
