@@ -354,8 +354,6 @@ describe('real-world fixtures', () => {
 				'bartoszzolkiewski-asi.pyproject.toml',
 				// unknown tool: codeflash
 				'bbelderbos-code-quality.pyproject.toml',
-				// unknown tool: comfy
-				'brekel-comfyui-brekel.pyproject.toml',
 				// unknown tool: check-manifest
 				'brisvag-waretomo.pyproject.toml',
 				// unknown tool: flakeheaven
@@ -382,8 +380,6 @@ describe('real-world fixtures', () => {
 				'salt-extensions-saltext-github.pyproject.toml',
 				// unknown tool: coverage_rich
 				'waylonwalker-coverage-rich.pyproject.toml',
-				// unknown tool: comfy
-				'zentrocdot-comfyui-simple-image-to-prompt.pyproject.toml',
 			])
 
 			const files = await fs.readdir(fixturesDirectory)

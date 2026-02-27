@@ -11,6 +11,7 @@ export default cspellConfig({
 		'bumpversion',
 		'cibuildwheel',
 		'distutils',
+		'comfy',
 		'dagster',
 		'docformatter',
 		'doctest',
