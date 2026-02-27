@@ -19,6 +19,7 @@ import {
 	createPytestSchema,
 	createRuffSchema,
 	createSetuptoolsScmSchema,
+	createTowncrierSchema,
 	createUvSchema,
 	createYapfSchema,
 } from '../src/schema/tool'
@@ -504,6 +505,41 @@ describe('tool schemas', () => {
 		expect(result.extendSelect).toEqual(['B950'])
 		expect(result.ignore).toEqual(['E501'])
 		expect(result.select).toEqual(['E', 'F', 'W', 'C', 'B9'])
+	})
+
+	it('parses towncrier config', () => {
+		const schema = createTowncrierSchema(false)
+		const result = schema.parse({
+			directory: 'changelog.d',
+			filename: 'CHANGELOG.md',
+			// eslint-disable-next-line ts/naming-convention
+			issue_format: '#{issue}',
+			package: 'my-project',
+			// eslint-disable-next-line ts/naming-convention
+			package_dir: 'src',
+			// eslint-disable-next-line ts/naming-convention
+			start_string: '<!-- towncrier release notes start -->',
+			template: 'changelog.d/_template.md',
+			// eslint-disable-next-line ts/naming-convention
+			title_format: '## {version} ({project_date})',
+			type: [
+				{ directory: 'added', name: 'Added', showcontent: true },
+				{ directory: 'fixed', name: 'Fixed', showcontent: true },
+			],
+			underlines: ['', '', ''],
+		})
+		expect(result.package).toBe('my-project')
+		expect(result.packageDirectory).toBe('src')
+		expect(result.directory).toBe('changelog.d')
+		expect(result.filename).toBe('CHANGELOG.md')
+		expect(result.issueFormat).toBe('#{issue}')
+		expect(result.startString).toBe('<!-- towncrier release notes start -->')
+		expect(result.titleFormat).toBe('## {version} ({project_date})')
+		expect(result.type).toEqual([
+			{ directory: 'added', name: 'Added', showcontent: true },
+			{ directory: 'fixed', name: 'Fixed', showcontent: true },
+		])
+		expect(result.underlines).toEqual(['', '', ''])
 	})
 })
 
