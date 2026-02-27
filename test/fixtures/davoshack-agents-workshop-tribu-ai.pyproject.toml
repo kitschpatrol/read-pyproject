@@ -1,0 +1,41 @@
+[project]
+name = "agents-course-workshop"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+	"ai-custom-utils",
+	"arize-phoenix>=11.37.0",
+	"arize-phoenix-otel>=0.13.1",
+	"ddgs>=9.6.0",
+	"duckduckgo-search>=8.1.1",
+	"e2b-code-interpreter>=2.0.0",
+	"geopandas>=1.1.1",
+	"gradio>=5.47.2",
+	"ipykernel>=6.30.1",
+	"ipywidgets>=8.1.7",
+	"kaleido>=1.1.0",
+	"langchain>=0.3.27",
+	"langchain-community>=0.3.30",
+	"langchain-openai>=0.3.33",
+	"langgraph>=0.6.7",
+	"langgraph-checkpoint-sqlite>=2.0.11",
+	"markdownify>=1.2.0",
+	"numpy>=2.3.3",
+	"ollama>=0.5.4",
+	"openai>=1.108.2",
+	"openinference-instrumentation>=0.1.38",
+	"pandas>=2.3.2",
+	"pillow>=11.3.0",
+	"plotly>=6.3.0",
+	"pydantic>=2.11.9",
+	"pygraphviz",
+	"python-dotenv>=1.1.1",
+	"shapely>=2.1.2",
+	"smolagents[litellm, telemetry, e2b]>=1.21.3",
+	"tavily-python>=0.7.12",
+]
+
+[tool.uv.sources]
+ai-custom-utils = { git = "https://github.com/davoshack/ai-custom-utils.git" }

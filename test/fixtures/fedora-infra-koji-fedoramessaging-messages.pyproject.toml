@@ -1,0 +1,67 @@
+[tool.poetry]
+name = "koji-fedoramessaging-messages"
+version = "1.3.0"
+description = "A schema package for messages sent by the koji-fedoramessaging plugin"
+
+license = "GPL-3.0-or-later"
+
+authors = ["Fedora Infrastructure Team <infrastructure@lists.fedoraproject.org>"]
+
+readme = 'README.md' # Markdown files are supported
+
+repository = "https://github.com/fedora-infra/koji-fedoramessaging-messages"
+homepage = "https://github.com/fedora-infra/koji-fedoramessaging-messages"
+
+keywords = ['fedora']
+
+include = [
+	{ path = "tox.ini", format = "sdist" },
+	{ path = "*.spec.in", format = "sdist" },
+	{ path = "make-spec.sh", format = "sdist" },
+	{ path = "tests/*", format = "sdist" },
+]
+
+[tool.poetry.plugins."fedora.messages"]
+"koji_fedoramessaging.build.BuildStateChangeV1" = "koji_fedoramessaging_messages.build:BuildStateChangeV1"
+"koji_fedoramessaging.package.ListChangeV1" = "koji_fedoramessaging_messages.package:ListChangeV1"
+"koji_fedoramessaging.repo.DoneV1" = "koji_fedoramessaging_messages.repo:DoneV1"
+"koji_fedoramessaging.repo.InitV1" = "koji_fedoramessaging_messages.repo:InitV1"
+"koji_fedoramessaging.rpm.SignV1" = "koji_fedoramessaging_messages.rpm:SignV1"
+"koji_fedoramessaging.tag.TagV1" = "koji_fedoramessaging_messages.tag:TagV1"
+"koji_fedoramessaging.tag.UntagV1" = "koji_fedoramessaging_messages.tag:UntagV1"
+"koji_fedoramessaging.task.TaskStateChangeV1" = "koji_fedoramessaging_messages.task:TaskStateChangeV1"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fedora-messaging = ">=3.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.1.2 || ^8.0.0 || ^9.0.0"
+pytest-cov = "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
+sphinx = "^3.0 || ^4.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0"
+black = "^22.6.0 || ^23.0.0 || ^24.0.0 || ^25.0.0 || ^26.0.0"
+poetry = "^1.2.0-beta.2 || ^2.0.0"
+ruff = "^0.0.272 || ^0.0.287 || ^0.0.288 || ^0.0.289 || ^0.0.290 || ^0.0.291 || ^0.0.292 || ^0.1.0 || ^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15.0"
+
+[tool.poetry.build]
+generate-setup-file = true
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "S", "B", "RUF"]
+# Allow UP007 when python 3.11 is our minimum version: the construct wasn't
+# optimized yet on python 3.10
+ignore = ["RUF010", "UP038", "UP007", "RUF012"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

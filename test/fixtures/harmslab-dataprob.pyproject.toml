@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.distutils.bdist_wheel]
+universal = true
+
+[tool.setuptools.dynamic]
+version = { attr = "dataprob.__version__.__version__" }
+
+[tool.setuptools.package-data]
+"*" = ["src/dataprob/data/*.txt", "src/dataprob/data/*.csv", "tests/dataprob/test_data/*"]
+
+[project]
+name = "dataprob"
+dynamic = ["version"]
+dependencies = ["numpy", "pandas", "openpyxl", "matplotlib", "scipy", "emcee", "corner", "tqdm"]
+
+requires-python = ">=3.10"
+authors = [{ name = "Mike Harms", email = "harms@uoregon.edu" }]
+maintainers = [{ name = "Mike Harms", email = "harms@uoregon.edu" }]
+description = "Do likelihood based parameter estimation using maximum likeihood and bayesian methods"
+readme = "README.rst"
+license = { file = "LICENSE" }
+keywords = [
+	"likelihood",
+	"maximum likelihood",
+	"ML",
+	"Bayesian",
+	"MCMC",
+	"monte carlo",
+	"regression",
+	"estimator",
+]
+classifiers = ["Development Status :: 5 - Production/Stable", "Programming Language :: Python"]
+
+[project.urls]
+Repository = "https://github.com/harmslab/dataprob.git"
+"Bug Tracker" = "https://github.com/harmslab/dataprob/issues"
+
+[project.optional-dependencies]
+test = ["coverage", "flake8", "pytest", "genbadge"]
+docs = ["pydata-sphinx-theme"]

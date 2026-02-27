@@ -1,0 +1,125 @@
+[project]
+name = "wldetect"
+dynamic = ["version"]
+description = "Fast, accurate language detection using static LLM embeddings"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Lee Miller", email = "dleemiller@gmail.com" }]
+keywords = ["nlp", "language-detection", "machine-learning", "embeddings", "gemma", "llm"]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Developers",
+	"Intended Audience :: Science/Research",
+	"License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Topic :: Scientific/Engineering :: Artificial Intelligence",
+	"Topic :: Text Processing :: Linguistic",
+	"Operating System :: OS Independent",
+]
+dependencies = [
+	"numpy>=2.3.5",
+	"safetensors>=0.4.5",
+	"pyyaml>=6.0.2",
+	"pydantic>=2.12.4",
+	"tokenizers>=0.22.0", # HuggingFace tokenizers (Rust, no PyTorch)
+]
+
+[project.urls]
+Homepage = "https://github.com/dleemiller/WordLlamaDetect"
+Documentation = "https://github.com/dleemiller/WordLlamaDetect/tree/main/docs"
+Repository = "https://github.com/dleemiller/WordLlamaDetect"
+"Bug Tracker" = "https://github.com/dleemiller/WordLlamaDetect/issues"
+
+[project.optional-dependencies]
+training = [
+	"torch>=2.8.0",
+	"transformers>=4.57.1",
+	"datasets>=4.0.0",
+	"huggingface_hub>=0.34.4",
+	"tqdm>=4.66.4",
+	"rich>=14.2.0",
+	"scikit-learn>=1.7.1",     # For metrics
+	"tensorboard>=2.20.0",     # For logging
+	"matplotlib>=3.10.7",      # For confusion matrix plots
+	"seaborn>=0.13.2",         # For confusion matrix heatmaps
+]
+cu128 = [
+	"torch>=2.8.0",
+	"torchvision>=0.23.0",
+	"transformers>=4.57.1",
+	"datasets>=4.0.0",
+	"huggingface_hub>=0.34.4",
+	"tqdm>=4.66.4",
+	"rich>=14.2.0",
+	"scikit-learn>=1.7.1",
+	"tensorboard>=2.20.0",     # For logging
+	"matplotlib>=3.10.7",      # For confusion matrix plots
+	"seaborn>=0.13.2",         # For confusion matrix heatmaps
+]
+dev = [
+	"pytest>=8.3.3",
+	"pytest-cov>=6.0.0",
+	"pytest-mock>=3.15.0",
+	"ruff>=0.14.7",
+	"pre-commit>=4.5.0",
+]
+
+[project.scripts]
+wldetect = "wldetect.cli.main:main"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/wldetect/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wldetect"]
+exclude = ["scripts/", "workflows/", "artifacts/", "docs/", "*.md", "*.png", "*.json"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+	"src/wldetect/**/*.py",
+	"src/wldetect/models/*.safetensors",
+	"src/wldetect/models/*.yaml",
+	"README.md",
+	"LICENSE",
+]
+exclude = ["scripts/", "workflows/", "artifacts/", "*.png", "*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=src --cov-report=term-missing --cov-report=html"
+
+[tool.coverage.run]
+source = ["src/wldetect"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+	"pragma: no cover",
+	"def __repr__",
+	"raise AssertionError",
+	"raise NotImplementedError",
+	"if __name__ == .__main__.:",
+	"if TYPE_CHECKING:",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128", marker = "extra == 'cu128'" }]
+torchvision = [{ index = "pytorch-cu128", marker = "extra == 'cu128'" }]

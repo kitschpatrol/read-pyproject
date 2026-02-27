@@ -1,0 +1,16 @@
+[project]
+name = "brekel"
+description = "Nodes to enhance & streamline prompts. Enhance using local LLM within ComfyUI, generate using random lines from text files, or randomly select text file prompts. Resolution selector with common presets, Load Image node with filename output."
+version = "1.2.0"
+license = { file = "LICENSE" }
+dependencies = ["bitsandbytes", "accelerate"]
+
+[project.urls]
+Repository = "https://github.com/Brekel/ComfyUI-Brekel"
+#  Used by Comfy Registry https://registry.comfy.org
+
+[tool.comfy]
+PublisherId = "brekel"
+DisplayName = "ComfyUI-Brekel"
+Icon = ""
+includes = []

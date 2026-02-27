@@ -1,0 +1,26 @@
+[project]
+name = "fh-cli"
+version = "0.1.6"
+description = "Quickly scaffold FastHTML apps!"
+readme = "README.md"
+authors = [{ name = "David Gwyer", email = "d.v.gwyer@gmail.com" }]
+requires-python = ">=3.12"
+dependencies = ["typer>=0.17.0,<1.0.0", "requests>=2.32.0,<3.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/ExploringML/fasthtml-cli"
+Repository = "https://github.com/ExploringML/fasthtml-cli"
+"Bug Tracker" = "https://github.com/ExploringML/fasthtml-cli/issues"
+Documentation = "https://github.com/ExploringML/fasthtml-cli#readme"
+
+[project.scripts]
+fh-cli = "fasthtml_cli.cli:app"
+fh-init = "fasthtml_cli.cli:app"
+fasthtml-init = "fasthtml_cli.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fasthtml_cli"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

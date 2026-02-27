@@ -1,0 +1,128 @@
+[project]
+name = "cfmm2tar"
+dynamic = ["version"]
+description = "Download a tarballed DICOM dataset from the CFMM DICOM server"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "YingLi Lu", email = "yinglilu@gmail.com" }, { name = "Ali Khan" }]
+keywords = ["DICOM", "medical imaging", "PACS", "data retrieval", "neuroimaging"]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Science/Research",
+	"Intended Audience :: Healthcare Industry",
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Topic :: Scientific/Engineering :: Medical Science Apps.",
+	"Topic :: System :: Archiving",
+	"Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/khanlab/cfmm2tar"
+Repository = "https://github.com/khanlab/cfmm2tar"
+Issues = "https://github.com/khanlab/cfmm2tar/issues"
+Documentation = "https://github.com/khanlab/cfmm2tar/blob/master/README.md"
+
+[project.scripts]
+cfmm2tar = "cfmm2tar.cli:main"
+
+[project.optional-dependencies]
+dataframe = ["pandas>=2.0.0"]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "cfmm2tar/_version.py"
+
+[tool.uv]
+dev-dependencies = [
+	"pytest>=8.0.0",
+	"pytest-cov>=4.0.0",
+	"numpy>=1.24.0",
+	"ruff>=0.1.0",
+	"pre-commit>=3.5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+markers = [
+	"unit: Unit tests that don't require external services",
+	"integration: Integration tests that require Docker/PACS server",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+	"E",  # pycodestyle errors
+	"W",  # pycodestyle warnings
+	"F",  # pyflakes
+	"I",  # isort
+	"B",  # flake8-bugbear
+	"C4", # flake8-comprehensions
+	"UP", # pyupgrade
+]
+ignore = [
+	"E501", # line too long (handled by formatter)
+	"B008", # do not perform function calls in argument defaults
+	"B904", # Allow raising exceptions without from e
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # Allow unused imports in __init__.py
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pixi.workspace]
+channels = ["conda-forge", "khanlab"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+cfmm2tar = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+dcm4che-tools = ">=5.33.1,<6"
+pydicom = ">=3.0.1,<4"
+
+[tool.pixi.feature.dev.dependencies]
+ruff = "*"
+pytest = ">=8.4.2,<9"
+pytest-cov = ">=6.0.0,<7"
+pre-commit = ">=4.3.0,<5"
+numpy = ">=2.3.3,<3"
+
+[tool.pixi.environments]
+dev = ["dev"]
+
+[tool.coverage.run]
+source = ["cfmm2tar"]
+omit = ["cfmm2tar/_version.py", "tests/*"]
+
+[tool.coverage.report]
+# Fail if coverage drops below this threshold
+precision = 2
+show_missing = true
+skip_covered = false
+
+[tool.coverage.html]
+directory = "htmlcov"

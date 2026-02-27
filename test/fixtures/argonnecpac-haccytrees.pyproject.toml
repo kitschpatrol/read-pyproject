@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "haccytrees"
+version = "1.0.0"
+description = ""
+authors = ["Michael Buehlmann <buehlmann.michi@gmail.com>"]
+
+[tool.poetry.scripts]
+haccytrees-convert = "haccytrees.scripts.treenodes2forest:cli"
+reorganize-coreproperties = "haccytrees.scripts.reorganize_coreproperties:cli"
+intersect-cores-with-lightcone = "haccytrees.scripts.intersect_cores_with_lightcone:cli"
+
+[tool.poetry.dependencies]
+python = ">=3.10.0,<3.14"
+numpy = ">1.24.0"
+matplotlib = "^3.7.1"
+numba = "^0.62.1"
+click = "^8.1.3"
+colossus = "^1.3.1"
+scipy = "^1.10.1"
+h5py = "^3.8.0"
+drawSvg = "^1.9.0"
+tomli = "^2.0.1"
+ruff = "^0.14.4"
+
+[tool.poetry.group.assemble]
+optional = true
+
+[tool.poetry.group.assemble.dependencies]
+pygio = { git = "https://git.cels.anl.gov/hacc/genericio.git" }
+mpipartition = "^1.5.0"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+Sphinx = "^8.1.3"
+sphinx-rtd-theme = "^3.0.2"
+sphinxcontrib-napoleon = "^0.7"
+sphinx-click = "^6.1.0"
+numpydoc = "^1.7.0"
+
+[tool.poetry.group.dev.dependencies]
+bump2version = "^1.0.1"
+pytest = "^9.0.0"
+ipykernel = "^7.1.0"
+doc8 = "^2.0.0"
+rstcheck = "^6.2.5"
+notebook = "^7.4.7"
+Jinja2 = "^3.1.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

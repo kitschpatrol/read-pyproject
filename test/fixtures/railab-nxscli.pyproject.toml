@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools >= 61.2"]
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "nxscli"
+version = "0.5.1"
+authors = [{ name = "raiden00", email = "raiden00@railab.me" }]
+description = "Nxscope CLI client"
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["nxslib>=0.9.1", "click>=8.1"]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Topic :: Software Development :: Embedded Systems",
+	"Operating System :: OS Independent",
+]
+keywords = ["nuttx", "nxslib"]
+
+[project.urls]
+Changelog = "https://github.com/railab/nxscli/blob/master/CHANGES.md"
+Homepage = "https://github.com/railab/nxscli"
+
+[project.scripts]
+nxscli = "nxscli.cli.main:main"
+
+[tool.black]
+line-length = 79
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+line_length = 79

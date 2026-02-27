@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "cookiecutter-sonar"
+version = "0.1.0"
+description = "Sonar repository template powered by Cookiecutter"
+authors = ["Julien Carsique <julien.carsique@sonarsource.com>"]
+license = "SonarSource SA"
+
+[[tool.poetry.source]]
+name = "repox"
+url = "https://repox.jfrog.io/artifactory/api/pypi/sonarsource-pypi/simple"
+priority = "primary"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest-cookies = "^0.7.0"
+urllib3 = "^2.6.3"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^9.0.0"
+pytest-cov = "^7.0.0"
+pytest-httpserver = "^1.0.8"
+coverage = { extras = ["toml"], version = "^7.0.0" }
+pytest-mock = "^3.11.1"
+cookiecutter = "^2.6.0"
+werkzeug = "^3.1.5"
+
+[tool.pytest.ini_options]
+log_cli = true
+minversion = "6.0"
+addopts = """
+  --cov-report html:build/coverage-html
+  --cov-report xml:build/coverage.xml
+  --cov-report term
+  --cov=hooks
+  --cov-branch
+"""
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["hooks"]
+concurrency = ["multiprocessing", "thread"]
+
+[tool.coverage.report]
+exclude_lines = [
+	"pragma: no cover",
+	"def __repr__",
+	"raise AssertionError",
+	"raise NotImplementedError",
+]

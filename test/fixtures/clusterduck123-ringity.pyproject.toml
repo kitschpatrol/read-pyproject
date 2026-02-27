@@ -1,0 +1,58 @@
+# ---------------------------- BUILD-SYSTEM ---------------------------- #
+
+[build-system]
+requires = ["setuptools>=60", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+# ------------------------------ PROJECT ------------------------------ #
+
+[project]
+dependencies = [
+	"matplotlib",
+	"numba",
+	"networkx",
+	"scipy",
+	"pandas",
+	"ripser",     # MAKE CONDITIONAL
+]
+name = "ringity"
+dynamic = ["version"]
+authors = [
+	{ name = "Markus K. Youssef", email = "mk.youssef@hotmail.com" },
+	{ name = "Joel Hancock", email = "joel@lbi-netmed.com" },
+]
+description = "Calculates ring scores for various data structures"
+requires-python = ">=3.8"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"Topic :: Scientific/Engineering :: Bio-Informatics",
+	"Intended Audience :: Science/Research",
+	"Operating System :: OS Independent",
+	"Development Status :: 3 - Alpha",
+]
+keywords = ["network", "ring-structure", "tda"]
+license = "MIT"
+license-files = ["LICENSE.txt"]
+
+[project.urls]
+Homepage = "https://github.com/ClusterDuck123/ringity"
+Issues = "https://github.com/kiri93/ringity/issues"
+
+[project.optional-dependencies]
+giotto-tda = ["giotto-tda"]
+plotting = ["plotly"]
+
+# -------------------------------- TOOL -------------------------------- #
+
+[tool.setuptools_scm]
+write_to = "src/ringity/_version.py"
+
+[tool.setuptools.packages.find]
+where = ["src", "tests"]
+include = ["*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.rst", "*.py"] # tests/RUNME.py still not included
+"ringity" = ["data/*.csv"]

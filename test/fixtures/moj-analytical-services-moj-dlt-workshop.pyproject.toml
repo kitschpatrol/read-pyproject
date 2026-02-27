@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "moj-dlt-workshop"
+package-mode = false
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+typer = "^0.12.5"
+pathlib = "^1.0.1"
+dlt = { extras = ["athena"], version = "^1.1.0" }
+duckdb = "^1.1.0"
+ipykernel = "^6.29.5"
+pyarrow = "^17.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

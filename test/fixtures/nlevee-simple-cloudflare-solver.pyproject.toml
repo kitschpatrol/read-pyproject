@@ -1,0 +1,19 @@
+[project]
+name = "simple-cloudflare-solver"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [{ name = "Nicolas Levée", email = "nicolas.levee@gmail.com" }]
+dependencies = [
+	"CloudflareBypasser @ git+https://github.com/sarperavci/CloudflareBypassForScraping.git@main",
+	"fastapi",
+	"pydantic",
+	"python-json-logger",
+	"PyVirtualDisplay",
+	"uvicorn",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+
+[tool.pdm]
+distribution = false

@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "convbot-fastapi"
+version = "0.1.0"
+description = "Convbot with fastapi"
+authors = ["ffreemt"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ffreemt/convbot-fastapi"
+include = ["LICENSE"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+# python = "^3.6.7"
+logzero = "^1.7.0"
+transformers = "^4.9.0"
+torch = { version = "^1.9.0", python = "^3.7", platform = "linux" }
+fastapi = "^0.63.0"
+pydantic = { extras = ["dotenv"], version = "^1.8.1" }
+uvicorn = "^0.14.0"
+
+[tool.poe.executor]
+type = "poetry"
+
+[tool.poe.tasks]
+test = "pytest tests"
+build = "poetry build"
+_publish = "poetry publish"
+release = ["test", "build", "_publish"]
+lint = { cmd = "pylint convbot_fastapi" }
+format = "black tests convbot_fastapi"
+tunnel = { cmd = "ssh -CN ip_or_hostname_defined_in_hosts -L 9091:127.0.0.1:9091" }
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+flake8 = "^3.9.2"
+pep257 = "^0.7.0"
+tbump = "^6.3.2"
+poethepoet = "^0.10.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

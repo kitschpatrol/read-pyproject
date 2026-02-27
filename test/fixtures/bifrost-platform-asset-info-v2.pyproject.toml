@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "asset-info-v2"
+authors = [{ name = "Backend Team of Bifrost", email = "contact@pi-lab.io" }]
+description = "Information about asset ver.2"
+readme = "README.md"
+keywords = ["asset", "blockchain"]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: Developers",
+	"Topic :: Software Development :: Libraries",
+	"Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.12"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+
+[project.urls]
+Documentation = "https://github.com/bifrost-platform/asset-info-v2"
+Source = "https://github.com/bifrost-platform/asset-info-v2"
+
+[tool.setuptools.dynamic]
+version = { file = ["VERSION"] }
+dependencies = { file = ["requirements/essential.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+all = { file = ["requirements/essential.txt", "requirements/dev.txt", "requirements/test.txt"] }
+dev = { file = ["requirements/essential.txt", "requirements/dev.txt"] }
+essential = { file = ["requirements/essential.txt"] }
+test = { file = ["requirements/essential.txt", "requirements/dev.txt", "requirements/test.txt"] }
+test_simple = { file = ["requirements/essential.txt", "requirements/test.txt"] }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["libraries.models*", "libraries.utils*"]
+exclude = ["tests*", "libraries.preprocess*", "libraries.puller*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib"]

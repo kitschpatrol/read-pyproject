@@ -1,0 +1,81 @@
+[project]
+name = "epoikos-simulation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+	"autogen-agentchat>=0.6.2",
+	"autogen-ext[openai]>=0.6.2",
+	"fastapi[standard]>=0.115.12",
+	"faststream[nats]>=0.5.37",
+	"langfuse>=2.60.3",
+	"ipykernel>=6.29.5",
+	"loguru>=0.7.3",
+	"pathfind>=0.1.2",
+	"pydantic>=2.11.0",
+	"pydantic-settings>=2.8.1",
+	"pymilvus>=2.5.6",
+	"neomodel>=5.5.0",
+	"sqlmodel>=0.0.24",
+	"alembic>=1.16.2",
+	"transformers>=4.30.0",
+	"numpy>=1.24.0",
+	"scipy>=1.10.0",
+	"psycopg2-binary>=2.9.10",
+	"sqlalchemy>=2.0.41",
+	"pytest>=8.4.1",
+	"pytest-asyncio>=1.1.0",
+	"pytest-xdist>=3.8.0",
+	"networkx>=3.5",
+	"python-louvain>=0.16",
+]
+
+[tool.uv]
+required-environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+
+[dependency-groups]
+dev = ["black>=25.1.0", "isort>=6.0.1", "pre-commit>=4.2.0"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+known_clients = ["clients"]
+known_engine = ["engine"]
+known_messages = ["messages"]
+known_services = ["services"]
+known_schemas = ["schemas"]
+known_subscribers = ["subscribers"]
+known_routers = ["routers"]
+known_utilities = ["utils"]
+known_config = ["config"]
+
+sections = [
+	"FUTURE",
+	"STDLIB",
+	"THIRDPARTY",
+	"CONFIG",
+	"CLIENTS",
+	"SCHEMAS",
+	"ENGINE",
+	"MESSAGES",
+	"SERVICES",
+	"ROUTERS",
+	"SUBSCRIBERS",
+	"UTILITIES",
+	"FIRSTPARTY",
+	"LOCALFOLDER",
+]
+
+forced_separate = [
+	"clients",
+	"config",
+	"engine",
+	"messages",
+	"services",
+	"schemas",
+	"subscribers",
+	"routers",
+	"utils",
+]

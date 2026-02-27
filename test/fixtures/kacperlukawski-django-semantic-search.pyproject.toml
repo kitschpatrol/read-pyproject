@@ -1,0 +1,60 @@
+[project]
+name = "django-semantic-search"
+version = "0.2.1"
+description = "Bringing semantic search to Django. Integrates seamlessly with Django ORM."
+authors = [{ name = "Kacper Łukawski", email = "lukawski.kacper@gmail.com" }]
+requires-python = ">=3.10"
+readme = "README.md"
+license = "Apache-2.0"
+dependencies = ["django>=5.0"]
+
+[project.optional-dependencies]
+qdrant = ["qdrant-client>=1.11.1,<2"]
+sentence-transformers = ["sentence-transformers>=4.1.0,<5", "torch"]
+openai = ["openai>=1.0.0,<2"]
+fastembed = ["fastembed>=0.6.1,<0.7"]
+all = [
+	"qdrant-client>=1.11.1,<2",
+	"sentence-transformers>=4.1.0,<5",
+	"torch",
+	"openai>=1.0.0,<2",
+	"fastembed>=0.6.1,<0.7",
+]
+
+[dependency-groups]
+dev = [
+	"pre-commit>=3.8.0,<4",
+	"ruff>=0.6.2,<0.7",
+	"pytest>=8.3.2,<9",
+	"mkdocs>=1.6.1,<2",
+	"mkdocstrings-python>=1.11.1,<2",
+	"mkdocs-material[imaging]>=9.5.34,<10",
+]
+
+[tool.uv]
+
+[[tool.uv.index]]
+name = "pytorch_cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.hatch.build.targets.sdist]
+include = ["src/django_semantic_search"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/django_semantic_search"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/django_semantic_search" = "django_semantic_search"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+minversion = "7.1"
+pythonpath = ["src/"]
+testpaths = ["tests/"]
+
+[tool.ruff]
+lint.typing-modules = ["cibuildwheel.typing"]

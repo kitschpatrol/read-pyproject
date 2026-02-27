@@ -1,0 +1,96 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bob.pipelines"
+version = "4.0.1b0"
+requires-python = ">=3.9"
+description = "Tools to build robust and extensible pipelines"
+dynamic = ["readme"]
+license = { text = "BSD 3-Clause License" }
+authors = [{ name = "Tiago de Freitas Pereira", email = "tiago.pereira@idiap.ch" }]
+keywords = ["bob", "pipelines"]
+
+classifiers = [
+	"Framework :: Bob",
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Science/Research",
+	"License :: OSI Approved :: BSD License",
+	"Natural Language :: English",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Topic :: Scientific/Engineering :: Artificial Intelligence",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+	"bob",
+	"bob.io.base",
+	"clapper",
+	"dask",
+	"dask-jobqueue",
+	"distributed",
+	"h5py",
+	"numpy",
+	"requests",
+	"scikit-learn",
+	"xarray",
+]
+
+[project.urls]
+documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.pipelines/master/sphinx/"
+homepage = "https://pypi.org/project/bob.pipelines/"
+repository = "https://gitlab.idiap.ch/bob/bob.pipelines"
+changelog = "https://gitlab.idiap.ch/bob/bob.pipelines/-/releases"
+
+[project.optional-dependencies]
+qa = ["pre-commit"]
+doc = [
+	"sphinx",
+	"sphinx_rtd_theme",
+	"sphinx-autodoc-typehints",
+	"auto-intersphinx",
+	"sphinxcontrib-programoutput",
+	"matplotlib",
+	"dask-ml",
+]
+test = ["pytest", "pytest-cov", "coverage", "dask-ml"]
+
+[tool.setuptools]
+zip-safe = false
+package-dir = { "" = "src" }
+
+[tool.setuptools.dynamic]
+readme = { file = "README.md", content-type = "text/markdown" }
+
+[project.entry-points."dask.client"]
+local-parallel = "bob.pipelines.config.distributed.local_parallel:dask_client"
+local-p4 = "bob.pipelines.config.distributed.local_p4:dask_client"
+local-p8 = "bob.pipelines.config.distributed.local_p8:dask_client"
+local-p16 = "bob.pipelines.config.distributed.local_p16:dask_client"
+local-p32 = "bob.pipelines.config.distributed.local_p32:dask_client"
+sge = "bob.pipelines.config.distributed.sge_default:dask_client"
+sge-demanding = "bob.pipelines.config.distributed.sge_demanding:dask_client"
+sge-io-big = "bob.pipelines.config.distributed.sge_io_big:dask_client"
+sge-io-big-non-adaptive = "bob.pipelines.config.distributed.sge_io_big_non_adaptive:dask_client"
+sge-gpu = "bob.pipelines.config.distributed.sge_gpu:dask_client"
+
+[tool.distutils.bdist_wheel]
+universal = true
+
+[tool.isort]
+profile = "black"
+line_length = 80
+order_by_type = true
+lines_between_types = 1
+
+[tool.black]
+line-length = 80
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=append", "--cov-report=term-missing", "--cov=bob.pipelines"]
+junit_logging = "all"
+junit_log_passing_tests = false

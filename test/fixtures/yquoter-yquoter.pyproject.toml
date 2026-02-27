@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yquoter"
+version = "0.3.0"
+description = "A unified financial data interface and analysis toolkit for CN/HK/US markets."
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [{ name = "Yodeesy", email = "yodeeshi@gmail.com" }]
+license = { text = "Apache-2.0" }
+requires-python = ">=3.9"
+keywords = ["finance", "stock", "quant", "data", "crawler"]
+
+dependencies = ["pandas>=1.4", "requests>=2.26", "python-dotenv>=0.21", "PyYAML>=6.0.2"]
+
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: Apache Software License",
+	"Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+tushare = ["tushare>=1.2.0"]
+plotting = ["matplotlib>=3.5.0", "mplfinance", "tabulate"]
+all = ["tushare>=1.2.0", "matplotlib>=3.5.0", "mplfinance", "tabulate"]
+
+[project.urls]
+Homepage = "https://github.com/Yodeesy/Yquoter"
+Documentation = "https://github.com/Yodeesy/Yquoter#readme"
+Source = "https://github.com/Yodeesy/Yquoter"
+Issues = "https://github.com/Yodeesy/Yquoter/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["yquoter*"]
+exclude = ["yquoter/log*", "yquoter/.env"]
+
+[tool.setuptools.package-data]
+"yquoter" = ["configs/*.yaml"]

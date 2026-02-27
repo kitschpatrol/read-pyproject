@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lazysloth"
+version = "1.0.0"
+description = "CLI-first application for sharing and learning terminal shortcuts and aliases"
+authors = [{ name = "Yaron Neuman" }]
+license = { text = "AGPL-3.0-or-later" }
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["cli", "shell", "bash", "zsh", "aliases", "productivity", "terminal"]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Developers",
+	"Intended Audience :: System Administrators",
+	"License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+	"Operating System :: POSIX :: Linux",
+	"Operating System :: MacOS",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Topic :: System :: Shells",
+	"Topic :: Utilities",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Environment :: Console",
+]
+dependencies = [
+	"click>=8.0.0",
+	"colorama>=0.4.4",
+	"watchdog>=2.1.0",
+	"psutil>=5.8.0",
+	"pyyaml>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yaronneuman/lazysloth"
+Repository = "https://github.com/yaronneuman/lazysloth"
+Documentation = "https://github.com/yaronneuman/lazysloth#readme"
+
+[project.optional-dependencies]
+test = ["pytest>=7.0.0", "pytest-cov>=4.0.0", "pytest-mock>=3.10.0"]
+
+[project.scripts]
+sloth = "lazysloth.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["lazysloth*"]
+
+[tool.setuptools.package-data]
+lazysloth = ["shells/*.sh", "shells/*.zsh"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+	"--strict-markers",
+	"--strict-config",
+	"--cov=lazysloth",
+	"--cov-report=term-missing",
+	"--cov-report=html",
+	"--cov-fail-under=50",
+]
+markers = ["unit: Unit tests", "integration: Integration tests", "slow: Slow tests"]

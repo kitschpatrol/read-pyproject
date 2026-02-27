@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "ps-genai-agents"
+version = "0.1.0"
+description = "The goal of this project is to provide a generalized agent architecture that can be applied to many graph use cases."
+authors = ["Alex Gilmore", "Yancarlo Perez", "Henry Lin", "Ravi Kiran Ponduri", "Chris Upkes"]
+license = "Apache License, Version 2.0"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+boto3 = "^1.34.118"
+langchain = "^0.3.3"
+langchain-openai = "^0.2.0"
+langgraph = "^0.2.6"
+pandas = "^2.2.2"
+pydantic = "^2.6.1"
+pyneoinstance = "^2.0.2"
+python = "^3.10"
+pyyaml = "^6.0.1"
+neo4j-graphrag = "^1.4.0"
+neo4j = "^5.27.0"
+langchain-aws = "^0.2.10"
+langchain-neo4j = "0.3.0"
+seaborn = "^0.13.2"
+tqdm = "^4.67.1"
+langsmith = "^0.3.11"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.4.3"
+mypy = "^1.10.0"
+pre-commit = { version = "^3.6.2", python = "^3.10" }
+pytest = "^8.3.2"
+pytest-mock = "^3.12.0"
+python-dotenv = "^1.0.1"
+ruff = "^0.3.0"
+toml = "^0.10.2"
+types-PyYAML = "^6.0.12.20240724"
+ipykernel = "^6.29.5"
+nest-asyncio = "^1.6.0"
+langgraph-cli = { extras = ["inmem"], version = "^0.1.70" }
+pytest-asyncio = "^0.25.3"
+evaluate = "^0.4.3"
+rouge-score = "^0.1.2"
+
+[tool.poetry.group.ui.dependencies]
+streamlit = "^1.37.1"
+
+[tool.poetry.group.workshop.dependencies]
+ipykernel = "^6.29.5"
+streamlit = "^1.37.1"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+allow_subclassing_any = true
+disallow_untyped_calls = false
+exclude = ["docs/", "scripts/", "archive/"]
+explicit_package_bases = true
+
+[tool.ruff]
+target-version = "py310"
+show-fixes = true
+exclude = ["archive/"]
+
+[tool.coverage.paths]
+source = ["ps_genai_agents"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

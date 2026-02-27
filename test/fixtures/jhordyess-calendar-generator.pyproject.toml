@@ -1,0 +1,25 @@
+[project]
+name = "calendar-generator"
+version = "2.0.0"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["jinja2 (>=3.1.6,<4.0.0)"]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.3.2"
+
+[tool.autopep8]
+max_line_length = 120
+aggressive = 2
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+gen = "python -m app.main"
+gen-pdf = "python -m app.main --compile-pdf"
+format = "autopep8 --in-place --aggressive --aggressive --max-line-length 120 **/*.py"

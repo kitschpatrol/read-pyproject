@@ -1,0 +1,189 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "tg-note"
+version = "0.2.4"
+description = "Intelligent Knowledge Base Builder - Telegram bot that automatically transforms your messages, reposts, and articles into a structured knowledge base using AI agents"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Artem Zemliak", email = "artyom.zemlyak@gmail.com" }]
+keywords = ["telegram", "bot", "knowledge-base", "ai", "qwen", "note-taking"]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Intended Audience :: Developers",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.11,<3.13" # Add upper bound
+dependencies = [
+	# Core dependencies
+	"pydantic==2.10.4",
+	"pydantic-settings==2.7.0",
+	"PyYAML==6.0.1",
+	# Telegram Bot
+	"pyTelegramBotAPI==4.14.0",
+	# Git operations
+	"GitPython>=3.1.40,<3.2.0",
+	# File locking for concurrent access
+	"filelock>=3.13.1,<4.0.0",
+	# Agent system
+	"qwen-agent>=0.0.31,<0.1.0",
+	# LLM APIs
+	"openai>=1.0.0,<2.0.0",
+	# Utilities
+	"aiohttp>=3.9.1,<4.0.0",
+	"requests>=2.32.2,<3.0.0",
+	"httpx>=0.27.0,<1.0.0",
+	# Prompt management
+	"promptic @ git+https://github.com/ArtyomZemlyak/promptic.git@v0.1.6",
+	# Logging
+	"loguru>=0.7.2,<0.8.0",
+	# HuggingFace for model management
+	"huggingface-hub>=0.23.0,<1.0.0",
+	# Encryption for secure credentials storage
+	"cryptography>=41.0.0,<44.0.0",
+	"qdrant-client>=1.7.0",
+	"fastmcp>=0.1.0",
+	# File system monitoring for progress tracking
+	"watchdog>=3.0.0,<5.0.0",
+	# Cron expression parsing for scheduled tasks
+	"croniter>=2.0.0,<3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+	"pytest>=7.4.3,<8.0.0",
+	"pytest-asyncio>=0.21.1,<0.24.0",
+	"pytest-cov>=4.1.0,<5.0.0",
+	"black>=23.12.1,<25.0.0",
+	"flake8>=6.1.0,<8.0.0",
+	"mypy>=1.7.1,<2.0.0",
+	"pre-commit>=3.5.0,<4.0.0",
+]
+vector-search = [
+	# Embedding models
+	"sentence-transformers>=2.2.0", # Local embeddings
+	# Vector stores
+	"faiss-cpu>=1.7.4",     # FAISS for local vector search (use faiss-gpu for GPU)
+	"qdrant-client>=1.7.0", # Qdrant client for remote vector search
+]
+mcp = [
+	# MCP (Model Context Protocol) support
+	# FastMCP for creating MCP servers
+	"fastmcp>=0.1.0",
+]
+mem-agent = [
+	# Memory Agent dependencies - Lightweight (for Docker deployment)
+	# Models are run in separate containers (vLLM/SGLang/LM Studio)
+	# AICODE-NOTE: Heavy ML dependencies (transformers, vllm, mlx) removed
+	# Model inference is handled by separate Docker containers
+	"fastmcp>=0.1.0",   # MCP protocol support
+	"aiofiles>=23.0.0", # Async file operations
+	"jinja2>=3.0.0",    # Template rendering
+	"pygments>=2.19.0", # Code syntax highlighting
+	"black>=23.0.0",    # Code formatting in agent responses
+]
+mem-agent-local = [
+	# DEPRECATED: Local model inference dependencies
+	# Use Docker containers (vLLM/SGLang/LM Studio) instead
+	# Keep this for backwards compatibility with local development
+	"transformers>=4.51.0,<4.54.0",
+	"torch>=2.0.0",
+]
+mem-agent-local-macos = [
+	# DEPRECATED: macOS MLX backend for local development
+	# Use Docker containers instead (recommended)
+	"mlx>=0.0.1",
+	"mlx-lm>=0.0.1",
+]
+mem-agent-local-linux = [
+	# DEPRECATED: Linux vLLM backend for local development
+	# Use Docker containers instead (recommended)
+	"vllm>=0.5.5",
+]
+docling = [
+	# Docling document processing library (used by docling-mcp container)
+	# These dependencies are typically installed in the Docker container
+	# Include this group only if running docling locally (not recommended)
+	# AICODE-NOTE: Version 2.61.2+ uses new docling-project repos instead of ds4sd
+	"docling>=2.61.2",
+	"docling-mcp>=1.3.0",
+	"rapidocr-onnxruntime>=1.3.0",
+	"easyocr>=1.7.0",
+	"tesserocr>=2.6.0",
+	"modelscope>=1.11.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ArtyomZemlyak/tg-note"
+Repository = "https://github.com/ArtyomZemlyak/tg-note"
+
+[project.scripts]
+tg-note = "main:cli_main"
+
+[tool.poetry]
+packages = [{ include = "src" }, { include = "config" }, { include = "main.py", format = "sdist" }]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13" # Make consistent
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["src", "config"]
+omit = ["*/tests/*", "*/test_*.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+	"pragma: no cover",
+	"def __repr__",
+	"raise AssertionError",
+	"raise NotImplementedError",
+	"if __name__ == .__main__.:",
+	"if TYPE_CHECKING:",
+]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_gitignore = true
+known_first_party = ["src", "config"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.bandit]
+exclude_dirs = ["tests", "examples", "scripts"]
+skips = ["B101", "B601"]

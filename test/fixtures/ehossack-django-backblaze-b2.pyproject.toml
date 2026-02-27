@@ -1,0 +1,71 @@
+[tool.poetry]
+name = "django-backblaze-b2"
+version = "7.0.0"
+description = "A Django app to use backblaze b2 as storage."
+authors = ["Etienne H <django_backblaze_b2@internet-e-mail.com>"]
+maintainers = ["Etienne H <django_backblaze_b2@internet-e-mail.com>"]
+license = "BSD-2-Clause"
+readme = "README.md"
+homepage = "https://github.com/ehossack/django-backblaze-b2/"
+repository = "https://github.com/ehossack/django-backblaze-b2/"
+keywords = ["django", "storage", "backblaze", "b2", "cloud"]
+classifiers = [
+	"Environment :: Web Environment",
+	"Framework :: Django",
+	"Framework :: Django :: 3.2",
+	"Framework :: Django :: 4.2",
+	"Framework :: Django :: 5.0",
+	"Framework :: Django :: 5.1",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: BSD License",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Development Status :: 5 - Production/Stable",
+	"Typing :: Typed",
+	"Topic :: Software Development :: Libraries :: Application Frameworks",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+]
+include = ["py.typed"]
+
+[tool.poetry.dependencies]
+python = "^3.9.16"
+b2sdk = ">=2.0.0,<3.0.0"
+django = ">=3.2"
+typing-extensions = "^4.0.1"
+
+[tool.poetry.group.dev.dependencies]
+django-stubs = ">=4.2.7,<6.0.0"
+pytest = ">=7.4,<9.0"
+mypy = ">=0.8"
+pytest-cov = ">=4.1,<7.0"
+pytest-django = "^4.5"
+pytest-pythonpath = "^0.7"
+docutils = ">=0.20,<0.22"
+toml = "^0.10.2"
+ruff = ">=0.5.0,<1.0.0"
+types-toml = "^0.10.8.20240310"
+
+[build-system]
+requires = ["poetry>=1.5.2"]
+build-backend = "poetry.masonry.api"
+
+[tool.ruff]
+exclude = [".git", "__pycache__", ".mypy_stubs"]
+line-length = 120
+
+[tool.ruff.lint]
+ignore = []
+select = ["C9", "E", "F", "I", "N", "W"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_project/django_project/settings.py" = ["F841"]

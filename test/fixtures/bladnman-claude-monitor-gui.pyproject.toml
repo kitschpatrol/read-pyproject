@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claude-monitor-gui"
+version = "1.0.0"
+description = "Floating Terminal Window for Claude Code Usage Monitor"
+authors = [{ name = "Claude Monitor GUI Contributors" }]
+requires-python = ">=3.8"
+dependencies = ["PyQt6>=6.0.0", "claude-usage-monitor>=0.1.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0", "pytest-cov>=4.0.0", "pytest-qt>=4.0.0", "pytest-mock>=3.0.0"]
+
+[project.scripts]
+claude-monitor-gui = "claude_monitor_app.launcher:launch_detached"
+
+[tool.hatch.build]
+sources = ["src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/claude_monitor_app"]

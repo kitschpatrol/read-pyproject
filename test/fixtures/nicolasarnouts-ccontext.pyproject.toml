@@ -1,0 +1,53 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "ccontext"
+version = "0.3.8"
+description = "collect-context: Makes the process of collecting and sending context to an LLM like ChatGPT-4o as easy as possible."
+authors = ["Nicolas Arnouts <arnouts.software@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/NicolasArnouts/ccontext"
+repository = "https://github.com/NicolasArnouts/ccontext"
+keywords = ["context", "ccontenxt", "collect context", "llm", "chatgpt"]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Intended Audience :: Developers",
+	"Topic :: Software Development :: Build Tools",
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4"
+colorama = "0.4.6"
+pyperclip = "1.9.0"
+tiktoken = "^0.9.0"
+pathspec = "0.12.1"
+reportlab = "^4.4.2"
+wcmatch = "^10.1"
+pypdf = "^5.8.0"
+mammoth = "^1.9.0"
+# crawl4ai dependency is installed on-demand when --crawl is used
+
+[tool.poetry.group.darwin.dependencies]
+pyobjc-framework-Cocoa = { version = "10.3.2", platform = "darwin" }
+
+[tool.poetry.scripts]
+ccontext = "ccontext.cli:main"
+ccontext-configure = "ccontext.configurator:copy_default_config"
+
+[tool.poetry.plugins."pipx.run_after_install"]
+ccontext = "ccontext-configure"
+
+[tool.poetry.urls]
+Homepage = "https://github.com/NicolasArnouts/ccontext"
+Repository = "https://github.com/NicolasArnouts/ccontext"
+Documentation = "https://github.com/NicolasArnouts/ccontext"
+Issues = "https://github.com/NicolasArnouts/ccontext/issues"

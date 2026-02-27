@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gaia-adk-agent"
+version = "0.1.0"
+description = "An agent system using Google ADK to solve GAIA benchmark tasks."
+requires-python = ">=3.9" # ADK 要求 3.9+
+license = { file = "LICENSE" } # 你需要添加一个 LICENSE 文件
+authors = [{ name = "yxygg", email = "mail@yxy.pub" }]
+dependencies = [
+	"google-adk",
+	"fastapi",
+	"uvicorn[standard]",   # 用于运行 FastAPI 服务
+	"python-dotenv",       # 用于加载 .env 文件
+	"requests",            # 网页请求
+	"beautifulsoup4",      # HTML 解析
+	"lxml",                # HTML/XML 解析器 (bs4 需要)
+	"pandas",              # Excel/CSV 处理
+	"openpyxl",            # pandas 读取 .xlsx 需要
+	"pypdf",               # PDF 读取
+	"python-docx",         # DOCX 读取
+	"Pillow",              # 图像处理 (基础)
+	"google-genai>=1.0.0", # 明确使用新版 SDK
+	"Biopython",           # 用于处理 .pdb 文件
+	"httpx",               # GenAI SDK 可能依赖，或者直接用于下载
+	"python-pptx",
+	"tabulate",
+	"numexpr",
+	"sympy",
+	"pint",
+	"playwright",
+	"arxiv",
+	"wikipedia",
+	"wikipedia-api",
+	"PyGithub",
+	"waybackpy",
+	"markdownify",
+	"readabilipy",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yxygg/adk-gaia"           # 替换为你的仓库地址
+"Bug Tracker" = "https://github.com/yxygg/adk-gaia/issues"
+
+[tool.uv]
+# 可选：uv 相关配置
+# 例如，如果你想指定索引 URL
+# index-url = "https://pypi.org/simple"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

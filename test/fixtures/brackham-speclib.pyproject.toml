@@ -1,0 +1,51 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "speclib"
+version = "0.1.0b11"
+description = "Tools for working with stellar spectral libraries."
+authors = [{ name = "Benjamin V. Rackham" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+	"astropy>=6.0,<8.0",
+	"specutils>=1.9.1,<2.0",
+	"synphot>=1.4,<2.0",
+	"numpy>=2.0,<3.0",
+	"h5py>=3.13,<4.0",
+	"pooch>=1.8.2,<2.0",
+	"tqdm>=4.67.1,<5.0",
+]
+keywords = ["astronomy", "spectra", "stellar libraries"]
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/brackham/speclib"
+Repository = "https://github.com/brackham/speclib"
+
+[tool.poetry]
+packages = [{ include = "speclib", from = "src" }]
+include = ["src/speclib/data/filters/*"]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+sphinx = "<8.0.0"
+furo = "^2024.8.6"
+myst-parser = "<4.0.0"
+setuptools = "^80.8.0"
+tox = "^4.26.0"
+notebook = "^7.4.2"
+ipykernel = "^6.29.5"
+matplotlib = ">=3.8,<4.0"
+ipympl = "^0.9.7"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

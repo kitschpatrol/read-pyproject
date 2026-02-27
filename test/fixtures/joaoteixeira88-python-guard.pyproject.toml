@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "python-parameter-guard"
+version = "1.0.0"
+description = "Guard is a fluent argument validation library that is intuitive, fast and extensible."
+authors = ["Joao Teixeira <ervilhaman@hotmail.com>"]
+license = 'MIT'
+readme = "README.md"
+repository = "https://github.com/joaoteixeira88/python-guard"
+keywords = ['python', 'guard', 'parameters', 'exceptions']
+classifiers = [
+	'Development Status :: 3 - Alpha',
+	'Intended Audience :: Developers',
+	'Topic :: Software Development :: Build Tools',
+	'License :: OSI Approved :: MIT License',
+	'Programming Language :: Python :: 3',
+	'Programming Language :: Python :: 3.6',
+	'Programming Language :: Python :: 3.7',
+	'Programming Language :: Python :: 3.8',
+	'Programming Language :: Python :: 3.9',
+]
+packages = [{ include = "guard" }]
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+pytest = "*"

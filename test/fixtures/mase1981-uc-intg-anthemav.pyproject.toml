@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=65.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "uc-intg-anthemav"
+description = "Anthem A/V Receivers integration for Unfolded Circle Remote"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MPL-2.0" }
+authors = [{ name = "Meir Miyara", email = "meir.miyara@gmail.com" }]
+keywords = ["unfoldedcircle", "integration", "anthem", "avr", "receiver", "media-player"]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: End Users/Desktop",
+	"License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Topic :: Home Automation",
+	"Topic :: Multimedia :: Sound/Audio",
+]
+
+dependencies = ["ucapi-framework>=1.7.2"]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-asyncio"]
+
+[project.urls]
+"Homepage" = "https://github.com/mase1981/uc-intg-anthemav"
+"Bug Reports" = "https://github.com/mase1981/uc-intg-anthemav/issues"
+
+[tool.setuptools]
+packages = ["uc_intg_anthemav"]
+
+[tool.setuptools.dynamic]
+version = { attr = "uc_intg_anthemav.__version__" }
+
+[tool.setuptools.package-data]
+"uc_intg_anthemav" = ["*.json"]
+
+[project.scripts]
+uc-intg-anthemav = "uc_intg_anthemav:main"

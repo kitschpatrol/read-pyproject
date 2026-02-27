@@ -1,0 +1,62 @@
+# Copyright (c) 2023 Varun Sharma
+#
+# SPDX-License-Identifier: MIT
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sphinx-datatables"
+authors = [{ name = "Varun Sharma", email = "29899983+sharm294@users.noreply.github.com" }]
+readme = "README.rst"
+description = "Searchable and sortable tables in Sphinx documentation"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Framework :: Sphinx :: Extension",
+	"Intended Audience :: Developers",
+	"Programming Language :: Python :: 3",
+]
+keywords = ["sphinx", "table", "datatables"]
+dynamic = ["version"]
+requires-python = ">=3.10"
+dependencies = ["sphinx>4", "sphinxcontrib_jquery>=4.1", "packaging"]
+
+[tool.setuptools.dynamic]
+version = { attr = "sphinx_datatables.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+mypkg = ["*.js.in"]
+
+[project.urls]
+Home = "https://github.com/sharm294/sphinx-datatables"
+Documentation = "https://sharm294.github.io/sphinx-datatables/"
+
+[project.optional-dependencies]
+docs = ["sphinx-toolbox", "sphinx-copybutton"]
+dev = ["pytest"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+	"D203",   # incorrect-blank-line-before-class, incompatible with D211
+	"D212",   # multi-line-summary-first-line, incompatible with D213
+	"COM812",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# some rules should be ignored in tests
+"test/**/*.py" = [
+	"S101",   # allow asserts
+	"FBT",    # allow booleans as positional arguments
+	"INP001", # don't require __init__.py
+]
+
+"docs/**/*.py" = [
+	"INP001", # don't require __init__.py
+]

@@ -1,0 +1,49 @@
+[project]
+dynamic = ["version"] # version is managed by build backend
+name = "orgparse"
+dependencies = []
+requires-python = ">=3.9"
+description = "orgparse - Emacs org-mode parser in Python"
+license = { file = "LICENSE" }
+authors = [
+	{ name = "Takafumi Arakaki (@tkf)", email = "aka.tkf@gmail.com" },
+	{ name = "Dmitrii Gerasimov (@karlicoss)", email = "karlicoss@gmail.com" },
+]
+maintainers = [{ name = "Dmitrii Gerasimov (@karlicoss)", email = "karlicoss@gmail.com" }]
+keywords = ["org", "org-mode", "emacs"]
+# see: http://pypi.python.org/pypi?%3Aaction=list_classifiers
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"License :: OSI Approved :: BSD License",
+	"Topic :: Text Processing :: Markup",
+]
+# TODO add it back later, perhaps via ast?
+# long_description=orgparse.__doc__,
+
+[project.urls]
+Homepage = "https://github.com/karlicoss/orgparse"
+
+[project.optional-dependencies]
+[dependency-groups]
+testing = [
+	"pytest",
+	"ruff",
+	"mypy",
+	"lxml",         # for mypy html coverage
+	"ty>=0.0.1a25",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+# unfortunately have to duplicate project name here atm, see https://github.com/pypa/hatch/issues/1894
+[tool.hatch.build.targets.wheel]
+packages = ["src/orgparse"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+version_scheme = "python-simplified-semver"
+local_scheme = "dirty-tag"

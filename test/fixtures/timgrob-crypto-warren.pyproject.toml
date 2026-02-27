@@ -1,0 +1,35 @@
+[project]
+name = "crypto-warren"
+version = "0.1.0"
+description = "This is a crypto trading bot"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+	"apscheduler>=3.11.0",
+	"ccxt>=4.5.5",
+	"filterpy>=1.4.5",
+	"loguru>=0.7.3",
+	"pandas>=2.3.2",
+	"psycopg2-binary>=2.9.10",
+	"pykalman>=0.10.2",
+	"pyyaml>=6.0.3",
+	"scipy>=1.16.2",
+	"sqlalchemy>=2.0.43",
+	"ta>=0.11.0",
+	"uvloop>=0.21.0",
+]
+
+[dependency-groups]
+dev = [
+	"matplotlib>=3.10.6",
+	"matplotlib-inline>=0.1.7",
+	"pytest>=8.4.2",
+	"ruff>=0.13.2",
+	"tabulate>=0.9.0",
+]
+
+[mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_option]
+pythonpath = ["."]

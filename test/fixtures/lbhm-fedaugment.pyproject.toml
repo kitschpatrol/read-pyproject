@@ -1,0 +1,164 @@
+[build-system]
+requires = ["uv_build>=0.9.2,<0.10.0"]
+build-backend = "uv_build"
+
+[project]
+name = "fedaugment"
+version = "0.1.0"
+description = "Table augmentation search over decentralized data repositories."
+readme = "README.md"
+authors = [{ name = "Lennart Behme", email = "lennart.behme@tu-berlin.de" }]
+requires-python = ">=3.12"
+license = "Apache-2.0"
+keywords = ["dataset search", "table augmentation search"]
+classifiers = [
+	"License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+]
+dependencies = [
+	"h5py>=3.14.0",
+	"hnswlib>=0.8.0",
+	"lightning>=2.5.1",
+	"loguru>=0.7.3",
+	"numpy>=2.3.0",
+	"openai>=1.76.0",
+	"orjson>=3.10.18",
+	"polars>=1.30.0",
+	"psutil>=7.0.0",
+	"pydantic>=2.11.4",
+	"scikit-learn>=1.7.2",
+	"sentence-transformers>=5.2.0",
+	"tenacity>=9.1.2",
+	"tiktoken>=0.11.0",
+	"torch>=2.7.0",
+	"torchmetrics>=1.7.1",
+	"torch-pca>=1.1.0",
+	"tqdm>=4.67.1",
+	"transformers>=4.51.3",
+]
+
+[project.optional-dependencies]
+cpu = ["torch>=2.7.0"]
+cu126 = ["torch>=2.7.0"]
+cu128 = ["torch>=2.7.0"]
+experiments = [
+	"accelerate>=1.12.0", # Required by some embedding models
+	"einops>=0.8.1",      # Required by some embedding models
+	"ipykernel>=6.29.5",  # For Jupyter notebooks
+	"ipywidgets>=8.1.8",  # For Jupyter notebooks
+	"matplotlib>=3.10.1", # For plotting results
+	"seaborn>=0.13.2",    # Additional plotting library
+]
+flash-attn = ["flash-attn>=2.8.3"]
+
+[dependency-groups]
+dev = [
+	"mypy>=1.15.0",
+	"pre-commit>=4.2.0",
+	"pytest>=9.0.0",
+	"types-hnswlib>=0.8.0.20250227",
+	"types-psutil>=7.0.0.20251116",
+	"types-seaborn>=0.13.2.20250914",
+	"types-tqdm>=4.67.0.20250809",
+]
+
+[tool.uv]
+conflicts = [[{ extra = "cpu" }, { extra = "cu126" }, { extra = "cu128" }]]
+
+[[tool.uv.dependency-metadata]]
+name = "flash-attn"
+requires-dist = ["torch", "einops"]
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [
+	{ requirement = "torch", match-runtime = true },
+	{ requirement = "numpy", match-runtime = true },
+	{ requirement = "einops", match-runtime = true },
+]
+
+[tool.uv.sources]
+torch = [
+	{ index = "pytorch-cpu", extra = "cpu" },
+	{ index = "pytorch-cu126", extra = "cu126" },
+	{ index = "pytorch-cu128", extra = "cu128" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.ruff]
+line-length = 99
+target-version = "py312"
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+	"AIR",     # airflow
+	"ANN401",  # any-return
+	"ARG",     # flake8-unused-arguments
+	"COM812",  # missing-trailing-comma
+	"CPY",     # flake8-copyright
+	"D1",      # pydocstyle undocumented-*
+	"DJ",      # flake8-django
+	"DOC",     # pydoclint
+	"EM",      # flake8-errmsg
+	"ERA",     # eradicate
+	"FBT",     # flake8-boolean-trap
+	"FIX",     # flake8-fixme
+	"FURB140", # reimplemented-starmap
+	"PLR09",   # pylint too-many-*
+	"PLR6301", # no-self-use
+	"S101",    # assert
+	"SIM105",  # suppressible-exception
+	"TD",      # flake8-todos
+	"TRY003",  # raise-vanilla-args
+]
+isort.split-on-trailing-comma = false
+preview = true
+exclude = ["docs", "experiments/archive/**"]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"analysis/**" = ["INP001", "PLR2004", "T201"]
+"experiments/**" = ["INP001", "PLR2004", "T201", "TID252"]
+"scripts/**" = ["INP001", "T201"]
+"tests/**" = ["PLR2004", "SLF001"]
+
+[tool.ruff.lint.pep8-naming]
+extend-ignore-names = ["B", "D", "F", "L", "N", "S", "U", "V", "Vt"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+reportUnnecessaryTypeIgnoreComment = false
+# typeCheckingMode = "strict"
+exclude = ["experiments/archive"]
+
+[tool.mypy]
+ignore_missing_imports = true               # Enabled since h5py does not have type stubs
+strict = true
+enable_error_code = ["ignore-without-code"]
+exclude_gitignore = true
+warn_unused_ignores = true
+exclude = "experiments/archive"
+
+[tool.pytest]
+testpaths = ["tests"]

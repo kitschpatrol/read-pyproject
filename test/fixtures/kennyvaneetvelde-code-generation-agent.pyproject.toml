@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "code-gen-agent"
+version = "1"
+description = "Demo code generation agent that uses Atomic Agents and Terrarium to generate and execute Python code in a sandboxed environment."
+authors = ["Kenny Vaneetvelde <kenny.vaneetvelde@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+atomic-agents = "^1.0.15"
+instructor = "^1.6.4"
+rich = "^13.9.4"
+openai = "^1.54.4"
+pydantic = "^2.9.2"
+requests = "^2.32.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

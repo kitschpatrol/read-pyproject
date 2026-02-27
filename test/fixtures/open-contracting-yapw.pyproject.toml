@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yapw"
+version = "0.2.2"
+authors = [{ name = "Open Contracting Partnership", email = "data@open-contracting.org" }]
+description = "A Pika wrapper with error handling, signal handling and good defaults."
+readme = "README.rst"
+license = { text = "BSD" }
+urls = { Homepage = "https://github.com/open-contracting/yapw" }
+classifiers = [
+	"License :: OSI Approved :: BSD License",
+	"Operating System :: POSIX :: Linux",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: Implementation :: CPython",
+]
+requires-python = ">=3.10"
+dependencies = ["pika>=1.2.0"]
+
+[project.optional-dependencies]
+perf = ["orjson"]
+test = ["coverage", "pytest"]
+types = ["mypy", "types-orjson", "types-pika"]
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "tests.*"]
+
+[tool.ruff]
+line-length = 119
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+	"ANN",
+	"C901",
+	"COM812",
+	"D203",
+	"D212",
+	"D415",
+	"EM",
+	"ISC001",
+	"PERF203",
+	"PLR091",
+	"Q000",
+	"D100",
+	"D104",
+	"PYI024",  # 3.11+
+	"D200",    # https://github.com/astral-sh/ruff/issues/6269
+]
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["copyright"]
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.lint.per-file-ignores]
+"docs/conf.py" = ["D100", "INP001"]
+"tests/*" = ["ARG001", "D", "FBT003", "INP001", "PLR2004", "S", "TRY003"]
+"tests/fixtures/*" = ["T201"]                                             # print
+"yapw/clients.py" = ["ARG002"]                                            # pika
+
+[tool.mypy]
+strict = true
+warn_unreachable = true
+exclude = "(build|docs|tests)/"

@@ -1,0 +1,32 @@
+[tool.pytest.ini_options]
+filterwarnings = [
+	"error",
+	"ignore::UserWarning",
+	'ignore:function ham\(\) is deprecated:DeprecationWarning',
+]
+
+[tool.coverage.run]
+# --- For testing...
+command_line = "-m pytest tests"
+source = [
+	"honeybee_ph",
+	"honeybee_energy_ph",
+	"honeybee_ph_standards",
+	"honeybee_ph_utils",
+	"honeybee_phhvac",
+]
+branch = true
+cover_pylib = false
+omit = ["*/__init__.py", "*.venv/*", "*.venv_mbair/*"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+
+[tool.coverage.html]
+directory = "_coverage_html"
+
+[tool.black]
+line-length = 120
+
+[tool.setuptools_scm]

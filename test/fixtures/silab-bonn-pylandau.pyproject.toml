@@ -1,0 +1,30 @@
+[project]
+name = 'pylandau'
+version = '3.0.0'
+description = 'A Landau PDF definition to be used in Python.'
+license = { file = 'LICENSE' }
+requires-python = '>=3.8'
+readme = 'README.md'
+authors = [
+	{ name = 'David-Leon Pohl', email = 'pohl@physik.uni-bonn.de' },
+	{ name = 'Christian Bespin', email = 'bespin@physik.uni-bonn.de' },
+]
+maintainers = [
+	{ name = 'Christian Bespin', email = 'bespin@physik.uni-bonn.de' },
+	{ name = 'Pascal Wolf', email = 'wolf@physik.uni-bonn.de' },
+]
+dependencies = ["numba>=0.53", "numpy>=1.21", "scipy>=1.7"]
+
+[project.urls]
+repository = 'https://github.com/SiLab-Bonn/pyLandau'
+
+[build-system]
+# Minimum requirements for the build system to execute.
+requires = [
+	"setuptools",
+	"wheel",
+	"numpy>=1.21",
+	"numba>=0.53",
+	"scipy>=1.7",
+] # PEP 508 specifications
+build-backend = "setuptools.build_meta"

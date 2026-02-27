@@ -1,0 +1,6 @@
+# pyproject.toml
+[project]
+requires-python = ">=3.10"
+name = "mcp-project"               # project 이름
+version = "0.1.0"
+dependencies = ["mcp[cli]>=1.6.0"]

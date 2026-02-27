@@ -1,0 +1,98 @@
+[build-system]
+requires = ["hatchling>=1.3.1", "jupyterlab==3.*"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nbsv"
+version = "0.1.7"
+description = "Simularium Viewer Jupyter Widget "
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+requires-python = ">=3.7"
+authors = [{ name = "Megan Riel-Mehan", email = "meganr@alleninstitute.org" }]
+keywords = ["IPython", "Jupyter", "Widgets"]
+classifiers = [
+	"Framework :: Jupyter",
+	"Intended Audience :: Developers",
+	"Intended Audience :: Science/Research",
+	"License :: OSI Approved :: BSD License",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+]
+dependencies = ["anywidget", "simulariumio"]
+
+[project.optional-dependencies]
+docs = [
+	"jupyter_sphinx",
+	"nbsphinx",
+	"nbsphinx-link",
+	"pypandoc",
+	"pytest_check_links",
+	"recommonmark",
+	"sphinx>=1.5",
+	"sphinx_rtd_theme",
+]
+examples = ["simulariumio", "numpy"]
+test = ["nbval", "pytest-cov", "pytest>=7.1", "tbump"]
+dev = ["watchfiles", "jupyterlab"]
+
+[project.urls]
+Homepage = "https://github.com/simularium/nbsv"
+
+# Dependency groups (recognized by `uv`). For more details, visit:
+# https://peps.python.org/pep-0735/
+[dependency-groups]
+dev = ["watchfiles", "jupyterlab"]
+
+[tool.hatch.build.targets.sdist]
+ignore-vcs = true
+exclude = [
+	"**/node_modules",
+	".ipynb_checkpoints",
+	".github",
+	"css",
+	"dist",
+	"lib",
+	"src",
+	"yarn.lock",
+]
+
+[tool.hatch.build.targets.wheel]
+only-packages = true
+artifacts = ["nbsv", "package.json"]
+
+[tool.hatch.build.hooks.jupyter-builder]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["lib/widget.js", "package.json"]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+path = "."
+npm = "yarn"
+build_cmd = "build"
+
+[tool.tbump]
+file = [
+	{ src = "package.json", search = '"version": "{current_version}"' },
+	{ src = "nbsv/_frontend.py", search = 'module_version = "{current_version}"' },
+	{ src = "pyproject.toml", version_template = "{major}.{minor}.{patch}", search = 'version = "{current_version}"' },
+	{ src = "nbsv/_version.py", version_template = '({major}, {minor}, {patch})', search = "version_info = {current_version}" },
+]
+
+[tool.tbump.version]
+current = "0.1.7"
+regex = '''
+  (?P<major>\d+)
+  \.
+  (?P<minor>\d+)
+  \.
+  (?P<patch>\d+)
+  '''
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"

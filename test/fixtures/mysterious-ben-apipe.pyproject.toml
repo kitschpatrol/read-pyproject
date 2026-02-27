@@ -1,0 +1,119 @@
+[tool.poetry]
+name = "apipe"
+version = "0.0.0"
+description = "Data pipelines with lazy computation and caching"
+authors = ["Mysterious Ben <datascience@tuta.io>"]
+keywords = ["python", "pipeline", "dask", "pandas"]
+readme = "README.md"
+license = "Apache License, Version 2.0"
+homepage = "https://github.com/mysterious-ben/apipe"
+repository = "https://github.com/mysterious-ben/apipe"
+include = ["LICENSE"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.25"
+pandas = { extras = ["pyarrow"], version = "^2.1" }
+dask = { extras = ["delayed"], version = ">=2023" }
+xxhash = "^3.4"
+cloudpickle = ">=2"
+loguru = ">=0.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^8"
+ruff = ">=0.4"
+black = "^24.4"
+pylint = "^3.1"
+mypy = ">=0.910"
+pre-commit = "^3.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 99
+target-version = ['py39']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.github
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | \notebooks
+    | .ipynb_checkpoints
+    | __pycache__
+    | data
+    | logs
+    | _build
+    | buck-out
+    | build
+    | dist
+    | snapshots
+    | \.venv
+  )/
+)
+'''
+
+[tool.ruff]
+exclude = [
+	".bzr",
+	".direnv",
+	".eggs",
+	".git",
+	".git-rewrite",
+	".hg",
+	".ipynb_checkpoints",
+	".mypy_cache",
+	".nox",
+	".pants.d",
+	".pyenv",
+	".pytest_cache",
+	".pytype",
+	".ruff_cache",
+	".svn",
+	".tox",
+	".venv",
+	".vscode",
+	"__pypackages__",
+	"_build",
+	"buck-out",
+	"build",
+	"dist",
+	"node_modules",
+	"site-packages",
+	"venv",
+]
+
+line-length = 99
+indent-width = 4
+
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["W", "E", "F"]
+ignore = ["E203", "E731"]
+extend-select = ["I"]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+
+[tool.pytest.ini_options]
+markers = ["integration: integration testing (tests require valid credentials and can be slow)"]
+testpaths = ["tests"]

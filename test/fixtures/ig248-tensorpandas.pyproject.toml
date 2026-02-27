@@ -1,0 +1,47 @@
+[build-system]
+requires = ["poetry>=1.0.0"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "tensorpandas"
+version = "0.0.0.dev0"
+description = "Tensor Extension Types for pandas and pyarrow."
+readme = "README.md"
+authors = ["Igor Gotlibovych <igor@octopus.energy>"]
+homepage = "https://github.com/octoenergy/tensorpandas"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = ">=1.1.0,<1.6"
+pyarrow = ">= 6.0.0"
+packaging = ">= 21.3"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.1.4"
+black = "^22.3"
+flake8 = "^3.8.3"
+pydocstyle = "6.0"
+mypy = "^0.902"
+pytest = "^6"
+
+[tool.isort]
+line_length = 99
+multi_line_output = 3
+include_trailing_comma = "True"
+force_grid_wrap = 0
+use_parentheses = "True"
+skip = ".git, .pytest_cache, .mypy_cache, .tox, .venv, build, dist"
+
+[tool.black]
+line-length = 99
+skip-numeric-underscore-normalization = "True"
+target_version = ['py37']
+include = '\.pyi?$'
+exclude = '(\.git|\.pytest_cache|\.mypy_cache|\.tox|\.venv|build|dist|docs)'
+
+[tool.dephell.main]
+# read from poetry format
+from = { format = "poetry", path = "pyproject.toml" }
+# and convert into setup.py
+to = { format = "setuppy", path = "setup.py" }

@@ -1,0 +1,40 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "rpmautospec-core"
+version = "0.1.5"
+description = "Core functionality for rpmautospec"
+authors = ["Nils Philippsen <nils@redhat.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/fedora-infra/rpmautospec-core"
+packages = [{ include = "rpmautospec_core/**/*.py" }]
+include = [
+	{ path = "DCO.txt", format = "sdist" },
+	{ path = "tests/**/*.py", format = "sdist" },
+	{ path = "tests/test-specfiles/*", format = "sdist" },
+	{ path = "tox.ini", format = "sdist" },
+]
+exclude = ["**/.coverage"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.2 || ^7 || ^8.0.0 || ^9.0.0"
+pytest-cov = "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0"
+ruff = { version = "^0.1.14 || ^0.2.0 || ^0.3.0 || ^0.4.0 || ^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^0.14.0", python = "^3.7" }
+
+[tool.poetry.build]
+generate-setup-file = true
+
+[tool.black]
+line_length = 100
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-config .coveragerc --cov-report term --cov-report xml --cov-report html"
+
+[tool.ruff]
+line-length = 100

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tdgl-gl-benchmark"
+version = "0.1.0"
+description = "TDGL Ginzburg–Landau Benchmark Suite (JAX)"
+authors = [{ name = "Hari Hardiyan" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+
+dependencies = ["jax", "jaxlib", "numpy", "matplotlib"]
+
+[project.urls]
+Homepage = "https://github.com/harihardiyan/tdgl-gl-benchmark"
+Repository = "https://github.com/harihardiyan/tdgl-gl-benchmark"

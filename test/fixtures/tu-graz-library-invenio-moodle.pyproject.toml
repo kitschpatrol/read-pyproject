@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+exclude = ["docs"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+	"D203",
+	"D211",
+	"D212",
+	"D213",
+	"E501",
+	"FA102",
+	"INP001",
+	"PERF203",
+	"TRY400",
+	"S101",
+	"SIM117",
+	"UP009",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**.py" = ["ARG001", "FBT001", "SLF001"]

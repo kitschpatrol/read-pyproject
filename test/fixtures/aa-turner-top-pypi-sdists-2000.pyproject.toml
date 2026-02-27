@@ -1,0 +1,128 @@
+[project]
+dynamic = ["version"]
+name = "pyzstd"
+authors = [
+	{ name = "Ma Lin", email = "malincns@163.com" },
+	{ name = "Rogdham", email = "contact@rogdham.net" },
+]
+maintainers = [{ name = "Rogdham", email = "contact@rogdham.net" }]
+description = "Support for Zstandard (zstd) compression"
+readme = { file = "README.md", content-type = "text/markdown" }
+keywords = ["zstandard", "zstd", "zst", "compress", "decompress", "tar", "file", "seek", "seekable"]
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Operating System :: OS Independent",
+	"Intended Audience :: Developers",
+	"Topic :: System :: Archiving :: Compression",
+	"License :: OSI Approved :: BSD License",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Programming Language :: Python :: 3.14",
+]
+requires-python = ">=3.10"
+dependencies = [
+	"backports.zstd>=1.0.0 ; python_version<'3.14'",
+	"typing-extensions>=4.13.2 ; python_version<'3.13'",
+]
+
+[project.urls]
+Homepage = "https://github.com/Rogdham/pyzstd"
+Documentation = "https://pyzstd.readthedocs.io/"
+Source = "https://github.com/Rogdham/pyzstd"
+
+#
+# build
+#
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.hooks.vcs]
+template = "__version__ = \"{version}\"\n"
+version-file = "src/pyzstd/_version.py"
+
+[tool.hatch.version]
+source = "vcs"
+
+#
+# mypy
+#
+
+[tool.mypy]
+# Import discovery
+files = "src"
+ignore_missing_imports = false
+follow_imports = "normal"
+# Platform configuration
+python_version = "3.14"
+# Disallow dynamic typing
+disallow_any_unimported = true
+disallow_any_decorated = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+# Untyped definitions and calls
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+# None and Optional handling
+no_implicit_optional = true
+strict_optional = true
+# Configuring warning
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
+# Suppressing errors
+ignore_errors = false
+# Miscellaneous strictness flags
+strict_equality = true
+# Configuring error messages
+show_error_context = true
+show_error_codes = true
+# Miscellaneous
+warn_unused_configs = true
+
+#
+# ruff
+#
+
+[tool.ruff]
+src = ["src"]
+target-version = "py310"
+extend-exclude = ["tests"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+	"C901",
+	"COM812",
+	"D",
+	"E501",
+	"EM",
+	"ERA001",
+	"FA100",
+	"ISC001",
+	"PLR0912",
+	"PLR0913",
+	"PLR0915",
+	"PLR2004",
+	"PTH",
+	"TRY003",
+	"TRY301",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/pyzstd/__main__.py" = ["PLC0415", "T201"]
+"docs/conf.py" = ["A001", "INP001"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["pyzstd"]

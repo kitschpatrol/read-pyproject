@@ -1,0 +1,131 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hashstash"
+dynamic = ["version"]
+authors = [{ name = "Dr Ryan Heuser", email = "ryan.heuser@gmail.com" }]
+description = "A simple file-based caching system using hash-based file names"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = []
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "hashstash.__version__" }
+
+[project.urls]
+"Homepage" = "https://github.com/quadrismegistus/hashstash"
+"Bug Tracker" = "https://github.com/quadrismegistus/hashstash/issues"
+
+[project.optional-dependencies]
+jsonpickle = ["jsonpickle", "numpy", "pandas"]
+
+dataframe = ["pandas", "numpy", "pyarrow", "fastparquet"]
+sqlite = ["sqlitedict"]
+redis = ["redis", "redis_dict"]
+mongo = ["pymongo"]
+lmdb = ["lmdb"]
+diskcache = ["diskcache"]
+memory = ["ultradict"]
+
+filebased = [
+	"pandas",
+	"polars",
+	"numpy",
+	"pyarrow",
+	"fastparquet",
+	"sqlitedict",
+	"diskcache",
+	"lmdb",
+	"ultradict",
+]
+servers = ["redis", "redis_dict", "pymongo"]
+engines = [
+	"pandas",
+	"polars",
+	"numpy",
+	"pyarrow",
+	"fastparquet",
+	"lmdb",
+	"sqlitedict",
+	"diskcache",
+	"redis",
+	"redis_dict",
+	"mongo",
+	"ultradict",
+]
+dev = [
+	# engines
+	"pandas",
+	"polars",
+	"numpy",
+	"pyarrow",
+	"fastparquet",
+	"lmdb",
+	"sqlitedict",
+	"diskcache",
+	"redis",
+	"redis_dict",
+	"mongo",
+	"ultradict",
+
+	# serializers
+	"jsonpickle", # "numpy", "pandas"
+	"orjson",
+
+	# utils
+	"tqdm",
+	"plotnine",
+	"scikit-misc",
+
+	# dev tools
+	"pytest",
+	"pytest-cov",
+	"setuptools-scm",
+	"ipython",
+]
+all = [
+	# engines
+	"pandas",
+	"polars",
+	"numpy",
+	"pyarrow",
+	"fastparquet",
+	"lmdb",
+	"sqlitedict",
+	"diskcache",
+	"redis",
+	"redis_dict",
+	"mongo",
+	"ultradict",
+
+	# serializers
+	"jsonpickle",
+	"orjson",
+
+	# Compressers
+	"lz4",
+	"blosc",
+
+	# utils
+	"tqdm",
+	"plotnine",
+	"scikit-misc",
+]
+rec = ["pandas", "pyarrow", "lmdb", "lz4", "ultradict"]
+
+[tool.setuptools]
+packages = { find = {} }
+
+[tool.pytest.ini_options]
+addopts = "-v"
+testpaths = ["."]
+
+[project.scripts]
+test = "pytest:main"
