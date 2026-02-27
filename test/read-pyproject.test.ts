@@ -364,8 +364,6 @@ describe('real-world fixtures', () => {
 				'douile-friends-queue.pyproject.toml',
 				// unknown tool: chango
 				'eatsky1006-python-telegram-bot.pyproject.toml',
-				// unknown tool: dagster
-				'fearnworks-graphcap-prototype.pyproject.toml',
 				// unknown tool: pixi
 				'fppdf-fppdf.pyproject.toml',
 				// unknown tool: bumpver
@@ -378,16 +376,12 @@ describe('real-world fixtures', () => {
 				'iitpvisionlab-adrt.pyproject.toml',
 				// unknown tool: poetry-dynamic-versioning
 				'kaisbn-openly.pyproject.toml',
-				// unknown tool: dagster
-				'kayrnt-dlt-iceberg-slack-backup.pyproject.toml',
 				// unknown tool: pixi
 				'khanlab-cfmm2tar.pyproject.toml',
 				// unknown tool: pydantic-mypy
 				'lucas-six-python-cookbook.pyproject.toml',
 				// unknown tool: uv-dynamic-versioning
 				'omniagentpay-omniagentpay.pyproject.toml',
-				// unknown tool: dagster
-				'open-model-initiative-graphcap.pyproject.toml',
 				// unknown tool: build_sphinx
 				'salt-extensions-saltext-github.pyproject.toml',
 				// unknown tool: coverage_rich
