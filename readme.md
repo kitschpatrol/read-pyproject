@@ -21,11 +21,47 @@
 
 ## Overview
 
+TODO Into sentence or two.
+
+Key characteristics:
+
+- **Types**\
+  TODO
+
+- **Normalization**\
+  TODO, mention camelCase keys
+
+- **Flexibly strict**\
+  TODO
+
+- **Tool coverage**\
+  TODO
+
 ## Getting started
 
 ### Dependencies
 
+Node 20.19.0+
+
 ### Installation
+
+#### Local
+
+```sh
+npm install read-pyproject
+```
+
+### Quick Start
+
+```ts
+import { readPyproject } from 'read-pyproject'
+
+// Get a strictly typed and normalized representation of pyproject.toml
+const parsedPyproject = await readPyproject('/path/to/project', 'passthrough')
+
+// Log the object
+console.log(parsedPyproject)
+```
 
 ## Usage
 
@@ -37,9 +73,15 @@
 
 ### Motivation
 
+I wanted something like [read-pkg](https://github.com/sindresorhus/read-pkg) or [pkg-types](https://github.com/unjs/pkg-types), but with support for `pyproject.toml` files.
+
+It's a bit strange to work across language ecosystems like this, but I had occasion to do so for some other Node-based projects related to project metadata extraction, specifically [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta) and [metascope](https://github.com/kitschpatrol/metascope).
+
 ### Implementation notes
 
-### Similar projects
+The project consists of a number of Zod schemas responsible for mapping, and normalizing data found in a `pyproject.toml` a nicely typed JavaScript object.
+
+Forcing the rather dynamic and extensible data structure found in `pyproject.toml` into a TypeScript straightjacket is likely futile, but an LLM makes the project at least somewhat tractable.
 
 ## Maintainers
 
@@ -66,3 +108,7 @@ An initial human-crafted specification was implemented by Claude Code. The outpu
 [MIT](license.txt) © Eric Mika
 
 <!-- /license -->
+
+```
+
+```

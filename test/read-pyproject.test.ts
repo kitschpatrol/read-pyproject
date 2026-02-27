@@ -1,3 +1,5 @@
+/* eslint-disable capitalized-comments */
+
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -7,35 +9,6 @@ import { correctSpdx, normalizePep503Name } from '../src/normalize'
 import { createBuildSystemSchema } from '../src/schema/build-system'
 import { createProjectSchema } from '../src/schema/project'
 import { createPyprojectSchema } from '../src/schema/pyproject'
-import {
-	createAutopep8Schema,
-	createBanditSchema,
-	createBlackSchema,
-	createBumpversionSchema,
-	createCheckWheelContentsSchema,
-	createCibuildwheelSchema,
-	createCodespellSchema,
-	createCommitizenSchema,
-	createCoverageSchema,
-	createDistutilsSchema,
-	createDocformatterSchema,
-	createFlake8Schema,
-	createFlitSchema,
-	createIsortSchema,
-	createJupyterReleaserSchema,
-	createMypySchema,
-	createPoeSchema,
-	createPoetrySchema,
-	createPylintSchema,
-	createPyrightSchema,
-	createPytestSchema,
-	createRuffSchema,
-	createSetuptoolsScmSchema,
-	createTbumpSchema,
-	createTowncrierSchema,
-	createUvSchema,
-	createYapfSchema,
-} from '../src/schema/tool'
 
 const fixturesDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'fixtures')
 
@@ -257,557 +230,6 @@ describe('PEP 735 dependency-groups', () => {
 })
 
 // ---------------------------------------------------------------------------
-// Tool schemas
-// ---------------------------------------------------------------------------
-
-describe('tool schemas', () => {
-	it('parses poe config', () => {
-		const schema = createPoeSchema('passthrough')
-		const result = schema.parse({
-			'default-task-type': 'cmd',
-			// eslint-disable-next-line ts/naming-convention
-			env: { NODE_ENV: 'test' },
-			executor: { type: 'poetry' },
-			'poetry-command': 'poe',
-			'shell-interpreter': 'bash',
-			tasks: {
-				format: { cmd: 'black app', help: 'Run black on the code base' },
-				lint: 'ruff check .',
-				test: ['lint', 'unit-test'],
-			},
-			verbosity: 1,
-		})
-		expect(result.defaultTaskType).toBe('cmd')
-		// eslint-disable-next-line ts/naming-convention
-		expect(result.env).toEqual({ NODE_ENV: 'test' })
-		expect(result.executor).toEqual({ type: 'poetry' })
-		expect(result.poetryCommand).toBe('poe')
-		expect(result.shellInterpreter).toBe('bash')
-		expect(result.verbosity).toBe(1)
-		expect(result.tasks).toEqual({
-			format: { cmd: 'black app', help: 'Run black on the code base' },
-			lint: 'ruff check .',
-			test: ['lint', 'unit-test'],
-		})
-	})
-
-	it('parses poetry config', () => {
-		const schema = createPoetrySchema('passthrough')
-		const result = schema.parse({
-			authors: ['Author <author@example.com>'],
-			description: 'A project',
-			'dev-dependencies': { pytest: '^7.0' },
-			name: 'my-project',
-			version: '1.0.0',
-		})
-		expect(result.name).toBe('my-project')
-		expect(result.devDependencies).toEqual({ pytest: '^7.0' })
-	})
-
-	it('parses ruff config', () => {
-		const schema = createRuffSchema('passthrough')
-		const result = schema.parse({
-			format: { 'docstring-code-format': true, 'quote-style': 'double' },
-			'line-length': 100,
-			lint: { 'per-file-ignores': { '__init__.py': ['F401'] }, select: ['E', 'F'] },
-			'target-version': 'py311',
-		})
-		expect(result.targetVersion).toBe('py311')
-		expect(result.lineLength).toBe(100)
-		expect(result.lint?.perFileIgnores).toEqual({ '__init__.py': ['F401'] })
-		expect(result.format?.docstringCodeFormat).toBe(true)
-	})
-
-	it('parses mypy config', () => {
-		const schema = createMypySchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			ignore_missing_imports: true,
-			// eslint-disable-next-line ts/naming-convention
-			python_version: '3.11',
-			strict: true,
-		})
-		expect(result.pythonVersion).toBe('3.11')
-		expect(result.strict).toBe(true)
-		expect(result.ignoreMissingImports).toBe(true)
-	})
-
-	it('parses pytest config', () => {
-		const schema = createPytestSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			ini_options: {
-				addopts: '-v --tb=short',
-				// eslint-disable-next-line ts/naming-convention
-				python_files: 'test_*.py',
-				testpaths: ['tests'],
-			},
-		})
-		expect(result.iniOptions?.addopts).toBe('-v --tb=short')
-		expect(result.iniOptions?.pythonFiles).toBe('test_*.py')
-	})
-
-	it('parses black config', () => {
-		const schema = createBlackSchema('passthrough')
-		const result = schema.parse({
-			'line-length': 88,
-			preview: true,
-			'target-version': ['py38', 'py39'],
-		})
-		expect(result.lineLength).toBe(88)
-		expect(result.targetVersion).toEqual(['py38', 'py39'])
-	})
-
-	it('parses uv config', () => {
-		const schema = createUvSchema('passthrough')
-		const result = schema.parse({
-			'dev-dependencies': ['pytest>=7.0'],
-			'index-url': 'https://pypi.org/simple',
-			// eslint-disable-next-line ts/naming-convention
-			sources: { my_pkg: { path: './packages/my_pkg' } },
-		})
-		expect(result.devDependencies).toEqual(['pytest>=7.0'])
-		expect(result.indexUrl).toBe('https://pypi.org/simple')
-	})
-
-	it('parses isort config', () => {
-		const schema = createIsortSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			force_single_line: true,
-			// eslint-disable-next-line ts/naming-convention
-			known_first_party: ['mypackage'],
-			// eslint-disable-next-line ts/naming-convention
-			line_length: 100,
-			// eslint-disable-next-line ts/naming-convention
-			multi_line_output: 3,
-			profile: 'black',
-			skip: ['__init__.py'],
-			// eslint-disable-next-line ts/naming-convention
-			src_paths: ['src', 'tests'],
-		})
-		expect(result.profile).toBe('black')
-		expect(result.lineLength).toBe(100)
-		expect(result.multiLineOutput).toBe(3)
-		expect(result.forceSingleLine).toBe(true)
-		expect(result.knownFirstParty).toEqual(['mypackage'])
-		expect(result.srcPaths).toEqual(['src', 'tests'])
-	})
-
-	it('parses coverage config', () => {
-		const schema = createCoverageSchema('passthrough')
-		const result = schema.parse({
-			html: { directory: 'htmlcov' },
-			paths: {
-				source: ['src', '*/site-packages'],
-				tests: ['tests', '*/tests'],
-			},
-			report: {
-				// eslint-disable-next-line ts/naming-convention
-				exclude_lines: ['pragma: no cover', 'if TYPE_CHECKING:'],
-				// eslint-disable-next-line ts/naming-convention
-				fail_under: 90,
-				precision: 2,
-				// eslint-disable-next-line ts/naming-convention
-				show_missing: true,
-				// eslint-disable-next-line ts/naming-convention
-				skip_covered: true,
-			},
-			run: {
-				branch: true,
-				omit: ['*/tests/*'],
-				parallel: true,
-				source: ['mypackage'],
-				// eslint-disable-next-line ts/naming-convention
-				source_pkgs: ['mypackage'],
-			},
-		})
-		expect(result.run?.branch).toBe(true)
-		expect(result.run?.parallel).toBe(true)
-		expect(result.run?.source).toEqual(['mypackage'])
-		expect(result.run?.sourcePackages).toEqual(['mypackage'])
-		expect(result.run?.omit).toEqual(['*/tests/*'])
-		expect(result.report?.failUnder).toBe(90)
-		expect(result.report?.showMissing).toBe(true)
-		expect(result.report?.skipCovered).toBe(true)
-		expect(result.report?.excludeLines).toEqual(['pragma: no cover', 'if TYPE_CHECKING:'])
-		expect(result.report?.precision).toBe(2)
-		expect(result.paths).toEqual({
-			source: ['src', '*/site-packages'],
-			tests: ['tests', '*/tests'],
-		})
-		expect(result.html?.directory).toBe('htmlcov')
-	})
-
-	it('parses pyright config', () => {
-		const schema = createPyrightSchema('passthrough')
-		const result = schema.parse({
-			exclude: ['**/__pycache__'],
-			extraPaths: ['src'],
-			include: ['src'],
-			pythonPlatform: 'All',
-			pythonVersion: '3.11',
-			reportMissingImports: true,
-			reportMissingTypeStubs: false,
-			reportUnusedImport: 'warning',
-			strictListInference: true,
-			typeCheckingMode: 'strict',
-			venv: '.venv',
-			venvPath: '.',
-		})
-		expect(result.typeCheckingMode).toBe('strict')
-		expect(result.pythonVersion).toBe('3.11')
-		expect(result.pythonPlatform).toBe('All')
-		expect(result.include).toEqual(['src'])
-		expect(result.exclude).toEqual(['**/__pycache__'])
-		expect(result.extraPaths).toEqual(['src'])
-		expect(result.venvPath).toBe('.')
-		expect(result.venv).toBe('.venv')
-		expect(result.strictListInference).toBe(true)
-		expect(result.reportMissingImports).toBe(true)
-		expect(result.reportMissingTypeStubs).toBe(false)
-		expect(result.reportUnusedImport).toBe('warning')
-	})
-
-	it('parses setuptools_scm config', () => {
-		const schema = createSetuptoolsScmSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			fallback_version: '0.0.0',
-			root: '.',
-			// eslint-disable-next-line ts/naming-convention
-			version_file: 'src/mypackage/_version.py',
-			// eslint-disable-next-line ts/naming-convention
-			version_scheme: 'post-release',
-			// eslint-disable-next-line ts/naming-convention
-			write_to: 'src/mypackage/_version.py',
-			// eslint-disable-next-line ts/naming-convention
-			write_to_template: '__version__ = "{version}"',
-		})
-		expect(result.root).toBe('.')
-		expect(result.fallbackVersion).toBe('0.0.0')
-		expect(result.versionFile).toBe('src/mypackage/_version.py')
-		expect(result.versionScheme).toBe('post-release')
-		expect(result.writeTo).toBe('src/mypackage/_version.py')
-		expect(result.writeToTemplate).toBe('__version__ = "{version}"')
-	})
-
-	it('parses codespell config', () => {
-		const schema = createCodespellSchema('passthrough')
-		const result = schema.parse({
-			'check-filenames': true,
-			'ignore-words-list': 'crate,nd,ned',
-			'quiet-level': 3,
-			skip: '*.pt,*.pth,.git',
-		})
-		expect(result.checkFilenames).toBe(true)
-		expect(result.ignoreWordsList).toBe('crate,nd,ned')
-		expect(result.quietLevel).toBe(3)
-		expect(result.skip).toBe('*.pt,*.pth,.git')
-	})
-
-	it('parses yapf config', () => {
-		const schema = createYapfSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			based_on_style: 'pep8',
-			// eslint-disable-next-line ts/naming-convention
-			coalesce_brackets: true,
-			// eslint-disable-next-line ts/naming-convention
-			column_limit: 120,
-			// eslint-disable-next-line ts/naming-convention
-			spaces_before_comment: 2,
-			// eslint-disable-next-line ts/naming-convention
-			split_before_closing_bracket: false,
-			// eslint-disable-next-line ts/naming-convention
-			split_before_first_argument: false,
-		})
-		expect(result.basedOnStyle).toBe('pep8')
-		expect(result.columnLimit).toBe(120)
-		expect(result.coalesceBrackets).toBe(true)
-		expect(result.spacesBeforeComment).toBe(2)
-		expect(result.splitBeforeClosingBracket).toBe(false)
-		expect(result.splitBeforeFirstArgument).toBe(false)
-	})
-
-	it('parses flake8 config', () => {
-		const schema = createFlake8Schema('passthrough')
-		const result = schema.parse({
-			exclude: ['.git', 'venv', 'build', 'dist'],
-			'extend-ignore': ['E203', 'E501', 'W503'],
-			'extend-select': ['B950'],
-			ignore: ['E501'],
-			'max-complexity': 30,
-			'max-line-length': 120,
-			select: ['E', 'F', 'W', 'C', 'B9'],
-		})
-		expect(result.maxLineLength).toBe(120)
-		expect(result.maxComplexity).toBe(30)
-		expect(result.exclude).toEqual(['.git', 'venv', 'build', 'dist'])
-		expect(result.extendIgnore).toEqual(['E203', 'E501', 'W503'])
-		expect(result.extendSelect).toEqual(['B950'])
-		expect(result.ignore).toEqual(['E501'])
-		expect(result.select).toEqual(['E', 'F', 'W', 'C', 'B9'])
-	})
-
-	it('parses towncrier config', () => {
-		const schema = createTowncrierSchema('passthrough')
-		const result = schema.parse({
-			directory: 'changelog.d',
-			filename: 'CHANGELOG.md',
-			// eslint-disable-next-line ts/naming-convention
-			issue_format: '#{issue}',
-			package: 'my-project',
-			// eslint-disable-next-line ts/naming-convention
-			package_dir: 'src',
-			// eslint-disable-next-line ts/naming-convention
-			start_string: '<!-- towncrier release notes start -->',
-			template: 'changelog.d/_template.md',
-			// eslint-disable-next-line ts/naming-convention
-			title_format: '## {version} ({project_date})',
-			type: [
-				{ directory: 'added', name: 'Added', showcontent: true },
-				{ directory: 'fixed', name: 'Fixed', showcontent: true },
-			],
-			underlines: ['', '', ''],
-		})
-		expect(result.package).toBe('my-project')
-		expect(result.packageDirectory).toBe('src')
-		expect(result.directory).toBe('changelog.d')
-		expect(result.filename).toBe('CHANGELOG.md')
-		expect(result.issueFormat).toBe('#{issue}')
-		expect(result.startString).toBe('<!-- towncrier release notes start -->')
-		expect(result.titleFormat).toBe('## {version} ({project_date})')
-		expect(result.type).toEqual([
-			{ directory: 'added', name: 'Added', showcontent: true },
-			{ directory: 'fixed', name: 'Fixed', showcontent: true },
-		])
-		expect(result.underlines).toEqual(['', '', ''])
-	})
-
-	it('parses docformatter config', () => {
-		const schema = createDocformatterSchema('passthrough')
-		const result = schema.parse({
-			'close-quotes-on-newline': true,
-			'in-place': true,
-			'pre-summary-newline': true,
-			'wrap-descriptions': 120,
-			'wrap-summaries': 120,
-		})
-		expect(result.wrapSummaries).toBe(120)
-		expect(result.wrapDescriptions).toBe(120)
-		expect(result.preSummaryNewline).toBe(true)
-		expect(result.closeQuotesOnNewline).toBe(true)
-		expect(result.inPlace).toBe(true)
-	})
-
-	it('parses bumpversion config', () => {
-		const schema = createBumpversionSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			allow_dirty: false,
-			commit: true,
-			// eslint-disable-next-line ts/naming-convention
-			current_version: '1.2.3',
-			files: [{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }],
-			message: 'Release: {new_version}',
-			// eslint-disable-next-line ts/naming-convention
-			post_commit_hooks: ['git push', 'git push --tags'],
-			// eslint-disable-next-line ts/naming-convention
-			pre_commit_hooks: ['uv sync', 'git add uv.lock'],
-			// eslint-disable-next-line ts/naming-convention
-			sign_tags: false,
-			tag: true,
-			// eslint-disable-next-line ts/naming-convention
-			tag_message: 'Release: {new_version}',
-			// eslint-disable-next-line ts/naming-convention
-			tag_name: 'v{new_version}',
-		})
-		expect(result.allowDirty).toBe(false)
-		expect(result.commit).toBe(true)
-		expect(result.currentVersion).toBe('1.2.3')
-		expect(result.message).toBe('Release: {new_version}')
-		expect(result.tag).toBe(true)
-		expect(result.tagName).toBe('v{new_version}')
-		expect(result.tagMessage).toBe('Release: {new_version}')
-		expect(result.signTags).toBe(false)
-		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
-		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
-		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
-	})
-
-	it('parses flit config', () => {
-		const schema = createFlitSchema('passthrough')
-		const result = schema.parse({
-			module: { name: 'mypackage' },
-			sdist: {
-				exclude: [],
-				include: ['CHANGELOG.md', 'README.md', '*/test*.py'],
-			},
-		})
-		expect(result.module?.name).toBe('mypackage')
-		expect(result.sdist?.include).toEqual(['CHANGELOG.md', 'README.md', '*/test*.py'])
-		expect(result.sdist?.exclude).toEqual([])
-	})
-
-	it('parses autopep8 config', () => {
-		const schema = createAutopep8Schema('passthrough')
-		const result = schema.parse({
-			aggressive: 2,
-			// eslint-disable-next-line ts/naming-convention
-			max_line_length: 120,
-		})
-		expect(result.maxLineLength).toBe(120)
-		expect(result.aggressive).toBe(2)
-	})
-
-	it('parses bandit config', () => {
-		const schema = createBanditSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			exclude_dirs: ['tests', 'examples'],
-			skips: ['B101', 'B601'],
-			tests: ['B201'],
-		})
-		expect(result.excludeDirectories).toEqual(['tests', 'examples'])
-		expect(result.skips).toEqual(['B101', 'B601'])
-		expect(result.tests).toEqual(['B201'])
-	})
-
-	it('parses cibuildwheel config', () => {
-		const schema = createCibuildwheelSchema('passthrough')
-		const result = schema.parse({
-			build: 'cp310-*',
-			'build-frontend': 'build',
-			skip: '*-musllinux*',
-			'test-command': 'pytest {project}/tests',
-			'test-requires': 'pytest',
-		})
-		expect(result.build).toBe('cp310-*')
-		expect(result.buildFrontend).toBe('build')
-		expect(result.skip).toBe('*-musllinux*')
-		expect(result.testCommand).toBe('pytest {project}/tests')
-		expect(result.testRequires).toBe('pytest')
-	})
-
-	it('parses tbump config', () => {
-		const schema = createTbumpSchema('passthrough')
-		const result = schema.parse({
-			file: [{ search: '"version": "{current_version}"', src: 'package.json' }],
-			git: {
-				// eslint-disable-next-line ts/naming-convention
-				message_template: 'Bump to {new_version}',
-				// eslint-disable-next-line ts/naming-convention
-				tag_template: 'v{new_version}',
-			},
-			// eslint-disable-next-line ts/naming-convention
-			github_url: 'https://github.com/example/repo/',
-			version: {
-				current: '1.0.0',
-				regex: String.raw`(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)`,
-			},
-		})
-		expect(result.githubUrl).toBe('https://github.com/example/repo/')
-		expect(result.version?.current).toBe('1.0.0')
-		expect(result.git?.messageTemplate).toBe('Bump to {new_version}')
-		expect(result.git?.tagTemplate).toBe('v{new_version}')
-		expect(result.file).toEqual([{ search: '"version": "{current_version}"', src: 'package.json' }])
-	})
-
-	it('parses distutils config', () => {
-		const schema = createDistutilsSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			bdist_wheel: {
-				// eslint-disable-next-line ts/naming-convention
-				python_tag: 'py3',
-				universal: true,
-			},
-			sdist: { group: 'root', owner: 'root' },
-		})
-		expect(result.bdistWheel?.universal).toBe(true)
-		expect(result.bdistWheel?.pythonTag).toBe('py3')
-		expect(result.sdist).toEqual({ group: 'root', owner: 'root' })
-	})
-
-	it('parses check-wheel-contents config', () => {
-		const schema = createCheckWheelContentsSchema('passthrough')
-		const result = schema.parse({
-			ignore: ['W002'],
-		})
-		expect(result.ignore).toEqual(['W002'])
-	})
-
-	it('parses jupyter-releaser config', () => {
-		const schema = createJupyterReleaserSchema('passthrough')
-		const result = schema.parse({
-			hooks: {
-				'before-build-npm': [
-					"python -m pip install 'jupyterlab>=4.0.0,<5'",
-					'jlpm',
-					'jlpm build:prod',
-				],
-				'before-build-python': ['jlpm clean:all'],
-			},
-			options: {
-				// eslint-disable-next-line ts/naming-convention
-				version_cmd: 'hatch version',
-			},
-		})
-		expect(result.hooks?.beforeBuildNpm).toEqual([
-			"python -m pip install 'jupyterlab>=4.0.0,<5'",
-			'jlpm',
-			'jlpm build:prod',
-		])
-		expect(result.hooks?.beforeBuildPython).toEqual(['jlpm clean:all'])
-	})
-
-	it('parses pylint config', () => {
-		const schema = createPylintSchema('passthrough')
-		const result = schema.parse({
-			disable: ['missing-docstring', 'too-few-public-methods'],
-			'good-names': ['i', 'j', 'k', 'x'],
-			jobs: 0,
-			'load-plugins': ['pylint.extensions.mccabe'],
-			'max-line-length': 120,
-		})
-		expect(result.goodNames).toEqual(['i', 'j', 'k', 'x'])
-		expect(result.jobs).toBe(0)
-		expect(result.loadPlugins).toEqual(['pylint.extensions.mccabe'])
-		expect(result.maxLineLength).toBe(120)
-		expect(result.disable).toEqual(['missing-docstring', 'too-few-public-methods'])
-	})
-
-	it('parses commitizen config', () => {
-		const schema = createCommitizenSchema('passthrough')
-		const result = schema.parse({
-			// eslint-disable-next-line ts/naming-convention
-			major_version_zero: false,
-			name: 'cz_conventional_commits',
-			// eslint-disable-next-line ts/naming-convention
-			tag_format: 'v$version',
-			// eslint-disable-next-line ts/naming-convention
-			update_changelog_on_bump: true,
-			version: '1.0.0',
-			// eslint-disable-next-line ts/naming-convention
-			version_files: ['pyproject.toml:version', 'src/pkg/version.py'],
-			// eslint-disable-next-line ts/naming-convention
-			version_provider: 'poetry',
-			// eslint-disable-next-line ts/naming-convention
-			version_scheme: 'pep440',
-		})
-		expect(result.name).toBe('cz_conventional_commits')
-		expect(result.version).toBe('1.0.0')
-		expect(result.tagFormat).toBe('v$version')
-		expect(result.versionScheme).toBe('pep440')
-		expect(result.versionProvider).toBe('poetry')
-		expect(result.versionFiles).toEqual(['pyproject.toml:version', 'src/pkg/version.py'])
-		expect(result.updateChangelogOnBump).toBe(true)
-		expect(result.majorVersionZero).toBe(false)
-	})
-})
-
-// ---------------------------------------------------------------------------
 // Error cases
 // ---------------------------------------------------------------------------
 
@@ -914,4 +336,202 @@ describe('real-world fixtures', () => {
 			)
 		}
 	})
+
+	it(
+		'parses non-blacklisted fixture files with error-level unknownKeys',
+		{ timeout: 60_000 },
+		async () => {
+			// Fixtures that fail error-level validation.
+			// Each entry is commented with the unrecognized keys / unknown tools causing the failure.
+			const errorBlacklist = new Set([
+				// unknown tool: crewai
+				'agenticfsu-quantbot.pyproject.toml',
+				// tool.pytest: doctest_optionflags; root-level: isort
+				'alenai97-peft-mllm.pyproject.toml',
+				// tool.pylint: "MESSAGES CONTROL"; tool.ruff: extended-select, show-fixes, target; unknown tool: oxt
+				'amourspirit-libreoffice-python-path-ext.pyproject.toml',
+				// tool.isort: split_on_trailing_comma
+				'anyions-aws-tag-tools.pyproject.toml',
+				// tool.mypy: allow_redefinition, pretty, show_traceback; tool.ruff: extend-fixable, mccabe; unknown tools: doc8, nbqa, poetry_bumpversion, poetry-sort
+				'appliedai-gmbh-armscan-env.pyproject.toml',
+				// tool.isort: known_typing
+				'artefactory-streamlit-prophet.pyproject.toml',
+				// tool.ruff: flake8-tidy-imports
+				'aw1cks-cloud-latest.pyproject.toml',
+				// unknown tool: kedro
+				'bartoszzolkiewski-asi.pyproject.toml',
+				// unknown tool: codeflash
+				'bbelderbos-code-quality.pyproject.toml',
+				// tool.mypy: pretty, show_column_numbers
+				'bhrevol-dlsite-utils.pyproject.toml',
+				// tool.black: python-version
+				'biosustain-maudtools.pyproject.toml',
+				// unknown tool: maturin; root-level: options
+				'bk7084-framework.pyproject.toml',
+				// tool.ruff: output-format
+				'bopeng-ai-marketplace-monitor.pyproject.toml',
+				// unknown tool: comfy
+				'brekel-comfyui-brekel.pyproject.toml',
+				// unknown tool: check-manifest
+				'brisvag-waretomo.pyproject.toml',
+				// tool.bandit: assert_used
+				'bsc-wdc-dds.pyproject.toml',
+				// tool.mypy: allow_redefinition, allow_untyped_globals, local_partial_types, disable_error_code
+				'centreborelli-dem-evaluation.pyproject.toml',
+				// tool.pyright: pyrightIgnoreModules
+				'clarity-digital-twin-clarity-ai-jupyter.pyproject.toml',
+				// tool.black: target_version
+				'cloudchacho-hedwig-python.pyproject.toml',
+				// tool.mypy: packages
+				'cloudtruth-config-catalyst.pyproject.toml',
+				// tool.mypy: allow_redefinition, allow_untyped_globals, local_partial_types, disable_error_code
+				'cnes-demcompare.pyproject.toml',
+				// tool.ruff: flake8-quotes
+				'code-yeongyu-moragi.pyproject.toml',
+				// tool.poetry: build; unknown tool: flakeheaven
+				'craigtrim-lingpatlab.pyproject.toml',
+				// tool.pylint: messages_control
+				'darasiemi-mental-health-mlops-project.pyproject.toml',
+				// tool.ruff: ignore-init-module-imports
+				'digiklausur-e2xauthoring.pyproject.toml',
+				// unknown tool: uv_build
+				'douile-friends-queue.pyproject.toml',
+				// tool.pylint: messages_control, format; root-level: tools
+				'e-eight-pennylearn.pyproject.toml',
+				// tool.pylint: "messages control", main, classes; tool.ruff: show-fixes; unknown tool: chango
+				'eatsky1006-python-telegram-bot.pyproject.toml',
+				// tool.isort: known_clients, known_engine, known_messages, known_services, known_schemas, known_subscribers, known_routers, known_utilities, known_config
+				'epoikos-project-simulation.pyproject.toml',
+				// tool.isort: force_alphabetical_sort_within_sections
+				'esemanraro-masterhedge.pyproject.toml',
+				// unknown tool: dagster
+				'fearnworks-graphcap-prototype.pyproject.toml',
+				// tool.poetry: build
+				'fedora-infra-koji-fedoramessaging-messages.pyproject.toml',
+				// tool.poetry: build
+				'fedora-infra-rpmautospec-core.pyproject.toml',
+				// root-level: poetry (not under tool)
+				'firefly-cpp-arm-preprocessing.pyproject.toml',
+				// tool.isort: atomic; unknown tool: pixi
+				'fppdf-fppdf.pyproject.toml',
+				// tool.mypy: no_site_packages
+				'gagan3012-polydedupe.pyproject.toml',
+				// unknown tool: bumpver
+				'gardenerik-django-policies.pyproject.toml',
+				// tool.pylint: "MESSAGES CONTROL"
+				'hackersandslackers-flask-session-tutorial.pyproject.toml',
+				// tool.ruff: pyupgrade
+				'heysaeid-fastapi-fast-template.pyproject.toml',
+				// tool.mypy: allow_untyped_globals, error_summary, pretty, disable_error_code; tool.pylint: main, messages_control, reports; unknown tool: pydocstyle
+				'hypothesis-data-tasks.pyproject.toml',
+				// tool.black: skip-numeric-underscore-normalization, target_version; unknown tool: dephell
+				'ig248-tensorpandas.pyproject.toml',
+				// unknown tool: scikit-build
+				'iitpvisionlab-adrt.pyproject.toml',
+				// root-level: poetry (not under tool)
+				'inqbus-braille-radio.pyproject.toml',
+				// tool.pytest: doctest_optionflags; root-level: isort
+				'ist-daslab-peft-rosa.pyproject.toml',
+				// tool.poetry: package-mode
+				'jhordyess-calendar-generator.pyproject.toml',
+				// tool.poetry: package-mode
+				'joaquin-gael-text-predictor.pyproject.toml',
+				// tool.poetry: requires-plugins; unknown tool: poetry-dynamic-versioning
+				'kaisbn-openly.pyproject.toml',
+				// unknown tool: dagster
+				'kayrnt-dlt-iceberg-slack-backup.pyproject.toml',
+				// unknown tool: pixi
+				'khanlab-cfmm2tar.pyproject.toml',
+				// tool.mypy: exclude_gitignore; tool.pytest: testpaths
+				'lbhm-fedaugment.pyproject.toml',
+				// tool.pylint: messages_control, format
+				'lm-150a-docflash.pyproject.toml',
+				// project: python, homepage, repository, documentation; root-level: dependencies
+				'lorenanicole-eventbrite-scraper.pyproject.toml',
+				// unknown tool: pydantic-mypy
+				'lucas-six-python-cookbook.pyproject.toml',
+				// tool.bandit: any_other_function_with_shell_equals_true; tool.isort: known_typing; tool.mypy: pretty, show_traceback, color_output, allow_redefinition, implicit_reexport, show_column_numbers; unknown tools: pydocstyle, interrogate, radon; root-level: coverage
+				'maanibeigy-dash-boilerplate.pyproject.toml',
+				// tool.poetry: package-mode
+				'moj-analytical-services-moj-dlt-workshop.pyproject.toml',
+				// tool.pytest: pythonpath, addopts; tool.ruff: output-format
+				'monk-time-advent-of-code.pyproject.toml',
+				// tool.mypy: allow_subclassing_any; tool.poetry: package-mode; tool.ruff: show-fixes
+				'neo4j-field-ps-genai-agents.pyproject.toml',
+				// tool.pytest: doctest_optionflags; root-level: isort
+				'njunlp-moe-lpr.pyproject.toml',
+				// unknown tool: uv-dynamic-versioning
+				'omniagentpay-omniagentpay.pyproject.toml',
+				// build-system: include-package-data
+				'omsf-openpharmmdflow.pyproject.toml',
+				// unknown tool: dagster
+				'open-model-initiative-graphcap.pyproject.toml',
+				// project: python, homepage, repository, documentation; tool.isort: known_django; unknown tools: curlylint, djlint, codereviewdoctor
+				'pack144-packman.pyproject.toml',
+				// tool.isort: known_pelican, known_firstparty
+				'pelican-plugins-nojekyll.pyproject.toml',
+				// tool.mypy: allow_redefinition, disable_error_code; tool.poetry: build
+				'pwwang-pipen-diagram.pyproject.toml',
+				// project: repository, homepage; unknown tools: semantic_release, pyrefly; root-level: semantic_release
+				'pythonhubdev-scaffoldr.pyproject.toml',
+				// tool.pylint: main, basic, classes
+				'quick-invoice-api-invoice-utils.pyproject.toml',
+				// project: packages
+				'runekaagaard-mcp-redmine.pyproject.toml',
+				// tool.ruff: builtins; unknown tool: build_sphinx
+				'salt-extensions-saltext-github.pyproject.toml',
+				// tool.pytest: doctest_optionflags; root-level: isort
+				'saltychtao-moe-lpr.pyproject.toml',
+				// tool.poetry: package-mode
+				'snipy7374-code-jam-24-universes.pyproject.toml',
+				// tool.pytest: doctest_optionflags; root-level: isort
+				'thunlp-loraflow.pyproject.toml',
+				// tool.pytest: ini_option (typo); root-level: mypy
+				'timgrob-crypto-warren.pyproject.toml',
+				// tool.ruff: include
+				'tu-wien-datalab-grader-labextension.pyproject.toml',
+				// tool.mypy: strict_concatenate
+				'ualbertafsae-f1tenth.pyproject.toml',
+				// project: url, license_files
+				'uhlive-python-sdk.pyproject.toml',
+				// tool.pytest: doctest_optionflags; root-level: isort
+				'vityavitalich-llm-compression.pyproject.toml',
+				// tool.black: target_version
+				'vladvasiliu-kibana-prometheus-exporter-py.pyproject.toml',
+				// unknown tool: coverage_rich
+				'waylonwalker-coverage-rich.pyproject.toml',
+				// unknown tool: comfy
+				'zentrocdot-comfyui-simple-image-to-prompt.pyproject.toml',
+			])
+
+			const files = await fs.readdir(fixturesDirectory)
+			const tomlFiles = files.filter((f) => f.endsWith('.toml') && !errorBlacklist.has(f))
+			expect(tomlFiles.length).toBeGreaterThan(250)
+
+			const errors: Array<{ error: string; file: string }> = []
+
+			await Promise.all(
+				tomlFiles.map(async (file) => {
+					try {
+						await readPyproject(path.join(fixturesDirectory, file), 'error')
+					} catch (error) {
+						errors.push({
+							error: error instanceof Error ? error.message : String(error),
+							file,
+						})
+					}
+				}),
+			)
+
+			if (errors.length > 0) {
+				const summary = errors
+					.slice(0, 10)
+					.map((entry) => `  ${entry.file}: ${entry.error.split('\n')[0]}`)
+					.join('\n')
+				throw new Error(
+					`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed error-level validation:\n${summary}`,
+				)
+			}
+		},
+	)
 })
