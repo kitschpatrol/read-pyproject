@@ -6,27 +6,16 @@ import { PyprojectError } from './error'
 import { log } from './log'
 import { createPyprojectSchema } from './schema/pyproject'
 
-export type ReadPyprojectOptions = {
-	/** Working directory to resolve pyproject.toml from. Defaults to `process.cwd()`. */
-	cwd?: string
-	/**
-	 * Controls how unknown keys are handled during schema validation.
-	 * - `'passthrough'` — unknown keys are kept as-is (default)
-	 * - `'strip'` — unknown keys are silently removed
-	 * - `'error'` — unknown keys cause a validation error
-	 */
-	unknownKeys?: UnknownKeys
-}
-
-export async function readPyproject(path: string): Promise<PyprojectData>
-export async function readPyproject(options?: ReadPyprojectOptions): Promise<PyprojectData>
 /**
  * Read, parse, validate, and normalize a pyproject.toml file.
+ * @param pathOrDirectory - A file path or directory. If a directory (no extension), appends `/pyproject.toml`. Defaults to `process.cwd()`.
+ * @param unknownKeys - How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
  */
 export async function readPyproject(
-	pathOrOptions?: ReadPyprojectOptions | string,
+	pathOrDirectory?: string,
+	unknownKeys: UnknownKeys = 'passthrough',
 ): Promise<PyprojectData> {
-	const { filePath, unknownKeys } = resolveArgs(pathOrOptions)
+	const filePath = await resolveFilePath(pathOrDirectory ?? process.cwd())
 
 	log.info(`Reading pyproject.toml from ${filePath}`)
 
@@ -67,30 +56,15 @@ export async function readPyproject(
 	return result.data
 }
 
-function resolveArgs(pathOrOptions?: ReadPyprojectOptions | string): {
-	filePath: string
-	unknownKeys: UnknownKeys
-} {
-	if (typeof pathOrOptions === 'string') {
-		return {
-			filePath: resolveFilePath(pathOrOptions),
-			unknownKeys: 'passthrough',
-		}
-	}
-
-	const options = pathOrOptions ?? {}
-	const cwd = options.cwd ?? process.cwd()
-	return {
-		filePath: path.resolve(cwd, 'pyproject.toml'),
-		unknownKeys: options.unknownKeys ?? 'passthrough',
-	}
-}
-
-function resolveFilePath(input: string): string {
+async function resolveFilePath(input: string): Promise<string> {
 	const resolved = path.resolve(input)
-	// If it looks like a directory (no extension), append pyproject.toml
-	if (!path.extname(resolved)) {
-		return path.join(resolved, 'pyproject.toml')
+	try {
+		const stat = await fs.stat(resolved)
+		if (stat.isDirectory()) {
+			return path.join(resolved, 'pyproject.toml')
+		}
+	} catch {
+		// Path doesn't exist yet — pass through and let readFile handle the error
 	}
 
 	return resolved
