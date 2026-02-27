@@ -6,6 +6,7 @@ import { z } from 'zod'
  * YAPF has 100+ style knobs. This schema covers the most common options
  * seen in real-world pyproject.toml files. Unknown keys pass through in
  * non-strict mode.
+ * @see [YAPF knobs reference](https://github.com/google/yapf#knobs)
  */
 export function createYapfSchema(strict: boolean) {
 	const base = z.object({

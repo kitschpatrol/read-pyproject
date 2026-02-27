@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 /**
  * Create a Zod schema for the [tool.uv] table.
+ * @see [uv configuration reference](https://docs.astral.sh/uv/reference/settings/)
  */
 export function createUvSchema(strict: boolean) {
 	const base = z.object({

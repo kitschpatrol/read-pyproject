@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 /**
  * Create a Zod schema for the [tool.setuptools] table.
+ * @see [Setuptools pyproject.toml reference](https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html)
  */
 export function createSetuptoolsSchema(strict: boolean) {
 	const base = z.object({

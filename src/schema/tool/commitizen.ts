@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 /**
  * Create a Zod schema for the [tool.commitizen] table.
+ * @see [Commitizen configuration](https://commitizen-tools.github.io/commitizen/config/configuration_file/)
  */
 export function createCommitizenSchema(strict: boolean) {
 	const base = z.object({

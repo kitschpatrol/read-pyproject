@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 /**
  * Create a Zod schema for the [tool.pdm] table.
+ * @see [PDM configuration reference](https://pdm-project.org/en/latest/reference/configuration/)
  */
 export function createPdmSchema(strict: boolean) {
 	const base = z.object({

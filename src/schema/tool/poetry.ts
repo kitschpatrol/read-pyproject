@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 /**
  * Create a Zod schema for the [tool.poetry] table.
+ * @see [Poetry pyproject.toml reference](https://python-poetry.org/docs/pyproject/)
  */
 export function createPoetrySchema(strict: boolean) {
 	const base = z.object({

@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 /**
  * Create a Zod schema for the [tool.mypy] table.
+ * @see [Mypy configuration reference](https://mypy.readthedocs.io/en/stable/config_file.html)
  */
 export function createMypySchema(strict: boolean) {
 	const overrideSchema = z.object({}).loose()

@@ -5,6 +5,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
 
 /**
  * Create a Zod schema for the [tool.docformatter] table.
+ * @see [Docformatter configuration](https://docformatter.readthedocs.io/en/latest/configuration.html)
  */
 export function createDocformatterSchema(strict: boolean) {
 	const base = z.object({

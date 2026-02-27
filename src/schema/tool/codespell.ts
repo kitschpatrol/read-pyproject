@@ -5,6 +5,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
 
 /**
  * Create a Zod schema for the [tool.codespell] table.
+ * @see [Codespell README (configuration)](https://github.com/codespell-project/codespell#readme)
  */
 export function createCodespellSchema(strict: boolean) {
 	const base = z.object({

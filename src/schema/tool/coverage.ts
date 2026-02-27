@@ -5,6 +5,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
 
 /**
  * Create a Zod schema for the [tool.coverage] table.
+ * @see [Coverage.py configuration reference](https://coverage.readthedocs.io/en/latest/config.html)
  */
 export function createCoverageSchema(strict: boolean) {
 	const runShape = z.object({

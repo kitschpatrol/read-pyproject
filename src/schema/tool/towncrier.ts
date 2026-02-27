@@ -9,6 +9,7 @@ const fragmentTypeSchema = z.object({
 
 /**
  * Create a Zod schema for the [tool.towncrier] table.
+ * @see [Towncrier configuration reference](https://towncrier.readthedocs.io/en/stable/configuration.html)
  */
 export function createTowncrierSchema(strict: boolean) {
 	const base = z.object({

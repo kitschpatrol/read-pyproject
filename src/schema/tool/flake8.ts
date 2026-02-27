@@ -5,6 +5,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
 
 /**
  * Create a Zod schema for the [tool.flake8] table.
+ * @see [Flake8 options reference](https://flake8.pycqa.org/en/latest/user/options.html)
  */
 export function createFlake8Schema(strict: boolean) {
 	const base = z.object({
