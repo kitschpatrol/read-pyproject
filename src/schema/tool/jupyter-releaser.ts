@@ -6,23 +6,27 @@ import type { UnknownKeyPolicy } from '../../types'
  * @see [Jupyter Releaser reference](https://jupyter-releaser.readthedocs.io/en/latest/)
  */
 export function createJupyterReleaserSchema(unknownKeyPolicy: UnknownKeyPolicy) {
-	const hooksSchema = z
-		.object({
-			'before-build-npm': z.array(z.string()).optional(),
-			'before-build-python': z.array(z.string()).optional(),
-		})
-		.loose()
-		.transform(
-			({
-				'before-build-npm': beforeBuildNpm,
-				'before-build-python': beforeBuildPython,
-				...rest
-			}) => ({
-				...rest,
-				beforeBuildNpm,
-				beforeBuildPython,
-			}),
-		)
+	const hooksBase = z.object({
+		'before-build-npm': z.array(z.string()).optional(),
+		'before-build-python': z.array(z.string()).optional(),
+	})
+	const hooksObject =
+		unknownKeyPolicy === 'error'
+			? hooksBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? hooksBase
+				: hooksBase.loose()
+	const hooksSchema = hooksObject.transform(
+		({
+			'before-build-npm': beforeBuildNpm,
+			'before-build-python': beforeBuildPython,
+			...rest
+		}) => ({
+			...rest,
+			beforeBuildNpm,
+			beforeBuildPython,
+		}),
+	)
 
 	const optionsSchema = z.object({}).loose()
 

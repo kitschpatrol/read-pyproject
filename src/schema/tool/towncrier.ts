@@ -1,18 +1,23 @@
 import { z } from 'zod'
 import type { UnknownKeyPolicy } from '../../types'
 
-const fragmentTypeSchema = z.object({
-	check: z.boolean().optional(),
-	directory: z.string().optional(),
-	name: z.string().optional(),
-	showcontent: z.boolean().optional(),
-})
-
 /**
  * Create a Zod schema for the [tool.towncrier] table.
  * @see [Towncrier configuration reference](https://towncrier.readthedocs.io/en/stable/configuration.html)
  */
 export function createTowncrierSchema(unknownKeyPolicy: UnknownKeyPolicy) {
+	const fragmentTypeBase = z.object({
+		check: z.boolean().optional(),
+		directory: z.string().optional(),
+		name: z.string().optional(),
+		showcontent: z.boolean().optional(),
+	})
+	const fragmentTypeSchema =
+		unknownKeyPolicy === 'error'
+			? fragmentTypeBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? fragmentTypeBase
+				: fragmentTypeBase.loose()
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
 		all_bullets: z.boolean().optional(),

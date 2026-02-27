@@ -6,17 +6,21 @@ import type { UnknownKeyPolicy } from '../../types'
  * @see [Distutils configuration reference](https://docs.python.org/3/distutils/configfile.html)
  */
 export function createDistutilsSchema(unknownKeyPolicy: UnknownKeyPolicy) {
-	const bdistWheelSchema = z
-		.object({
-			// eslint-disable-next-line ts/naming-convention
-			python_tag: z.string().optional(),
-			universal: z.union([z.boolean(), z.number()]).optional(),
-		})
-		.loose()
-		.transform(({ python_tag: pythonTag, ...rest }) => ({
-			...rest,
-			pythonTag,
-		}))
+	const bdistWheelBase = z.object({
+		// eslint-disable-next-line ts/naming-convention
+		python_tag: z.string().optional(),
+		universal: z.union([z.boolean(), z.number()]).optional(),
+	})
+	const bdistWheelObject =
+		unknownKeyPolicy === 'error'
+			? bdistWheelBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? bdistWheelBase
+				: bdistWheelBase.loose()
+	const bdistWheelSchema = bdistWheelObject.transform(({ python_tag: pythonTag, ...rest }) => ({
+		...rest,
+		pythonTag,
+	}))
 
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention

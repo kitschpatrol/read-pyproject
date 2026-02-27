@@ -6,18 +6,26 @@ import type { UnknownKeyPolicy } from '../../types'
  * @see [Flit configuration reference](https://flit.pypa.io/en/stable/pyproject_toml.html)
  */
 export function createFlitSchema(unknownKeyPolicy: UnknownKeyPolicy) {
-	const moduleSchema = z
-		.object({
-			name: z.string().optional(),
-		})
-		.loose()
+	const moduleBase = z.object({
+		name: z.string().optional(),
+	})
+	const moduleSchema =
+		unknownKeyPolicy === 'error'
+			? moduleBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? moduleBase
+				: moduleBase.loose()
 
-	const sdistSchema = z
-		.object({
-			exclude: z.array(z.string()).optional(),
-			include: z.array(z.string()).optional(),
-		})
-		.loose()
+	const sdistBase = z.object({
+		exclude: z.array(z.string()).optional(),
+		include: z.array(z.string()).optional(),
+	})
+	const sdistSchema =
+		unknownKeyPolicy === 'error'
+			? sdistBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? sdistBase
+				: sdistBase.loose()
 
 	const base = z.object({
 		module: moduleSchema.optional(),

@@ -39,26 +39,31 @@ import {
 	createYapfSchema,
 } from './tool'
 
-const dependencyGroupIncludeSchema = z
-	.object({
-		'include-group': z.string(),
-	})
-	.loose()
-	.transform(({ 'include-group': includeGroup }) => ({
-		includeGroup,
-	}))
-
-const dependencyGroupItemSchema = z.union([z.string(), dependencyGroupIncludeSchema])
-
-const dependencyGroupsSchema = z.record(
-	z.string(),
-	z.union([z.array(dependencyGroupItemSchema), z.unknown()]),
-)
-
 /**
  * Create the top-level pyproject.toml Zod schema.
  */
 export function createPyprojectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
+	const includeBase = z.object({
+		'include-group': z.string(),
+	})
+	const includeObject =
+		unknownKeyPolicy === 'error'
+			? includeBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? includeBase
+				: includeBase.loose()
+	const dependencyGroupIncludeSchema = includeObject.transform(
+		({ 'include-group': includeGroup }) => ({
+			includeGroup,
+		}),
+	)
+
+	const dependencyGroupItemSchema = z.union([z.string(), dependencyGroupIncludeSchema])
+
+	const dependencyGroupsSchema = z.record(
+		z.string(),
+		z.union([z.array(dependencyGroupItemSchema), z.unknown()]),
+	)
 	const toolShape = {
 		autopep8: createAutopep8Schema(unknownKeyPolicy).optional(),
 		bandit: createBanditSchema(unknownKeyPolicy).optional(),

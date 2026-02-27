@@ -7,21 +7,28 @@ import {
 	createCheckWheelContentsSchema,
 	createCibuildwheelSchema,
 	createCodespellSchema,
+	createComfySchema,
 	createCommitizenSchema,
 	createCoverageSchema,
+	createDagsterSchema,
 	createDistutilsSchema,
 	createDocformatterSchema,
 	createFlake8Schema,
 	createFlitSchema,
+	createHatchSchema,
 	createIsortSchema,
 	createJupyterReleaserSchema,
 	createMypySchema,
+	createPdmSchema,
+	createPixiSchema,
 	createPoeSchema,
 	createPoetrySchema,
+	createPydocstyleSchema,
 	createPylintSchema,
 	createPyrightSchema,
 	createPytestSchema,
 	createRuffSchema,
+	createSetuptoolsSchema,
 	createSetuptoolsScmSchema,
 	createTbumpSchema,
 	createTowncrierSchema,
@@ -378,7 +385,17 @@ describe('tool schemas', () => {
 			commit: true,
 			// eslint-disable-next-line ts/naming-convention
 			current_version: '1.2.3',
-			files: [{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }],
+			files: [
+				{ filename: 'setup.py' },
+				{
+					glob: 'src/**/*.py',
+					// eslint-disable-next-line ts/naming-convention
+					glob_exclude: ['*.bak'],
+					// eslint-disable-next-line ts/naming-convention
+					ignore_missing_file: true,
+					regex: true,
+				},
+			],
 			message: 'Release: {new_version}',
 			// eslint-disable-next-line ts/naming-convention
 			post_commit_hooks: ['git push', 'git push --tags'],
@@ -402,7 +419,13 @@ describe('tool schemas', () => {
 		expect(result.signTags).toBe(false)
 		expect(result.preCommitHooks).toEqual(['uv sync', 'git add uv.lock'])
 		expect(result.postCommitHooks).toEqual(['git push', 'git push --tags'])
-		expect(result.files).toEqual([{ filename: 'setup.py' }, { glob: 'src/**/*.py', regex: true }])
+		expect(result.files?.[0]).toEqual({ filename: 'setup.py' })
+		expect(result.files?.[1]).toEqual({
+			glob: 'src/**/*.py',
+			globExclude: ['*.bak'],
+			ignoreMissingFile: true,
+			regex: true,
+		})
 	})
 
 	it('parses flit config', () => {
@@ -545,6 +568,117 @@ describe('tool schemas', () => {
 		expect(result.loadPlugins).toEqual(['pylint.extensions.mccabe'])
 		expect(result.maxLineLength).toBe(120)
 		expect(result.disable).toEqual(['missing-docstring', 'too-few-public-methods'])
+	})
+
+	it('parses comfy config', () => {
+		const schema = createComfySchema('passthrough')
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			DisplayName: 'My Custom Node',
+			// eslint-disable-next-line ts/naming-convention
+			Icon: 'icon.png',
+			includes: ['*.py'],
+			// eslint-disable-next-line ts/naming-convention
+			PublisherId: 'publisher-123',
+		})
+		expect(result.displayName).toBe('My Custom Node')
+		expect(result.icon).toBe('icon.png')
+		expect(result.includes).toEqual(['*.py'])
+		expect(result.publisherId).toBe('publisher-123')
+	})
+
+	it('parses dagster config', () => {
+		const schema = createDagsterSchema('passthrough')
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			module_name: 'my_dagster_project',
+			// eslint-disable-next-line ts/naming-convention
+			project_name: 'my-project',
+		})
+		expect(result.moduleName).toBe('my_dagster_project')
+		expect(result.projectName).toBe('my-project')
+	})
+
+	it('parses hatch config', () => {
+		const schema = createHatchSchema('passthrough')
+		const result = schema.parse({
+			build: { targets: { wheel: { packages: ['src/pkg'] } } },
+			envs: { default: { dependencies: ['pytest'] } },
+			metadata: { 'allow-direct-references': true },
+			version: { path: 'src/pkg/__about__.py', source: 'regex' },
+		})
+		expect(result.version?.source).toBe('regex')
+		expect(result.version?.path).toBe('src/pkg/__about__.py')
+		expect(result.build?.targets).toEqual({ wheel: { packages: ['src/pkg'] } })
+		expect(result.envs).toEqual({ default: { dependencies: ['pytest'] } })
+	})
+
+	it('parses pdm config', () => {
+		const schema = createPdmSchema('passthrough')
+		const result = schema.parse({
+			build: { 'run-setuptools': true },
+			'dev-dependencies': {
+				dev: ['pytest>=7.0'],
+				lint: ['ruff'],
+			},
+			distribution: true,
+			source: [{ name: 'pypi', url: 'https://pypi.org/simple' }],
+		})
+		expect(result.devDependencies).toEqual({
+			dev: ['pytest>=7.0'],
+			lint: ['ruff'],
+		})
+		expect(result.distribution).toBe(true)
+		expect(result.source).toEqual([{ name: 'pypi', url: 'https://pypi.org/simple' }])
+	})
+
+	it('parses pixi config', () => {
+		const schema = createPixiSchema('passthrough')
+		const result = schema.parse({
+			dependencies: { python: '>=3.11' },
+			environments: { test: ['test-group'] },
+			'pypi-dependencies': { numpy: '*' },
+			tasks: { test: 'pytest' },
+		})
+		expect(result.pypiDependencies).toEqual({ numpy: '*' })
+		expect(result.dependencies).toEqual({ python: '>=3.11' })
+		expect(result.tasks).toEqual({ test: 'pytest' })
+	})
+
+	it('parses setuptools config', () => {
+		const schema = createSetuptoolsSchema('passthrough')
+		const result = schema.parse({
+			'include-package-data': true,
+			'package-data': { mypackage: ['*.txt', '*.rst'] },
+			'package-dir': { '': 'src' },
+			packages: { find: { where: ['src'] } },
+			'py-modules': ['mymodule'],
+			'zip-safe': false,
+		})
+		expect(result.includePackageData).toBe(true)
+		expect(result.packageData).toEqual({ mypackage: ['*.txt', '*.rst'] })
+		expect(result.packageDirectory).toEqual({ '': 'src' })
+		expect(result.pyModules).toEqual(['mymodule'])
+		expect(result.zipSafe).toBe(false)
+	})
+
+	it('parses pydocstyle config', () => {
+		const schema = createPydocstyleSchema('passthrough')
+		const result = schema.parse({
+			// eslint-disable-next-line ts/naming-convention
+			add_ignore: ['D100', 'D101'],
+			convention: 'google',
+			// eslint-disable-next-line ts/naming-convention
+			ignore_decorators: 'property',
+			match: String.raw`(?!test_).*\.py`,
+			// eslint-disable-next-line ts/naming-convention
+			match_dir: String.raw`[^\.].*`,
+		})
+		expect(result.convention).toBe('google')
+		expect(result.addIgnore).toEqual(['D100', 'D101'])
+		expect(result.ignoreDecorators).toBe('property')
+		expect(result.match).toBe(String.raw`(?!test_).*\.py`)
+		expect(result.matchDir).toBe(String.raw`[^\.].*`)
 	})
 
 	it('parses commitizen config', () => {

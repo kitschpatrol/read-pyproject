@@ -144,8 +144,12 @@ describe('license normalization', () => {
 		expect(result.license).toEqual({ text: 'MIT License...' })
 	})
 
-	it('corrects misspelled SPDX with spdx-correct', () => {
+	it('passes through valid SPDX expressions', () => {
 		expect(correctSpdx('GPL-3.0')).toBe('GPL-3.0')
+	})
+
+	it('corrects misspelled SPDX with spdx-correct', () => {
+		expect(correctSpdx('GPLv3')).toBe('GPL-3.0-or-later')
 	})
 
 	it('throws for uncorrectable SPDX', () => {

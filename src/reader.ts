@@ -41,7 +41,24 @@ export async function readPyproject(
 	}
 
 	const schema = createPyprojectSchema(unknownKeyPolicy)
-	const result = schema.safeParse(parsed)
+
+	let result: ReturnType<typeof schema.safeParse>
+	try {
+		result = schema.safeParse(parsed)
+	} catch (error) {
+		if (error instanceof PyprojectError) {
+			error.filePath ??= filePath
+			throw error
+		}
+
+		throw new PyprojectError(
+			`Validation failed for ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
+			{
+				cause: error instanceof Error ? error : new Error(String(error)),
+				filePath,
+			},
+		)
+	}
 
 	if (!result.success) {
 		const issues = result.error.issues

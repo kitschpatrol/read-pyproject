@@ -6,17 +6,19 @@ import type { UnknownKeyPolicy } from '../../types'
  * @see [Hatch configuration reference](https://hatch.pypa.io/latest/config/metadata/)
  */
 export function createHatchSchema(unknownKeyPolicy: UnknownKeyPolicy) {
+	// Hatch build/version have many more options than we model (hooks, artifacts, sources, etc.),
+	// so always allow unknown keys.
+	const buildBase = z.object({ targets: z.object({}).loose().optional() })
+	const buildSchema = unknownKeyPolicy === 'strip' ? buildBase : buildBase.loose()
+
+	const versionBase = z.object({ path: z.string().optional(), source: z.string().optional() })
+	const versionSchema = unknownKeyPolicy === 'strip' ? versionBase : versionBase.loose()
+
 	const base = z.object({
-		build: z
-			.object({ targets: z.object({}).loose().optional() })
-			.loose()
-			.optional(),
+		build: buildSchema.optional(),
 		envs: z.record(z.string(), z.unknown()).optional(),
 		metadata: z.object({}).loose().optional(),
-		version: z
-			.object({ path: z.string().optional(), source: z.string().optional() })
-			.loose()
-			.optional(),
+		version: versionSchema.optional(),
 	})
 	const object =
 		unknownKeyPolicy === 'error'

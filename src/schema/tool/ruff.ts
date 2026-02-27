@@ -7,47 +7,48 @@ import type { UnknownKeyPolicy } from '../../types'
  * @see [Ruff settings](https://docs.astral.sh/ruff/settings/)
  */
 export function createRuffSchema(unknownKeyPolicy: UnknownKeyPolicy) {
-	const lintSchema = z
-		.object({
-			'extend-select': z.array(z.string()).optional(),
-			fixable: z.array(z.string()).optional(),
-			ignore: z.array(z.string()).optional(),
-			isort: z.object({}).loose().optional(),
-			'per-file-ignores': z.record(z.string(), z.array(z.string())).optional(),
-			select: z.array(z.string()).optional(),
-		})
-		.loose()
-		.transform(
-			({ 'extend-select': extendSelect, 'per-file-ignores': perFileIgnores, ...rest }) => ({
-				...rest,
-				extendSelect,
-				perFileIgnores,
-			}),
-		)
+	// Ruff's lint section has many per-linter sub-sections (pydocstyle, mccabe, flake8-*, etc.)
+	// beyond what we model, so always allow unknown keys.
+	const lintBase = z.object({
+		'extend-select': z.array(z.string()).optional(),
+		fixable: z.array(z.string()).optional(),
+		ignore: z.array(z.string()).optional(),
+		isort: z.object({}).loose().optional(),
+		'per-file-ignores': z.record(z.string(), z.array(z.string())).optional(),
+		select: z.array(z.string()).optional(),
+	})
+	const lintObject = unknownKeyPolicy === 'strip' ? lintBase : lintBase.loose()
+	const lintSchema = lintObject.transform(
+		({ 'extend-select': extendSelect, 'per-file-ignores': perFileIgnores, ...rest }) => ({
+			...rest,
+			extendSelect,
+			perFileIgnores,
+		}),
+	)
 
-	const formatSchema = z
-		.object({
-			'docstring-code-format': z.boolean().optional(),
-			'indent-style': z.string().optional(),
-			'line-ending': z.string().optional(),
-			'quote-style': z.string().optional(),
-		})
-		.loose()
-		.transform(
-			({
-				'docstring-code-format': docstringCodeFormat,
-				'indent-style': indentStyle,
-				'line-ending': lineEnding,
-				'quote-style': quoteStyle,
-				...rest
-			}) => ({
-				...rest,
-				docstringCodeFormat,
-				indentStyle,
-				lineEnding,
-				quoteStyle,
-			}),
-		)
+	// Ruff's format section has many more options than we model, so always allow unknown keys.
+	const formatBase = z.object({
+		'docstring-code-format': z.boolean().optional(),
+		'indent-style': z.string().optional(),
+		'line-ending': z.string().optional(),
+		'quote-style': z.string().optional(),
+	})
+	const formatObject = unknownKeyPolicy === 'strip' ? formatBase : formatBase.loose()
+	const formatSchema = formatObject.transform(
+		({
+			'docstring-code-format': docstringCodeFormat,
+			'indent-style': indentStyle,
+			'line-ending': lineEnding,
+			'quote-style': quoteStyle,
+			...rest
+		}) => ({
+			...rest,
+			docstringCodeFormat,
+			indentStyle,
+			lineEnding,
+			quoteStyle,
+		}),
+	)
 
 	// Ruff has many per-linter sub-sections (flake8-*, mccabe, pyupgrade, etc.)
 	// that can appear at the top level in legacy config format.

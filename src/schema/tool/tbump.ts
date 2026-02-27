@@ -8,36 +8,44 @@ import type { UnknownKeyPolicy } from '../../types'
 export function createTbumpSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	const fileSchema = z.object({}).loose()
 
-	const versionSchema = z
-		.object({
-			current: z.string().optional(),
-			regex: z.string().optional(),
-		})
-		.loose()
+	const versionBase = z.object({
+		current: z.string().optional(),
+		regex: z.string().optional(),
+	})
+	const versionSchema =
+		unknownKeyPolicy === 'error'
+			? versionBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? versionBase
+				: versionBase.loose()
 
-	const gitSchema = z
-		.object({
-			// eslint-disable-next-line ts/naming-convention
-			message_template: z.string().optional(),
-			// eslint-disable-next-line ts/naming-convention
-			push_remote: z.string().optional(),
-			// eslint-disable-next-line ts/naming-convention
-			tag_template: z.string().optional(),
-		})
-		.loose()
-		.transform(
-			({
-				message_template: messageTemplate,
-				push_remote: pushRemote,
-				tag_template: tagTemplate,
-				...rest
-			}) => ({
-				...rest,
-				messageTemplate,
-				pushRemote,
-				tagTemplate,
-			}),
-		)
+	const gitBase = z.object({
+		// eslint-disable-next-line ts/naming-convention
+		message_template: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		push_remote: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		tag_template: z.string().optional(),
+	})
+	const gitObject =
+		unknownKeyPolicy === 'error'
+			? gitBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? gitBase
+				: gitBase.loose()
+	const gitSchema = gitObject.transform(
+		({
+			message_template: messageTemplate,
+			push_remote: pushRemote,
+			tag_template: tagTemplate,
+			...rest
+		}) => ({
+			...rest,
+			messageTemplate,
+			pushRemote,
+			tagTemplate,
+		}),
+	)
 
 	const hookSchema = z.object({}).loose()
 

@@ -6,27 +6,48 @@ import type { UnknownKeyPolicy } from '../../types'
  * @see [Bump My Version configuration reference](https://callowayproject.github.io/bump-my-version/reference/configuration/)
  */
 export function createBumpversionSchema(unknownKeyPolicy: UnknownKeyPolicy) {
-	const fileSchema = z
-		.object({
-			// eslint-disable-next-line ts/naming-convention
-			exclude_bumps: z.array(z.string()).optional(),
-			filename: z.string().optional(),
-			glob: z.string().optional(),
-			// eslint-disable-next-line ts/naming-convention
-			glob_exclude: z.array(z.string()).optional(),
-			// eslint-disable-next-line ts/naming-convention
-			ignore_missing_file: z.boolean().optional(),
-			// eslint-disable-next-line ts/naming-convention
-			ignore_missing_version: z.boolean().optional(),
-			// eslint-disable-next-line ts/naming-convention
-			include_bumps: z.array(z.string()).optional(),
-			parse: z.string().optional(),
-			regex: z.boolean().optional(),
-			replace: z.string().optional(),
-			search: z.string().optional(),
-			serialize: z.array(z.string()).optional(),
-		})
-		.loose()
+	const fileBase = z.object({
+		// eslint-disable-next-line ts/naming-convention
+		exclude_bumps: z.array(z.string()).optional(),
+		filename: z.string().optional(),
+		glob: z.string().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		glob_exclude: z.array(z.string()).optional(),
+		// eslint-disable-next-line ts/naming-convention
+		ignore_missing_file: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		ignore_missing_version: z.boolean().optional(),
+		// eslint-disable-next-line ts/naming-convention
+		include_bumps: z.array(z.string()).optional(),
+		parse: z.string().optional(),
+		regex: z.boolean().optional(),
+		replace: z.string().optional(),
+		search: z.string().optional(),
+		serialize: z.array(z.string()).optional(),
+	})
+	const fileObject =
+		unknownKeyPolicy === 'error'
+			? fileBase.strict()
+			: unknownKeyPolicy === 'strip'
+				? fileBase
+				: fileBase.loose()
+	const fileSchema = fileObject.transform(
+		({
+			exclude_bumps: excludeBumps,
+			glob_exclude: globExclude,
+			ignore_missing_file: ignoreMissingFile,
+			ignore_missing_version: ignoreMissingVersion,
+			include_bumps: includeBumps,
+			...rest
+		}) => ({
+			...rest,
+			excludeBumps,
+			globExclude,
+			ignoreMissingFile,
+			ignoreMissingVersion,
+			includeBumps,
+		}),
+	)
 
 	const base = z.object({
 		// eslint-disable-next-line ts/naming-convention
