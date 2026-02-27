@@ -1,6 +1,7 @@
 export { createBlackSchema } from './black'
 export { createCodespellSchema } from './codespell'
 export { createCoverageSchema } from './coverage'
+export { createFlake8Schema } from './flake8'
 export { createHatchSchema } from './hatch'
 export { createIsortSchema } from './isort'
 export { createMypySchema } from './mypy'

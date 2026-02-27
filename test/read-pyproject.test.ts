@@ -11,6 +11,7 @@ import {
 	createBlackSchema,
 	createCodespellSchema,
 	createCoverageSchema,
+	createFlake8Schema,
 	createIsortSchema,
 	createMypySchema,
 	createPoetrySchema,
@@ -483,6 +484,26 @@ describe('tool schemas', () => {
 		expect(result.spacesBeforeComment).toBe(2)
 		expect(result.splitBeforeClosingBracket).toBe(false)
 		expect(result.splitBeforeFirstArgument).toBe(false)
+	})
+
+	it('parses flake8 config', () => {
+		const schema = createFlake8Schema(false)
+		const result = schema.parse({
+			exclude: ['.git', 'venv', 'build', 'dist'],
+			'extend-ignore': ['E203', 'E501', 'W503'],
+			'extend-select': ['B950'],
+			ignore: ['E501'],
+			'max-complexity': 30,
+			'max-line-length': 120,
+			select: ['E', 'F', 'W', 'C', 'B9'],
+		})
+		expect(result.maxLineLength).toBe(120)
+		expect(result.maxComplexity).toBe(30)
+		expect(result.exclude).toEqual(['.git', 'venv', 'build', 'dist'])
+		expect(result.extendIgnore).toEqual(['E203', 'E501', 'W503'])
+		expect(result.extendSelect).toEqual(['B950'])
+		expect(result.ignore).toEqual(['E501'])
+		expect(result.select).toEqual(['E', 'F', 'W', 'C', 'B9'])
 	})
 })
 

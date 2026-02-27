@@ -4,6 +4,7 @@ export default cspellConfig({
 	ignorePaths: ['test/fixtures/**/*'],
 	words: [
 		'addopts',
+		'doctests',
 		'dunder',
 		'filterwarnings',
 		'htmlcov',
@@ -11,6 +12,7 @@ export default cspellConfig({
 		'mypackage',
 		'parentdir',
 		'mypy',
+		'noqa',
 		'pycache',
 		'pylib',
 		'setuptools',
