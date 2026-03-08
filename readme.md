@@ -62,6 +62,20 @@ console.log(pyproject.project?.name) // Normalized PEP 503 name
 console.log(pyproject) // The rest of the object...
 ```
 
+Or parse a TOML string directly:
+
+```ts
+import { parsePyproject } from 'read-pyproject'
+
+const toml = `
+[project]
+name = "my-package"
+version = "1.0.0"
+`
+
+const pyproject = parsePyproject(toml)
+```
+
 ## Usage
 
 ### API
@@ -111,6 +125,43 @@ await readPyproject('/path/to/project', { unknownKeyPolicy: 'error' })
 
 // Strip unknown keys from the output
 await readPyproject('/path/to/project', { unknownKeyPolicy: 'strip' })
+```
+
+#### `parsePyproject(content, options?)`
+
+Parse, validate, and normalize a `pyproject.toml` content string. This is the synchronous counterpart to `readPyproject` — it accepts a TOML string instead of reading from the filesystem.
+
+##### Parameters
+
+- `content` — A `pyproject.toml` content string.
+- `options` — Optional configuration object:
+  - `camelCase` — Convert keys to camelCase (`true` by default). Set to `false` to get raw TOML keys.
+  - `unknownKeyPolicy` — How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`.
+
+##### Returns
+
+- `PyprojectData` when `camelCase` is `true` (default)
+- `RawPyprojectData` when `camelCase` is `false`
+
+The return type is inferred from the `camelCase` option via function overloads.
+
+##### Throws
+
+`PyprojectError` on invalid TOML or validation failures (in `'error'` mode).
+
+##### Examples
+
+```ts
+import { parsePyproject } from 'read-pyproject'
+
+// Parse a TOML string (camelCase keys by default)
+const pyproject = parsePyproject('[project]\nname = "my-package"')
+
+// Get raw TOML keys (no camelCase conversion)
+const raw = parsePyproject(tomlString, { camelCase: false })
+
+// Reject unknown keys
+parsePyproject(tomlString, { unknownKeyPolicy: 'error' })
 ```
 
 #### `PyprojectError`

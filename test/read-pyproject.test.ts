@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { PyprojectError, readPyproject } from '../src'
+import { parsePyproject, PyprojectError, readPyproject } from '../src'
 import { correctSpdx, normalizePep503Name } from '../src/normalize'
 import { createBuildSystemSchema } from '../src/schema/build-system'
 import { createProjectSchema } from '../src/schema/project'
@@ -52,6 +52,50 @@ describe('file reading', () => {
 		} finally {
 			await fs.rm(temporaryDirectory, { recursive: true })
 		}
+	})
+})
+
+// ---------------------------------------------------------------------------
+// parsePyproject (string input)
+// ---------------------------------------------------------------------------
+
+describe('parsePyproject', () => {
+	it('parses a valid TOML string', () => {
+		const result = parsePyproject('[project]\nname = "test-pkg"\nversion = "1.0.0"\n')
+		expect(result.project?.name).toBe('test-pkg')
+		expect(result.project?.version).toBe('1.0.0')
+	})
+
+	it('returns camelCase keys by default', () => {
+		const result = parsePyproject(
+			'[build-system]\nbuild-backend = "setuptools.build_meta"\nrequires = ["setuptools"]\n',
+		)
+		expect(result.buildSystem?.buildBackend).toBe('setuptools.build_meta')
+	})
+
+	it('returns raw keys when camelCase is false', () => {
+		const result = parsePyproject(
+			'[build-system]\nbuild-backend = "setuptools.build_meta"\nrequires = ["setuptools"]\n',
+			{ camelCase: false },
+		)
+		expect(result['build-system']?.['build-backend']).toBe('setuptools.build_meta')
+	})
+
+	it('throws PyprojectError for invalid TOML', () => {
+		expect(() => parsePyproject('[invalid\nbroken toml =')).toThrow(PyprojectError)
+	})
+
+	it('throws PyprojectError with unknownKeyPolicy error', () => {
+		expect(() =>
+			parsePyproject('[project]\nname = "test"\nunknown-key = "value"\n', {
+				unknownKeyPolicy: 'error',
+			}),
+		).toThrow(PyprojectError)
+	})
+
+	it('parses an empty TOML string', () => {
+		const result = parsePyproject('')
+		expect(result).toEqual({})
 	})
 })
 

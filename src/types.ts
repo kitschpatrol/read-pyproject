@@ -12,6 +12,16 @@ import type { createPyprojectSchema } from './schema/pyproject'
  */
 export type UnknownKeyPolicy = 'error' | 'passthrough' | 'strip'
 
+/**
+ * Options for parsing and reading pyproject.toml data.
+ */
+export type PyprojectOptions = {
+	/** Convert keys to camelCase in the output. Defaults to `true`. */
+	camelCase?: boolean
+	/** How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`. */
+	unknownKeyPolicy?: UnknownKeyPolicy
+}
+
 type SchemaReturn<T extends (...args: never[]) => unknown> = ReturnType<T>
 
 // Raw types (from Zod schemas, which now output raw keys)
