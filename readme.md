@@ -174,7 +174,7 @@ Inject a custom logger. Accepts a [LogLayer](https://github.com/theogravity/logl
 
 ### Normalization
 
-- All kebab-case, snake_case, and PascalCase keys in the TOML are converted to camelCase in the output by default. Pass `{ camelCase: false }` to disable this and receive raw TOML keys instead.
+- All kebab-case, snake\_case, and PascalCase keys in the TOML are converted to camelCase in the output by default. Pass `{ camelCase: false }` to disable this and receive raw TOML keys instead.
 
 - `project.name` is normalized per [PEP 503](https://peps.python.org/pep-0503/#normalized-names) (lowercased, runs of `[-_.]+` collapsed to a single `-`). The original name is available as `project.rawName`. This normalization is always applied regardless of the `camelCase` option.
 
@@ -186,7 +186,7 @@ Inject a custom logger. Accepts a [LogLayer](https://github.com/theogravity/logl
 
 The following tools have typed schemas:
 
-autopep8, bandit, black, bumpversion, check-wheel-contents, cibuildwheel, codespell, comfy, commitizen, coverage, dagster, distutils, docformatter, flake8, flit, hatch, isort, jupyter-releaser, mypy, pdm, pixi, poe, poetry, pydocstyle, pylint, pyright, pytest, ruff, setuptools, setuptools_scm, tbump, towncrier, uv, yapf
+autopep8, bandit, black, bumpversion, check-wheel-contents, cibuildwheel, codespell, comfy, commitizen, coverage, dagster, distutils, docformatter, flake8, flit, hatch, isort, jupyter-releaser, mypy, pdm, pixi, poe, poetry, pydocstyle, pylint, pyright, pytest, ruff, setuptools, setuptools\_scm, tbump, towncrier, uv, yapf
 
 Unknown tools pass through as `unknown` by default.
 
@@ -196,7 +196,7 @@ Unknown tools pass through as `unknown` by default.
 
 I wanted something like [read-pkg](https://github.com/sindresorhus/read-pkg) or [pkg-types](https://github.com/unjs/pkg-types), but for `pyproject.toml` files.
 
-It's a bit strange to work across language ecosystems like this, but I had occasion to do so for some other Node-based projects related to project metadata extraction, specifically [@kitschpatrol/codemeta](https://github.com/kitschpatrol/codemeta) and [metascope](https://github.com/kitschpatrol/metascope).
+It's a bit strange to work across language ecosystems like this, but I had occasion to do so for some other Node-based projects related to project metadata extraction, specifically [metascope](https://github.com/kitschpatrol/metascope).
 
 ### Implementation notes
 
