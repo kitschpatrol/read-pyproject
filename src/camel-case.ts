@@ -1,8 +1,8 @@
 /**
- * Paths where values are records with user-defined keys (package names,
- * file paths, etc.) — the conversion function must not recurse into these.
- * Paths use camelCase key names because the function converts each key
- * before building the path.
+ * Paths where values are records with user-defined keys (package names, file
+ * paths, etc.) — the conversion function must not recurse into these. Paths use
+ * camelCase key names because the function converts each key before building
+ * the path.
  */
 const RECORD_PATHS = new Set([
 	'dependencyGroups',
@@ -39,12 +39,14 @@ const RECORD_PATHS = new Set([
 	'tool.uv.sources',
 ])
 
+const OTHER_CASES_REGEX = /[-_]([a-z])/g
+const CAPITAL_LETTERS_REGEX = /^[A-Z]/
 /**
  * Convert a single key from kebab-case, snake_case, or PascalCase to camelCase.
  */
 function toCamelCase(text: string): string {
-	let result = text.replaceAll(/[-_]([a-z])/g, (_, c: string) => c.toUpperCase())
-	if (/^[A-Z]/.test(result)) {
+	let result = text.replaceAll(OTHER_CASES_REGEX, (_, c: string) => c.toUpperCase())
+	if (CAPITAL_LETTERS_REGEX.test(result)) {
 		result = result[0].toLowerCase() + result.slice(1)
 	}
 
