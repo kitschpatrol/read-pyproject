@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.distutils] table.
+ *
  * @see [Distutils configuration reference](https://docs.python.org/3/distutils/configfile.html)
  */
 export function createDistutilsSchema(unknownKeyPolicy: UnknownKeyPolicy) {

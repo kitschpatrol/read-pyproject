@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.dagster] table.
+ *
  * @see [Dagster configuration reference](https://docs.dagster.io/guides/running-dagster-locally)
  */
 export function createDagsterSchema(unknownKeyPolicy: UnknownKeyPolicy) {

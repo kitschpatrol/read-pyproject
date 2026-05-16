@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.setuptools_scm] table.
+ *
  * @see [Setuptools-scm configuration reference](https://setuptools-scm.readthedocs.io/en/latest/config/)
  */
 export function createSetuptoolsScmSchema(unknownKeyPolicy: UnknownKeyPolicy) {

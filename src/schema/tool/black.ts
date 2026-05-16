@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.black] table.
+ *
  * @see [Black configuration reference](https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file)
  */
 export function createBlackSchema(unknownKeyPolicy: UnknownKeyPolicy) {

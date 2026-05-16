@@ -3,7 +3,8 @@ import spdxValidate from 'spdx-expression-validate'
 import { PyprojectError } from './error'
 
 /**
- * PEP 503 name normalization: lowercase, replace runs of [-_.] with a single hyphen.
+ * PEP 503 name normalization: lowercase, replace runs of [-_.] with a single
+ * hyphen.
  */
 export function normalizePep503Name(name: string): string {
 	return name.toLowerCase().replaceAll(/[-_.]+/g, '-')
@@ -20,10 +21,14 @@ export type NormalizedLicense =
  * Validate and optionally correct an SPDX expression.
  */
 export function correctSpdx(expression: string): string {
-	if (spdxValidate(expression)) return expression
+	if (spdxValidate(expression)) {
+		return expression
+	}
 
 	const corrected = spdxCorrect(expression)
-	if (corrected) return corrected
+	if (corrected) {
+		return corrected
+	}
 
 	throw new PyprojectError(`Invalid SPDX license expression: "${expression}"`)
 }

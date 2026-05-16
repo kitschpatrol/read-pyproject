@@ -7,7 +7,7 @@
 <!-- badges -->
 
 [![NPM Package read-pyproject](https://img.shields.io/npm/v/read-pyproject.svg)](https://npmjs.com/package/read-pyproject)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit/)
 [![CI](https://github.com/kitschpatrol/read-pyproject/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/read-pyproject/actions/workflows/ci.yml)
 
 <!-- /badges -->
@@ -205,7 +205,7 @@ Forcing the rather dynamic and extensible data structure found in `pyproject.tom
 
 ## Maintainers
 
-@kitschpatrol
+[kitschpatrol](https://github.com/kitschpatrol)
 
 ## Slop factor
 
@@ -217,7 +217,11 @@ An initial human-crafted specification was implemented by LLM. The output has be
 
 ## Contributing
 
-[Issues](https://github.com/kitschpatrol/read-pyproject/issues) and pull requests are welcome.
+[Issues](https://github.com/kitschpatrol/read-pyproject/issues) are welcome and appreciated.
+
+Please open an issue to discuss changes before submitting a pull request. Unsolicited PRs (especially AI-generated ones) are unlikely to be merged.
+
+This repository uses [@kitschpatrol/shared-config](https://github.com/kitschpatrol/shared-config) (via its `ksc` CLI) for linting and formatting, plus [MDAT](https://github.com/kitschpatrol/mdat) for readme placeholder expansion.
 
 <!-- /contributing -->
 
@@ -225,6 +229,6 @@ An initial human-crafted specification was implemented by LLM. The output has be
 
 ## License
 
-[MIT](license.txt) © Eric Mika
+[MIT](license.txt) © [Eric Mika](https://ericmika.com)
 
 <!-- /license -->

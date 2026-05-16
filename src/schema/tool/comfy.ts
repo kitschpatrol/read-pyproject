@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.comfy] table.
+ *
  * @see [ComfyUI custom node configuration](https://docs.comfy.org/comfy-cli/getting-started)
  */
 export function createComfySchema(unknownKeyPolicy: UnknownKeyPolicy) {

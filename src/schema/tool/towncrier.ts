@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.towncrier] table.
+ *
  * @see [Towncrier configuration reference](https://towncrier.readthedocs.io/en/stable/configuration.html)
  */
 export function createTowncrierSchema(unknownKeyPolicy: UnknownKeyPolicy) {

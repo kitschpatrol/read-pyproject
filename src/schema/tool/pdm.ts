@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pdm] table.
+ *
  * @see [PDM configuration reference](https://pdm-project.org/en/latest/reference/configuration/)
  */
 export function createPdmSchema(unknownKeyPolicy: UnknownKeyPolicy) {

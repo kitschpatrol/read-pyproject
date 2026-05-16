@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.ruff] table.
+ *
  * @see [Ruff configuration reference](https://docs.astral.sh/ruff/configuration/)
  * @see [Ruff settings](https://docs.astral.sh/ruff/settings/)
  */

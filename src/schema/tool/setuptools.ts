@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.setuptools] table.
+ *
  * @see [Setuptools pyproject.toml reference](https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html)
  */
 export function createSetuptoolsSchema(unknownKeyPolicy: UnknownKeyPolicy) {

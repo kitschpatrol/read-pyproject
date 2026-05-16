@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.tbump] table.
+ *
  * @see [tbump configuration reference](https://github.com/your-tools/tbump)
  */
 export function createTbumpSchema(unknownKeyPolicy: UnknownKeyPolicy) {

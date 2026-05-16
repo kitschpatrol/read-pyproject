@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.autopep8] table.
+ *
  * @see [autopep8 configuration reference](https://pypi.org/project/autopep8/)
  */
 export function createAutopep8Schema(unknownKeyPolicy: UnknownKeyPolicy) {

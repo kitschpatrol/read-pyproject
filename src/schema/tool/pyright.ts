@@ -9,6 +9,7 @@ const diagnosticSeverity = z.union([
 
 /**
  * Create a Zod schema for the [tool.pyright] table.
+ *
  * @see [Pyright configuration reference](https://microsoft.github.io/pyright/#/configuration)
  */
 export function createPyrightSchema(unknownKeyPolicy: UnknownKeyPolicy) {

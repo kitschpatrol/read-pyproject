@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.cibuildwheel] table.
+ *
  * @see [cibuildwheel configuration reference](https://cibuildwheel.pypa.io/en/stable/options/)
  */
 export function createCibuildwheelSchema(unknownKeyPolicy: UnknownKeyPolicy) {

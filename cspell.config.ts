@@ -5,7 +5,6 @@ export default cspellConfig({
 	words: [
 		'addopts',
 		'archs',
-		'asyncio',
 		'autopep',
 		'bdist',
 		'bumpversion',
@@ -17,7 +16,6 @@ export default cspellConfig({
 		'dunder',
 		'envfile',
 		'filterwarnings',
-		'isort',
 		'mccabe',
 		'noqa',
 		'norecursedirs',

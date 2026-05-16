@@ -6,6 +6,7 @@ import type { createPyprojectSchema } from './schema/pyproject'
 
 /**
  * Controls how unknown keys are handled during schema validation.
+ *
  * - `'passthrough'` — unknown keys are kept as-is (default)
  * - `'strip'` — unknown keys are silently removed
  * - `'error'` — unknown keys cause a validation error
@@ -18,7 +19,10 @@ export type UnknownKeyPolicy = 'error' | 'passthrough' | 'strip'
 export type PyprojectOptions = {
 	/** Convert keys to camelCase in the output. Defaults to `true`. */
 	camelCase?: boolean
-	/** How to handle unknown keys: `'passthrough'` (default), `'strip'`, or `'error'`. */
+	/**
+	 * How to handle unknown keys: `'passthrough'` (default), `'strip'`, or
+	 * `'error'`.
+	 */
 	unknownKeyPolicy?: UnknownKeyPolicy
 }
 

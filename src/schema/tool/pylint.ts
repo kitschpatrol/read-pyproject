@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pylint] table.
+ *
  * @see [Pylint configuration reference](https://pylint.readthedocs.io/en/latest/user_guide/configuration/index.html)
  */
 export function createPylintSchema(unknownKeyPolicy: UnknownKeyPolicy) {

@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pytest] table.
+ *
  * @see [Pytest configuration reference](https://docs.pytest.org/en/stable/reference/customize.html)
  * @see [Pytest ini-options](https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref)
  */

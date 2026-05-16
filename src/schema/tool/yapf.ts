@@ -4,9 +4,10 @@ import type { UnknownKeyPolicy } from '../../types'
 /**
  * Create a Zod schema for the [tool.yapf] table.
  *
- * YAPF has 100+ style knobs. This schema covers the most common options
- * seen in real-world pyproject.toml files. Unknown keys pass through in
- * passthrough mode.
+ * YAPF has 100+ style knobs. This schema covers the most common options seen in
+ * real-world pyproject.toml files. Unknown keys pass through in passthrough
+ * mode.
+ *
  * @see [YAPF knobs reference](https://github.com/google/yapf#knobs)
  */
 export function createYapfSchema(unknownKeyPolicy: UnknownKeyPolicy) {

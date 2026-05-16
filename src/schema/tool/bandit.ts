@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.bandit] table.
+ *
  * @see [Bandit configuration reference](https://bandit.readthedocs.io/en/latest/config.html)
  */
 export function createBanditSchema(unknownKeyPolicy: UnknownKeyPolicy) {

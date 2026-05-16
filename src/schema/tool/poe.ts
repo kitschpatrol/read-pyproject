@@ -6,6 +6,7 @@ const multiString = z.union([z.string(), z.array(z.string())])
 
 /**
  * Create a Zod schema for the [tool.poe] table.
+ *
  * @see [Poe the Poet configuration reference](https://poethepoet.natn.io/global_options.html)
  * @see [Poe the Poet task options](https://poethepoet.natn.io/tasks/options.html)
  */

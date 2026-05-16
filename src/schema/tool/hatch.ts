@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.hatch] table.
+ *
  * @see [Hatch configuration reference](https://hatch.pypa.io/latest/config/metadata/)
  */
 export function createHatchSchema(unknownKeyPolicy: UnknownKeyPolicy) {

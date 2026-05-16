@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.jupyter-releaser] table.
+ *
  * @see [Jupyter Releaser reference](https://jupyter-releaser.readthedocs.io/en/latest/)
  */
 export function createJupyterReleaserSchema(unknownKeyPolicy: UnknownKeyPolicy) {

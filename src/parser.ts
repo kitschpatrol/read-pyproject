@@ -6,8 +6,10 @@ import { createPyprojectSchema } from './schema/pyproject'
 
 /**
  * Parse, validate, and normalize a pyproject.toml content string.
+ *
  * @param content - The TOML content string to parse.
  * @param options - Options for parsing and key conversion.
+ *
  * @returns The parsed pyproject data, with keys in camelCase by default.
  */
 export function parsePyproject(

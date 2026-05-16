@@ -6,6 +6,7 @@ const looseBoolean = z.union([z.boolean(), z.string()])
 
 /**
  * Create a Zod schema for the [tool.isort] table.
+ *
  * @see [isort configuration reference](https://pycqa.github.io/isort/docs/configuration/options.html)
  */
 export function createIsortSchema(unknownKeyPolicy: UnknownKeyPolicy) {

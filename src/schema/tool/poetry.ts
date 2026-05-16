@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.poetry] table.
+ *
  * @see [Poetry pyproject.toml reference](https://python-poetry.org/docs/pyproject/)
  */
 export function createPoetrySchema(unknownKeyPolicy: UnknownKeyPolicy) {

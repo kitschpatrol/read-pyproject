@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pydocstyle] table.
+ *
  * @see [pydocstyle configuration reference](https://www.pydocstyle.org/en/stable/usage.html#configuration-files)
  */
 export function createPydocstyleSchema(unknownKeyPolicy: UnknownKeyPolicy) {

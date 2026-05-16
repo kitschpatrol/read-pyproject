@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.check-wheel-contents] table.
+ *
  * @see [check-wheel-contents reference](https://github.com/jwodder/check-wheel-contents)
  */
 export function createCheckWheelContentsSchema(unknownKeyPolicy: UnknownKeyPolicy) {

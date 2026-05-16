@@ -6,11 +6,17 @@ import { correctSpdx, normalizePep503Name } from '../normalize'
 function transformReadme(
 	raw: string | undefined | { 'content-type'?: string; file?: string; text?: string },
 ): NormalizedReadme | undefined {
-	if (raw === undefined) return undefined
+	if (raw === undefined) {
+		return undefined
+	}
 
-	if (typeof raw === 'string') return raw
+	if (typeof raw === 'string') {
+		return raw
+	}
 
-	if (raw.file !== undefined) return raw.file
+	if (raw.file !== undefined) {
+		return raw.file
+	}
 
 	if (raw.text !== undefined) {
 		const contentType = raw['content-type']
@@ -23,14 +29,21 @@ function transformReadme(
 function transformLicense(
 	raw: string | undefined | { file?: string; text?: string },
 ): NormalizedLicense | undefined {
-	if (raw === undefined) return undefined
+	if (raw === undefined) {
+		return undefined
+	}
 
 	if (typeof raw === 'string') {
 		return { spdx: correctSpdx(raw) }
 	}
 
-	if (raw.file !== undefined) return { file: raw.file }
-	if (raw.text !== undefined) return { text: raw.text }
+	if (raw.file !== undefined) {
+		return { file: raw.file }
+	}
+
+	if (raw.text !== undefined) {
+		return { text: raw.text }
+	}
 
 	return undefined
 }

@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.pixi] table.
+ *
  * @see [Pixi configuration reference](https://pixi.sh/latest/reference/pixi_configuration/)
  */
 export function createPixiSchema(unknownKeyPolicy: UnknownKeyPolicy) {

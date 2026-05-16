@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.uv] table.
+ *
  * @see [uv configuration reference](https://docs.astral.sh/uv/reference/settings/)
  */
 export function createUvSchema(unknownKeyPolicy: UnknownKeyPolicy) {

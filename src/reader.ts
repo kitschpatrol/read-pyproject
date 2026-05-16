@@ -7,8 +7,11 @@ import { parsePyproject } from './parser'
 
 /**
  * Read, parse, validate, and normalize a pyproject.toml file.
- * @param pathOrDirectory - A file path or directory. If a directory (no extension), appends `/pyproject.toml`. Defaults to `process.cwd()`.
+ *
+ * @param pathOrDirectory - A file path or directory. If a directory (no
+ *   extension), appends `/pyproject.toml`. Defaults to `process.cwd()`.
  * @param options - Options for parsing and key conversion.
+ *
  * @returns The parsed pyproject data, with keys in camelCase by default.
  */
 export async function readPyproject(

@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.flit] table.
+ *
  * @see [Flit configuration reference](https://flit.pypa.io/en/stable/pyproject_toml.html)
  */
 export function createFlitSchema(unknownKeyPolicy: UnknownKeyPolicy) {

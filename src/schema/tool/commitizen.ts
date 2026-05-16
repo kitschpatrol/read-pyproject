@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.commitizen] table.
+ *
  * @see [Commitizen configuration](https://commitizen-tools.github.io/commitizen/config/configuration_file/)
  */
 export function createCommitizenSchema(unknownKeyPolicy: UnknownKeyPolicy) {

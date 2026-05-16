@@ -3,6 +3,7 @@ import type { UnknownKeyPolicy } from '../../types'
 
 /**
  * Create a Zod schema for the [tool.bumpversion] table.
+ *
  * @see [Bump My Version configuration reference](https://callowayproject.github.io/bump-my-version/reference/configuration/)
  */
 export function createBumpversionSchema(unknownKeyPolicy: UnknownKeyPolicy) {
