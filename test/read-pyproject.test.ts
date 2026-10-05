@@ -406,7 +406,7 @@ describe('unknownKeyPolicy modes', () => {
 				some_unknown_tool: { key: 'value' },
 			},
 		})
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
+
 		const tool = result.tool as Record<string, unknown>
 		expect(tool.some_unknown_tool).toBeUndefined()
 	})
@@ -441,7 +441,7 @@ describe('unknown tool passthrough', () => {
 				some_unknown_tool: { key: 'value', nested: { a: 1 } },
 			},
 		})
-		// eslint-disable-next-line ts/no-unsafe-type-assertion
+
 		const tool = result.tool as Record<string, unknown>
 		expect(tool.some_unknown_tool).toEqual({
 			key: 'value',
@@ -475,15 +475,17 @@ describe('real-world fixtures', () => {
 			}),
 		)
 
-		if (errors.length > 0) {
-			const summary = errors
-				.slice(0, 10)
-				.map((entry) => `  ${entry.file}: ${entry.error.split('\n')[0]}`)
-				.join('\n')
-			throw new Error(
-				`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed:\n${summary}`,
-			)
+		if (errors.length === 0) {
+			return
 		}
+
+		const summary = errors
+			.slice(0, 10)
+			.map((entry) => `  ${entry.file}: ${entry.error.split('\n', 1)[0]}`)
+			.join('\n')
+		throw new Error(
+			`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed:\n${summary}`,
+		)
 	})
 
 	it('parses all fixture files with camelCase: false', { timeout: 60_000 }, async () => {
@@ -506,15 +508,17 @@ describe('real-world fixtures', () => {
 			}),
 		)
 
-		if (errors.length > 0) {
-			const summary = errors
-				.slice(0, 10)
-				.map((entry) => `  ${entry.file}: ${entry.error.split('\n')[0]}`)
-				.join('\n')
-			throw new Error(
-				`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed (camelCase: false):\n${summary}`,
-			)
+		if (errors.length === 0) {
+			return
 		}
+
+		const summary = errors
+			.slice(0, 10)
+			.map((entry) => `  ${entry.file}: ${entry.error.split('\n', 1)[0]}`)
+			.join('\n')
+		throw new Error(
+			`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed (camelCase: false):\n${summary}`,
+		)
 	})
 
 	it(
@@ -581,15 +585,17 @@ describe('real-world fixtures', () => {
 				}),
 			)
 
-			if (errors.length > 0) {
-				const summary = errors
-					.slice(0, 10)
-					.map((entry) => `  ${entry.file}: ${entry.error.split('\n')[0]}`)
-					.join('\n')
-				throw new Error(
-					`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed error-level validation:\n${summary}`,
-				)
+			if (errors.length === 0) {
+				return
 			}
+
+			const summary = errors
+				.slice(0, 10)
+				.map((entry) => `  ${entry.file}: ${entry.error.split('\n', 1)[0]}`)
+				.join('\n')
+			throw new Error(
+				`${String(errors.length)}/${String(tomlFiles.length)} fixtures failed error-level validation:\n${summary}`,
+			)
 		},
 	)
 })

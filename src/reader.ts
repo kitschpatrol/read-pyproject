@@ -41,7 +41,6 @@ export async function readPyproject(
 	}
 
 	try {
-		// eslint-disable-next-line ts/no-unsafe-type-assertion -- overloads on readPyproject already constrain the return type
 		return parsePyproject(content, options as PyprojectOptions & { camelCase?: true })
 	} catch (error) {
 		if (error instanceof PyprojectError) {

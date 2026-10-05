@@ -20,7 +20,9 @@ function transformReadme(
 
 	if (raw.text !== undefined) {
 		const contentType = raw['content-type']
-		return contentType ? { contentType, text: raw.text } : { text: raw.text }
+		return contentType === undefined || contentType === ''
+			? { text: raw.text }
+			: { contentType, text: raw.text }
 	}
 
 	return undefined
@@ -41,11 +43,7 @@ function transformLicense(
 		return { file: raw.file }
 	}
 
-	if (raw.text !== undefined) {
-		return { text: raw.text }
-	}
-
-	return undefined
+	return raw.text === undefined ? undefined : { text: raw.text }
 }
 
 /**
@@ -117,7 +115,7 @@ export function createProjectSchema(unknownKeyPolicy: UnknownKeyPolicy) {
 	return object.transform(({ license, name, readme, ...rest }) => ({
 		...rest,
 		license: transformLicense(license),
-		name: name ? normalizePep503Name(name) : undefined,
+		name: name === undefined || name === '' ? undefined : normalizePep503Name(name),
 		rawName: name,
 		readme: transformReadme(readme),
 	}))

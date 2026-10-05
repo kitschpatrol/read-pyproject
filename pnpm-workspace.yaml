@@ -12,3 +12,7 @@ publicHoistPattern:
 allowBuilds:
   esbuild: true
   unrs-resolver: true
+peerDependencyRules:
+  allowedVersions:
+    # ESLint 10 support is pending upstream: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/1075
+    eslint-plugin-jsx-a11y>eslint: '10'

@@ -7,7 +7,7 @@ import { PyprojectError } from './error'
  * hyphen.
  */
 export function normalizePep503Name(name: string): string {
-	return name.toLowerCase().replaceAll(/[-_.]+/g, '-')
+	return name.toLowerCase().replaceAll(/[\-_.]+/gv, '-')
 }
 
 export type NormalizedReadme = string | { contentType?: string; text: string }
@@ -26,7 +26,7 @@ export function correctSpdx(expression: string): string {
 	}
 
 	const corrected = spdxCorrect(expression)
-	if (corrected) {
+	if (corrected !== null && corrected !== '') {
 		return corrected
 	}
 

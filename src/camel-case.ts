@@ -39,15 +39,15 @@ const RECORD_PATHS = new Set([
 	'tool.uv.sources',
 ])
 
-const OTHER_CASES_REGEX = /[-_]([a-z])/g
-const CAPITAL_LETTERS_REGEX = /^[A-Z]/
+const OTHER_CASES_REGEX = /[\-_]([a-z])/gv
+const CAPITAL_LETTERS_REGEX = /^[A-Z]/v
 /**
  * Convert a single key from kebab-case, snake_case, or PascalCase to camelCase.
  */
 function toCamelCase(text: string): string {
 	let result = text.replaceAll(OTHER_CASES_REGEX, (_, c: string) => c.toUpperCase())
 	if (CAPITAL_LETTERS_REGEX.test(result)) {
-		result = result[0].toLowerCase() + result.slice(1)
+		result = result.charAt(0).toLowerCase() + result.slice(1)
 	}
 
 	return result
@@ -66,7 +66,7 @@ export function deepCamelCaseKeys(object: unknown, path = ''): unknown {
 		const result: Record<string, unknown> = {}
 		for (const [key, value] of Object.entries(object)) {
 			const camelKey = toCamelCase(key)
-			const newPath = path ? `${path}.${camelKey}` : camelKey
+			const newPath = path === '' ? camelKey : `${path}.${camelKey}`
 			result[camelKey] = RECORD_PATHS.has(newPath) ? value : deepCamelCaseKeys(value, newPath)
 		}
 

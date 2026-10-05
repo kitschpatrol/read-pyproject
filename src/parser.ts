@@ -63,10 +63,5 @@ export function parsePyproject(
 		})
 	}
 
-	if (camelCaseKeys) {
-		// eslint-disable-next-line ts/no-unsafe-type-assertion -- overload guarantees PyprojectData
-		return deepCamelCaseKeys(result.data) as PyprojectData
-	}
-
-	return result.data
+	return camelCaseKeys ? (deepCamelCaseKeys(result.data) as PyprojectData) : result.data
 }

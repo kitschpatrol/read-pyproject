@@ -1,4 +1,3 @@
-/* eslint-disable ts/no-unsafe-type-assertion */
 import { describe, expect, it } from 'vitest'
 import { deepCamelCaseKeys } from '../src/camel-case'
 import {

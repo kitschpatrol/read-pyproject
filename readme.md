@@ -6,8 +6,8 @@
 
 <!-- badges -->
 
-[![NPM Package read-pyproject](https://img.shields.io/npm/v/read-pyproject.svg)](https://npmjs.com/package/read-pyproject)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit/)
+[![NPM Package read-pyproject](https://img.shields.io/npm/v/read-pyproject.svg)](https://www.npmjs.com/package/read-pyproject)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 [![CI](https://github.com/kitschpatrol/read-pyproject/actions/workflows/ci.yml/badge.svg)](https://github.com/kitschpatrol/read-pyproject/actions/workflows/ci.yml)
 
 <!-- /badges -->
@@ -42,7 +42,7 @@ Note that this library currently only _reads_, it does not write changes back to
 
 ### Dependencies
 
-[Node](https://nodejs.org/) 20.17.0+
+[Node](https://nodejs.org/) 20.19.0+
 
 ### Installation
 
