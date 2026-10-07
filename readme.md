@@ -40,15 +40,25 @@ Note that this library currently only _reads_, it does not write changes back to
 
 ## Getting started
 
+<!-- dependencies -->
+
 ### Dependencies
 
-[Node](https://nodejs.org/) 20.19.0+
+- [Node.js](https://nodejs.org/) 20.19.0 or newer (specifically `^20.19.0 || ^22.9.0 || ^24.0.0 || >=26.0.0`)
+
+<!-- /dependencies -->
+
+<!-- install -->
 
 ### Installation
+
+Add it to your project:
 
 ```sh
 npm install read-pyproject
 ```
+
+<!-- /install -->
 
 ### Quick start
 

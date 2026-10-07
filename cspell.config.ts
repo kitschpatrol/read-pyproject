@@ -1,7 +1,7 @@
 import { cspellConfig } from '@kitschpatrol/cspell-config'
 
 export default cspellConfig({
-	ignorePaths: ['test/fixtures/**/*', 'test/**/*'],
+	ignorePaths: ['test/**/*'],
 	words: [
 		'addopts',
 		'archs',
