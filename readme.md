@@ -179,7 +179,7 @@ Custom error class thrown for file read errors, TOML parse errors, and validatio
 
 #### `setLogger(logger?)`
 
-Inject a custom logger. Accepts a [LogLayer](https://github.com/theogravity/loglayer) instance or a `Console`-like object.
+Inject a custom logger. Accepts a [LogLayer](https://github.com/theogravity/loglayer) instance, a `Console`-like object with `debug`, `error`, `info`, and `warn` methods (`trace` is optional), or a stream with a `write` method. Call it with no argument to silence logging. Throws a `TypeError` for any other value.
 
 ### Normalization
 
