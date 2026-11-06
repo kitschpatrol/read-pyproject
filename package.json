@@ -39,7 +39,7 @@
 		"clean-deep": "shx rm -f pnpm-lock.yaml && git clean -fdX",
 		"fix": "ksc fix",
 		"lint": "ksc lint",
-		"release": "bumpp --commit 'Release: %s' && pnpm build && pnpm publish --otp $(op item get npm --otp)",
+		"release": "bumpp --commit 'Release: %s' --all --execute 'chagent' && pnpm build && pnpm publish --otp $(op item get npm --otp)",
 		"test": "vitest run"
 	},
 	"dependencies": {
@@ -52,6 +52,7 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/core": "^0.18.5",
+		"@kitschpatrol/chagent": "0.4.0",
 		"@kitschpatrol/shared-config": "^8.14.0",
 		"@types/node": "~20.19.43",
 		"@types/spdx-correct": "^3.1.3",

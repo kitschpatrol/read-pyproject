@@ -1,13 +1,14 @@
 import { cspellConfig } from '@kitschpatrol/cspell-config'
 
 export default cspellConfig({
-	ignorePaths: ['test/**/*'],
+	ignorePaths: ['test/**/*', '**/changelog.md'],
 	words: [
 		'addopts',
 		'archs',
 		'autopep',
 		'bdist',
 		'bumpversion',
+		'chagent',
 		'cibuildwheel',
 		'dagster',
 		'docformatter',
